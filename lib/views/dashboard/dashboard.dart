@@ -5,51 +5,27 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
+import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
+import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class DashBoard extends StatelessWidget {
   const DashBoard({super.key});
 
-  Color getColor(String colorName) {
-    switch (colorName) {
-      case 'red':
-        return Colors.red;
-      case 'blue':
-        return Colors.blue;
-      case 'orange':
-        return Colors.orange;
-      case 'green':
-        return Colors.green;
-      case 'yellow':
-        return Colors.yellow;
-      case 'purple':
-        return Colors.purple;
-      case 'pink':
-        return Colors.pink;
-      case 'cyan':
-        return Colors.cyan;
-      case 'brown':
-        return Colors.brown;
-      case 'teal':
-        return Colors.teal;
-      default:
-        return Colors.black;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final DashboardController dashboardController =
-        Get.put(DashboardController());
-    GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+    DashboardController dashboardController = Get.find();
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-            onTap: (){
-              scaffoldKey.currentState?.openDrawer();
-            },
-            child: const Icon(Icons.menu)),
         title: const Text('Leads'),
         actions: [
+          GestureDetector(
+              onTap: () {
+                Get.to(() => FileScreen());
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Icon(Icons.file_copy),
+              )),
           GestureDetector(
               onTap: () {},
               child: const Padding(
@@ -62,14 +38,21 @@ class DashBoard extends StatelessWidget {
         children: [
           Expanded(
             child: Obx(() {
-              return ListView.builder(
-                  itemCount: dashboardController.leadsList.length,
-                  itemBuilder: (context, index) {
-                    final data = dashboardController.leadsList[index];
-                    final randomColor = dashboardController.colors[
-                        Random().nextInt(dashboardController.colors.length)];
-                    return leadsContainer(data, randomColor);
-                  });
+              return dashboardController.isLeads.value
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: dashboardController.leadsList.length,
+                      itemBuilder: (context, index) {
+                        final data = dashboardController.leadsList[index];
+                        final randomColor = dashboardController.colors[Random()
+                            .nextInt(dashboardController.colors.length)];
+                        return leadsContainer(
+                            data, randomColor, dashboardController);
+                      });
             }),
           )
         ],
@@ -93,25 +76,23 @@ class DashBoard extends StatelessWidget {
             ListTile(
               title: const Text('Item 1'),
               onTap: () {
-
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Item 2'),
               onTap: () {
-
                 Navigator.pop(context);
               },
             ),
-
           ],
         ),
       ),
     );
   }
 
-  Widget leadsContainer(AllLeads data, String randomColor) {
+  Widget leadsContainer(AllLeads data, String randomColor,
+      DashboardController dashboardController) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();
@@ -119,7 +100,7 @@ class DashBoard extends StatelessWidget {
       onTap: () {
         Get.to(
           () => LeadDetailsScreen(
-            phoneNumber: data.phoneNo,
+            phoneNumber: data.phoneNo!,
           ),
         );
       },
@@ -134,7 +115,8 @@ class DashBoard extends StatelessWidget {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                  color: getColor(randomColor), shape: BoxShape.circle),
+                  color: dashboardController.getColor(randomColor),
+                  shape: BoxShape.circle),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -163,12 +145,16 @@ class DashBoard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                customText(
-                    text: data.name ?? '',
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700),
-                customText(text: data.phoneNo ?? ''),
-                customText(text: data.email ?? ''),
+                SizedBox(
+                  width: 220,
+                  child: CustomText(
+                      text: data.name ?? '',
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700),
+                ),
+                SizedBox(
+                    width: 220, child: CustomText(text: data.phoneNo ?? '')),
+                SizedBox(width: 220, child: CustomText(text: data.email ?? '')),
               ],
             ),
           ],
@@ -177,93 +163,3 @@ class DashBoard extends StatelessWidget {
     );
   }
 }
-
-Widget customText(
-    {required String text, double? fontSize, FontWeight? fontWeight}) {
-  return Text(
-    text,
-    style: TextStyle(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-    ),
-  );
-}
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
-// import 'package:ghl_callrecoding/models/lead_details.dart';
-//
-// import '../leadsDetails/leads_details.dart';
-// import 'components/avatar_widget.dart';
-//
-// class Dashboard extends StatefulWidget {
-//   const Dashboard({super.key});
-//
-//   @override
-//   State<Dashboard> createState() => _DashboardState();
-// }
-//
-// class _DashboardState extends State<Dashboard> {
-//   final DashboardController dashboardController =
-//       Get.put(DashboardController());
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Leads"),
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back),
-//           onPressed: () {},
-//         ),
-//       ),
-//       body: ListenableBuilder(
-//         listenable: dashboardController,
-//         builder: (context, child) {
-//           return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             child: Column(
-//               children: [
-//                 Expanded(
-//                   child: ListView.separated(
-//                     separatorBuilder: (context, index) {
-//                       return const SizedBox(
-//                         height: 10,
-//                         width: 10,
-//                       );
-//                     },
-//                     itemCount: dashboardController.leadsList.length,
-//                     itemBuilder: (context, index) {
-//                       return InkWell(
-//                         onTap: () {
-//                           Get.to(
-//                             () => LeadDetailsScreen(
-//                               phoneNumber:
-//                                   dashboardController.leadsList[index].phoneNo,
-//                             ),
-//                           );
-//                         },
-//                         child: ListTile(
-//                           contentPadding: const EdgeInsets.all(10),
-//                           shape: const Border.fromBorderSide(
-//                             BorderSide(style: BorderStyle.solid),
-//                           ),
-//                           leading: AvatarWithName(
-//                             name: dashboardController.leadsList[index].name!,
-//                           ),
-//                           title: Text(
-//                             dashboardController.leadsList[index].name!,
-//                           ),
-//                         ),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }

@@ -1,117 +1,101 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 import 'package:ghl_callrecoding/models/lead_details.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
+import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LeadDetailsScreen extends StatefulWidget {
-  String? phoneNumber;
+class LeadDetailsScreen extends StatelessWidget {
+  const LeadDetailsScreen({super.key, required this.phoneNumber});
 
-  LeadDetailsScreen({super.key, required this.phoneNumber});
-
-  @override
-  State<LeadDetailsScreen> createState() => _LeadDetailsScreenState();
-}
-
-class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
-  String? fileName;
-  bool isPhone = false;
-
-  Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      setState(() {
-        fileName =
-            file.path.split('/').last; // Extracting the file name from the path
-      });
-    } else {
-      // User canceled the picker
-    }
-  }
+  final String phoneNumber;
 
   @override
   Widget build(BuildContext context) {
+    // final LeadsController leadsController = Get.find();
+    LeadsController leadsController = Get.put(LeadsController());
     return Scaffold(
       appBar: AppBar(
         title: Text('Lead Details'),
       ),
-      body: Container(
-        height: 100,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: FutureBuilder<LeadDetails>(
-                future: Dashboard().fetchOIndividualLeads(widget.phoneNumber),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    LeadDetails leadDetails = snapshot.data!;
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Name: ${leadDetails.name}'),
-                          Text('Email: ${leadDetails.email}'),
-                          Text('Phone Number: ${leadDetails.phoneNo}'),
-
-                          // Add more fields as needed
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-            !isPhone
-                ? Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        setState(() {
-                          isPhone = true;
-                        });
-
-                        final call = Uri.parse('tel:+91 ${widget.phoneNumber}');
-                        if (await canLaunchUrl(call)) {
-                          launchUrl(call);
-                        } else {
-                          throw 'Could not launch $call';
-                        }
-                      },
-                      child: SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: Image(
-                              image:
-                                  AssetImage('assets/image/phone_icon.png'))),
+      body: Column(
+        children: [
+          Container(
+            height: 100,
+            child: FutureBuilder<LeadDetails>(
+              future: Dashboard().fetchOIndividualLeads(phoneNumber),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ));
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  LeadDetails leadDetails = snapshot.data!;
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                            width: 300,
+                            child:
+                                CustomText(text: 'Name: ${leadDetails.name}')),
+                        SizedBox(
+                            width: 300,
+                            child: CustomText(
+                                text: 'Email: ${leadDetails.email}')),
+                        SizedBox(
+                          width: 300,
+                          child: CustomText(
+                              text: 'Phone Number: ${leadDetails.phoneNo}'),
+                        ),
+                      ],
                     ),
-                  )
-                : Column(
-                    children: [
-                      GestureDetector(
-                        onTap: pickFile,
-                        child: Icon(Icons.upload_file),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        fileName ?? 'No file selected',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-          ],
-        ),
+                  );
+                }
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: leadsController.pickFile,
+                child: Icon(
+                  Icons.upload_file,
+                  size: 40,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    final call = Uri.parse('tel:+91 ${phoneNumber}');
+                    if (await canLaunchUrl(call)) {
+                      launchUrl(call);
+                    } else {
+                      throw 'Could not launch $call';
+                    }
+                  },
+                  child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Image(
+                          image: AssetImage('assets/image/phone_icon.png'))),
+                ),
+              )
+            ],
+          ),
+          Obx(() {
+            return leadsController.fileName.value != ''
+                ? Text(leadsController.fileName.value)
+                : Container();
+          }),
+        ],
       ),
     );
   }

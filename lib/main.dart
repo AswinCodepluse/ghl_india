@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/binding/controller_binding.dart';
 import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:ghl_callrecoding/views/splash_screen.dart';
 
@@ -10,8 +11,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -21,6 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      initialBinding: ControllerBinding(),
       home: const SplashScreen(),
     );
   }

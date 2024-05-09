@@ -39,6 +39,9 @@ dependencies:
   get:
   file_picker:
   url_launcher:
+  path_provider:
+  open_file:
+  permission_handler:
 
 
 dev_dependencies:

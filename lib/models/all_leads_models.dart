@@ -22,7 +22,7 @@ class LeadsData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) =>v.toJson()).toList();
     }
     data['success'] = this.success;
     data['status'] = this.status;
@@ -39,7 +39,7 @@ class AllLeads {
   String? pincode;
   String? email;
   String? phoneNo;
-  int? status;
+  String? status;
   String? source;
   String? assigned;
   int? campaignId;

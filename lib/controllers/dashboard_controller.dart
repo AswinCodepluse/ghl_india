@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 
-
 class DashboardController extends GetxController {
   var leadsList = <AllLeads>[].obs;
+  var searchLeadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
+  TextEditingController searchCon = TextEditingController();
   var colors = [
     'red',
     'blue',
@@ -81,4 +82,16 @@ class DashboardController extends GetxController {
     }
   }
 
+  searchLead(String str) {
+    searchLeadsList.value = leadsList
+        .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+        .toList();
+    update();
+  }
+
+  clearSearchText() {
+    searchLeadsList.value = [];
+    searchCon.clear();
+    update();
+  }
 }

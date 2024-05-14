@@ -47,6 +47,7 @@ dependencies:
   one_context:
   package_info:
   flip_card:
+  flutter_sound:
 
 
 dev_dependencies:

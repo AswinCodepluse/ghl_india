@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
@@ -30,35 +31,48 @@ class DashBoard extends StatelessWidget {
                 padding: EdgeInsets.only(right: 10.0),
                 child: Icon(Icons.file_copy),
               )),
-          GestureDetector(
-              onTap: () {},
-              child: const Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: Icon(Icons.search),
-              )),
         ],
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+            child:
+                searchBar(dashboardController.searchCon, dashboardController),
+          ),
           Expanded(
-            child: Obx(
-              () {
+            child: GetBuilder<DashboardController>(
+              builder: (dashboardController){
                 return dashboardController.isLeads.value
                     ? Center(
                         child: CircularProgressIndicator(
                           color: Colors.black,
                         ),
                       )
-                    : ListView.builder(
-                        itemCount: dashboardController.leadsList.length,
-                        itemBuilder: (context, index) {
-                          final data = dashboardController.leadsList[index];
-                          final randomColor = dashboardController.colors[
-                              Random()
-                                  .nextInt(dashboardController.colors.length)];
-                          return leadsContainer(
-                              data, randomColor, dashboardController);
-                        });
+                    : dashboardController.searchCon.text.isNotEmpty &&
+                            dashboardController.searchLeadsList.isEmpty
+                        ? Center(
+                            child: CustomText(
+                            text: "No Search Lead Found",
+                          ))
+                        : ListView.builder(
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount:
+                                dashboardController.searchCon.text.isNotEmpty
+                                    ? dashboardController.searchLeadsList.length
+                                    : dashboardController.leadsList.length,
+                            itemBuilder: (context, index) {
+                              final data = dashboardController
+                                      .searchCon.text.isNotEmpty
+                                  ? dashboardController.searchLeadsList[index]
+                                  : dashboardController.leadsList[index];
+                              final randomColor = dashboardController.colors[
+                                  Random().nextInt(
+                                      dashboardController.colors.length)];
+                              return leadsContainer(
+                                  data, randomColor, dashboardController);
+                            });
               },
             ),
           )
@@ -119,11 +133,10 @@ class DashBoard extends StatelessWidget {
       onTap: () {
         Get.to(
           () => LeadDetailsScreen(
-            phoneNumber: data.phoneNo!,
-            firstLetter: firstLetter,
-            lastLetter: lastLetter,
-            leadId: data.id!
-          ),
+              phoneNumber: data.phoneNo!,
+              firstLetter: firstLetter,
+              lastLetter: lastLetter,
+              leadId: data.id!),
         );
       },
       child: Container(

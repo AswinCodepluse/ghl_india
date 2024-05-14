@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ghl_callrecoding/models/lead_status_model.dart';
+
 import '../models/all_leads_models.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +22,23 @@ class Dashboard {
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['data'];
       return list.map((model) => AllLeads.fromJson(model)).toList();
+    } else {
+      throw Exception('Failed to load leads');
+    }
+  }
+
+  Future<List<Data>> fetchLeadStatus() async {
+    final response = await http.get(
+      Uri.parse('https://sales.ghlindia.com/api/sales-person/leads/status'),
+      headers: {
+        "Authorization": "Bearer ${access_token.$}",
+      },
+    );
+    print("response Leads---->${response.body}");
+
+    if (response.statusCode == 200) {
+      Iterable list = json.decode(response.body)['data'];
+      return list.map((model) => Data.fromJson(model)).toList();
     } else {
       throw Exception('Failed to load leads');
     }

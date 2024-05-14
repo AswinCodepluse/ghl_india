@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 
+
 class DashboardController extends GetxController {
   var leadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
@@ -79,4 +80,5 @@ class DashboardController extends GetxController {
         return Colors.black;
     }
   }
+
 }

@@ -42,6 +42,11 @@ dependencies:
   path_provider:
   open_file:
   permission_handler:
+  shared_value:
+  toast:
+  one_context:
+  package_info:
+  flip_card:
 
 
 dev_dependencies:

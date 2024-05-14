@@ -1,3 +1,35 @@
+
+
+
+class LeadsData {
+  List<AllLeads>? data;
+  bool? success;
+  int? status;
+
+  LeadsData({this.data, this.success, this.status});
+
+  LeadsData.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      data = <AllLeads>[];
+      json['data'].forEach((v) {
+        data!.add(new AllLeads.fromJson(v));
+      });
+    }
+    success = json['success'];
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    data['success'] = this.success;
+    data['status'] = this.status;
+    return data;
+  }
+}
+
 class AllLeads {
   int? id;
   String? name;
@@ -7,22 +39,20 @@ class AllLeads {
   String? pincode;
   String? email;
   String? phoneNo;
-  String? status;
+  int? status;
   String? source;
   String? assigned;
   int? campaignId;
   String? medium;
-  String? category;
-  String? createdDate;
-  String? userId;
+  String? incomebracket;
+  String? ip;
+  String? occupation;
   String? planning;
   String? sendMsg;
-  String? occupation;
-  String? incomebracket;
   String? taxsaving;
-  String? utmTerm;
   String? utmContent;
-  String? ip;
+  String? createdDate;
+  String? lastUpdatedDate;
 
   AllLeads(
       {this.id,
@@ -38,17 +68,15 @@ class AllLeads {
         this.assigned,
         this.campaignId,
         this.medium,
-        this.category,
-        this.createdDate,
-        this.userId,
+        this.incomebracket,
+        this.ip,
+        this.occupation,
         this.planning,
         this.sendMsg,
-        this.occupation,
-        this.incomebracket,
         this.taxsaving,
-        this.utmTerm,
         this.utmContent,
-        this.ip});
+        this.createdDate,
+        this.lastUpdatedDate});
 
   AllLeads.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -64,17 +92,15 @@ class AllLeads {
     assigned = json['assigned'];
     campaignId = json['campaign_id'];
     medium = json['medium'];
-    category = json['category'];
-    createdDate = json['created_date'];
-    userId = json['user_id'];
+    incomebracket = json['incomebracket'];
+    ip = json['ip'];
+    occupation = json['occupation'];
     planning = json['planning'];
     sendMsg = json['send_msg'];
-    occupation = json['occupation'];
-    incomebracket = json['incomebracket'];
     taxsaving = json['taxsaving'];
-    utmTerm = json['utm_term'];
     utmContent = json['utm_content'];
-    ip = json['ip'];
+    createdDate = json['created_date'];
+    lastUpdatedDate = json['last_updated_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -92,17 +118,15 @@ class AllLeads {
     data['assigned'] = this.assigned;
     data['campaign_id'] = this.campaignId;
     data['medium'] = this.medium;
-    data['category'] = this.category;
-    data['created_date'] = this.createdDate;
-    data['user_id'] = this.userId;
+    data['incomebracket'] = this.incomebracket;
+    data['ip'] = this.ip;
+    data['occupation'] = this.occupation;
     data['planning'] = this.planning;
     data['send_msg'] = this.sendMsg;
-    data['occupation'] = this.occupation;
-    data['incomebracket'] = this.incomebracket;
     data['taxsaving'] = this.taxsaving;
-    data['utm_term'] = this.utmTerm;
     data['utm_content'] = this.utmContent;
-    data['ip'] = this.ip;
+    data['created_date'] = this.createdDate;
+    data['last_updated_date'] = this.lastUpdatedDate;
     return data;
   }
 }

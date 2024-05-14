@@ -8,6 +8,10 @@ import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
+import '../../helpers/auth_helpers.dart';
+import '../../utils/shared_value.dart';
+import '../auth/login_page.dart';
+
 class DashBoard extends StatelessWidget {
   const DashBoard({super.key});
 
@@ -37,23 +41,26 @@ class DashBoard extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Obx(() {
-              return dashboardController.isLeads.value
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.black,
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: dashboardController.leadsList.length,
-                      itemBuilder: (context, index) {
-                        final data = dashboardController.leadsList[index];
-                        final randomColor = dashboardController.colors[Random()
-                            .nextInt(dashboardController.colors.length)];
-                        return leadsContainer(
-                            data, randomColor, dashboardController);
-                      });
-            }),
+            child: Obx(
+              () {
+                return dashboardController.isLeads.value
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: dashboardController.leadsList.length,
+                        itemBuilder: (context, index) {
+                          final data = dashboardController.leadsList[index];
+                          final randomColor = dashboardController.colors[
+                              Random()
+                                  .nextInt(dashboardController.colors.length)];
+                          return leadsContainer(
+                              data, randomColor, dashboardController);
+                        });
+              },
+            ),
           )
         ],
       ),
@@ -74,9 +81,13 @@ class DashBoard extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Item 1'),
+              title: const Text('Logout'),
               onTap: () {
-                Navigator.pop(context);
+                if (is_logged_in.$)
+                  onTapLogout(context);
+                else
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
               },
             ),
             ListTile(
@@ -91,6 +102,14 @@ class DashBoard extends StatelessWidget {
     );
   }
 
+  onTapLogout(context) async {
+    AuthHelper().clearUserData();
+
+    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+    //   return Main();
+    // }), (route) => false);
+  }
+
   Widget leadsContainer(AllLeads data, String randomColor,
       DashboardController dashboardController) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
@@ -101,6 +120,9 @@ class DashBoard extends StatelessWidget {
         Get.to(
           () => LeadDetailsScreen(
             phoneNumber: data.phoneNo!,
+            firstLetter: firstLetter,
+            lastLetter: lastLetter,
+            leadId: data.id!
           ),
         );
       },

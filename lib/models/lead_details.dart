@@ -7,7 +7,7 @@ class LeadDetails {
   String? pincode;
   String? email;
   String? phoneNo;
-  int? status;
+  String? status;
   String? source;
   String? assigned;
   String? campaign;

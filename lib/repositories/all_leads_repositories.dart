@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ghl_callrecoding/app_config.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'dart:io';
@@ -48,8 +49,7 @@ class Dashboard {
   Future<LeadDetails> fetchOIndividualLeads(int? id) async {
     var post_body = jsonEncode({"id": "$id"});
 
-    var url =
-        Uri.parse("https://sales.ghlindia.com/api/sales-person/leads/show");
+    var url = Uri.parse("${AppConfig.BASE_URL}/sales-person/leads/show");
     try {
       // Make the POST request
       var response = await http.post(
@@ -81,20 +81,29 @@ class Dashboard {
     }
   }
 
-
-  Future<LeadDatasCreate> postLeadDatas(int? leadId,int? userId,int? oldStatus,int status,String testNotes,String date,File files,File callRecord) async {
-    var post_body = jsonEncode({'lead_id': '$leadId',
+  Future<LeadDatasCreate> postLeadDatas(
+      int? leadId,
+      int? userId,
+      int? oldStatus,
+      int status,
+      String testNotes,
+      String date,
+      File files,
+      File callRecord) async {
+    var post_body = jsonEncode({
+      'lead_id': '$leadId',
       'user_id': '$userId',
       'old_status': '$oldStatus',
       'status': '$status',
       'notes': '$testNotes',
       'next_follow_up_date': '$date',
       'file': "$files",
-      'call_record' : "$callRecord"
+      'call_record': "$callRecord"
     });
+    print("post_body $post_body");
 
-    var url =
-    Uri.parse("https://sales.ghlindia.com/api/sales-person/leads/activity/store");
+    var url = Uri.parse(
+        "https://sales.ghlindia.com/api/sales-person/leads/activity/store");
     try {
       // Make the POST request
       var response = await http.post(

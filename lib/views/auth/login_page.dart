@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/password_forget.dart';
 import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:toast/toast.dart';
-
 import '../../helpers/auth_helpers.dart';
 import '../../repositories/auth_repositories.dart';
 import '../../utils/colors.dart';
@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _phone = "";
   bool _passwordVisible = false;
   String _login_by = "email";
+
   //controllers
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
 
-    if ( email == "") {
+    if (email == "") {
       ToastComponent.showDialog("Enter Email",
           gravity: Toast.center, duration: Toast.lengthLong);
       return;
@@ -65,11 +66,16 @@ class _LoginPageState extends State<LoginPage> {
       ToastComponent.showDialog(loginResponse.message!,
           gravity: Toast.center, duration: Toast.lengthLong);
       AuthHelper().setUserData(loginResponse);
+      print("======================");
+      print(loginResponse.user!.id);
+      SharedPreference().setUserId(loginResponse.user!.id!.toString());
+     // var userId =await SharedPreference().getUserId();
+     //  print('userId $userId');
+      SharedPreference().setLogin(true);
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) {
-            return DashBoard();
-          }), (newRoute) => false);
-
+        return DashBoard();
+      }), (newRoute) => false);
     }
   }
 
@@ -238,8 +244,8 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                              return PasswordForget();
-                            }));
+                          return PasswordForget();
+                        }));
                       },
                       child: Text(
                         "Forgot Password",

@@ -2,10 +2,10 @@ var this_year = DateTime.now().year.toString();
 
 class AppConfig {
   // this shows in the splash screen
-  static String copyright_text = "@ Genga Store " + this_year;
+  static String copyright_text = "@ GHL India " + this_year;
 
   // this shows in the splash screen
-  static String app_name = "Genga Store";
+  static String app_name = "GHL India";
 
   // enter your purchase code for the app from codecanyon
   static String purchase_code = "XXXXXXXXXXXX";
@@ -25,7 +25,7 @@ class AppConfig {
   static const DOMAIN_PATH = "sales.ghlindia.com";
 
   // do not configure these below
-  static const String API_ENDPATH = "api/v2";
+  static const String API_ENDPATH = "api";
   static const String PROTOCOL = HTTPS ? "https://" : "http://";
   static const String RAW_BASE_URL = "${PROTOCOL}${DOMAIN_PATH}";
   static const String BASE_URL = "${RAW_BASE_URL}/${API_ENDPATH}";

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:package_info/package_info.dart';
 import '../app_config.dart';
@@ -15,7 +16,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   PackageInfo _packageInfo = PackageInfo(
     appName: AppConfig.app_name,
     packageName: 'Unknown',
@@ -29,20 +29,30 @@ class _SplashScreenState extends State<SplashScreen> {
       _packageInfo = info;
     });
   }
+
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
-    getSharedValueHelperData().then((value){
+    getSharedValueHelperData().then((value) {
       print("access Value====>${value}");
-      Future.delayed(const Duration(seconds: 3)).then((value) {
-        Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) {
-            return LoginPage();
-          },
-          ),(route)=>false,);
-      }
-      );
+      Future.delayed(const Duration(seconds: 3)).then((value) async {
+        final isLogged = await SharedPreference().getLogin();
+        if (isLogged) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => DashBoard()));
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return LoginPage();
+              },
+            ),
+            (route) => false,
+          );
+        }
+      });
     });
   }
 
@@ -60,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+
   Future<String?> getSharedValueHelperData() async {
     access_token.load().whenComplete(() {
       AuthHelper().fetch_and_set();

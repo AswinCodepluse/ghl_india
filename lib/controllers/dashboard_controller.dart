@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
+import 'package:ghl_callrecoding/models/dashboard_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
+import 'package:ghl_callrecoding/repositories/dashboard_repository.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DashboardController extends GetxController {
   var leadsList = <AllLeads>[].obs;
+  var dashboardCountList = <Data>[].obs;
   var searchLeadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
   TextEditingController searchCon = TextEditingController();
@@ -22,10 +27,23 @@ class DashboardController extends GetxController {
   ];
   var isLeads = false.obs;
 
+  Future<void> checkPermission() async {
+    FileController fileController = Get.put(FileController());
+    if (await Permission.storage.request().isGranted) {
+      fileController.findRecordedFiles();
+    }
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit
-    fetchAll();
+    Future.delayed(Duration(seconds: 1), () {
+      checkPermission();
+    });
+    // fetchDashboardCount();
+    // fetchAll();
+
+
     super.onInit();
   }
 
@@ -43,6 +61,17 @@ class DashboardController extends GetxController {
     for (int i = 0; i < leadsList.length; i++) {
       leadPhoneNumbers.add(leadsList[i].phoneNo!);
     }
+    isLeads.value = false;
+    update();
+  }
+
+  fetchDashboardCount() async {
+    isLeads.value = true;
+    var response = await DashboardRepository().fetchDashboardCount();
+    dashboardCountList.addAll(response);
+    // for (int i = 0; i < dashboardCountList.length; i++) {
+    //   dashboardCountData.add(dashboardCountList[i].phoneNo!);
+    // }
     isLeads.value = false;
     update();
   }

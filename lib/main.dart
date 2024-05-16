@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/binding/controller_binding.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/views/splash_screen.dart';
 import 'package:one_context/one_context.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_value/shared_value.dart';
 
 void main() {
@@ -34,11 +36,13 @@ class MyApp extends StatelessWidget {
       title: 'GHL Call Recording',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
       initialBinding: ControllerBinding(),
       home: const SplashScreen(),
     );
   }
+
+
 }

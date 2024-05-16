@@ -56,8 +56,7 @@ class AuthRepository {
   Future<LoginResponse> getUserByTokenResponse() async {
     var post_body = jsonEncode({"access_token": "${access_token.$}"});
 
-    var url =
-        Uri.parse("${AppConfig.BASE_URL}/api/auth/get-user-by-access-token");
+    var url = Uri.parse("${AppConfig.BASE_URL}/auth/get-user-by-access-token");
     try {
       // Make the POST request
       var response = await http.post(
@@ -109,7 +108,7 @@ class AuthRepository {
         {"verification_code": "$verification_code", "password": "$password"});
 
     var url =
-    Uri.parse("${AppConfig.BASE_URL}/api/auth/password/confirm_reset");
+        Uri.parse("${AppConfig.BASE_URL}/api/auth/password/confirm_reset");
     try {
       // Make the POST request
       var response = await http.post(
@@ -179,7 +178,8 @@ class AuthRepository {
     var post_body = jsonEncode(
         {"email_or_phone": "$email_or_phone", "send_code_by": "$send_code_by"});
 
-    var url = Uri.parse("${AppConfig.BASE_URL}/api/auth/password/forget_request");
+    var url =
+        Uri.parse("${AppConfig.BASE_URL}/api/auth/password/forget_request");
     try {
       // Make the POST request
       var response = await http.post(
@@ -207,7 +207,5 @@ class AuthRepository {
       print('Exception occurred: $e');
       throw e; // Rethrow the exception
     }
-
   }
-
 }

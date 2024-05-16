@@ -18,7 +18,7 @@ class FileController extends GetxController {
     super.onInit();
     isLoading.value = true;
     Future.delayed(Duration(seconds: 1), () {
-      _checkPermission();
+      // checkPermission();
     });
   }
 
@@ -28,22 +28,22 @@ class FileController extends GetxController {
     super.onClose();
   }
 
-  Future<void> _checkPermission() async {
-    if (await Permission.storage.request().isGranted) {
-      _findRecordedFiles();
-    }
-  }
+
 
   openFile(filePath) {
     OpenFile.open(filePath);
   }
 
-  Future<void> _findRecordedFiles() async {
+  Future<void> findRecordedFiles() async {
     try {
+      print('enter find record file ==========');
       Directory? externalDir = await getExternalStorageDirectory();
       if (externalDir != null) {
-        Directory? directoryPath = Directory('/storage/emulated/0');
+        print('enter find record file ===========+++++++++++========');
+        // Directory? directoryPath = Directory('/storage/emulated/0/MIUI/sound_recorder/call_rec/');
+        Directory? directoryPath = Directory('/Internal storage/Recordings/Call/Call recording/');
         List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
+        print('files =============> $files');
         recordedFiles.value = files.where((file) {
           // String fileName = file.path.split('/').last;
           return (file.path.endsWith(".amr") ||

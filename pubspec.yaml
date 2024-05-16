@@ -48,6 +48,7 @@ dependencies:
   package_info:
   flip_card:
   flutter_sound:
+  shared_preferences:
 
 
 dev_dependencies:

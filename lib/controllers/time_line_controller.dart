@@ -25,6 +25,7 @@ class TimeLineController extends GetxController {
     if (activeTimeLineList.isNotEmpty) {
       firstOldStatus.value = activeTimeLineList.first.oldStatus;
       firstFollowupDate.value = activeTimeLineList.first.nextFollowUpDate;
+      print('==========check==========');
     }
   }
 }

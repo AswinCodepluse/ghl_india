@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
+import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ class LeadsController extends GetxController {
   TextEditingController callRecordingFileCon = TextEditingController();
   TextEditingController pathSetupCon = TextEditingController();
   RxString callFileName = ''.obs;
+  String token = '';
 
   FileController fileController = Get.put(FileController());
 
@@ -91,18 +93,18 @@ class LeadsController extends GetxController {
     }
   }
 
-  // setNotification() async {
-  //   String dateString = datePicked.text;
-  //   List<String> dateParts = dateString.split('-');
-  //   int year = int.parse(dateParts[0]);
-  //   int month = int.parse(dateParts[1]);
-  //   int day = int.parse(dateParts[2]);
-  //   FirebaseRepository firebaseRepo = FirebaseRepository();
-  //   await firebaseRepo.getToken().then((value) => token = value);
-  //   final targetDateTime = DateTime(year, month, day, 17, 29);
-  //   print('targetTime  $targetDateTime');
-  //   firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
-  // }
+  setNotification() async {
+    String dateString = datePickedCon.text;
+    List<String> dateParts = dateString.split('-');
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+    FirebaseRepository firebaseRepo = FirebaseRepository();
+    await firebaseRepo.getToken().then((value) => token = value);
+    final targetDateTime = DateTime(year, month, day, 17, 29);
+    print('targetTime  $targetDateTime');
+    firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
+  }
 
   fetchAllLeadsDatas() async {
     isLeads.value = true;

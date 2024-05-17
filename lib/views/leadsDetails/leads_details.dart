@@ -8,6 +8,7 @@ import 'package:ghl_callrecoding/common/custom_button.dart';
 import 'package:ghl_callrecoding/controllers/attachment_controller.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
+import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/helpers/file_helper.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
@@ -798,12 +799,12 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       leadsController.clearAll();
                       ToastComponent.showDialog(response.message!,
                           gravity: Toast.center, duration: Toast.lengthLong);
-                      // leadsController.setNotification();
-                      // String token = '';
-                      // FirebaseRepository firebaseRepo = FirebaseRepository();
-                      // token = await firebaseRepo.getToken();
-                      // firebaseRepo.sendPushNotification(
-                      //     token, "Lead Created Successfully");
+                      leadsController.setNotification();
+                      String token = '';
+                      FirebaseRepository firebaseRepo = FirebaseRepository();
+                      token = await firebaseRepo.getToken();
+                      firebaseRepo.sendPushNotification(
+                          token, "Lead Created Successfully");
                       await dashboardController.fetchDashboardData();
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       setState(() {});

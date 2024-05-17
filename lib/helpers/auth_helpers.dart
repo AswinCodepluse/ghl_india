@@ -9,6 +9,7 @@ class AuthHelper {
       is_logged_in.$ = true;
       is_logged_in.save();
       access_token.$ = loginResponse.accessToken;
+      print("Accesss token======>${access_token.$}");
       access_token.save();
       user_id.$ = loginResponse.user?.id;
       user_id.save();

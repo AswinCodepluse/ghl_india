@@ -19,7 +19,7 @@ class Dashboard {
         "App-Language": app_language.$!,
       },
     );
-    print("response Leads---->${response.body}");
+    print("response Leads all Data---->${response.body}");
 
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['data'];
@@ -89,7 +89,9 @@ class Dashboard {
       String testNotes,
       String date,
       File files,
-      File callRecord) async {
+      File callRecord,
+      File voiceRecord
+      ) async {
     var post_body = jsonEncode({
       'lead_id': '$leadId',
       'user_id': '$userId',
@@ -98,7 +100,8 @@ class Dashboard {
       'notes': '$testNotes',
       'next_follow_up_date': '$date',
       'file': "$files",
-      'call_record': "$callRecord"
+      'call_record': "$callRecord",
+      'voice_record': "$voiceRecord"
     });
     print("post_body $post_body");
 

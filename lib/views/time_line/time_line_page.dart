@@ -5,12 +5,25 @@ import 'package:ghl_callrecoding/models/time_line_model.dart';
 import 'package:ghl_callrecoding/views/time_line/widget/time_line_container.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-class TimeLinePage extends StatelessWidget {
-  const TimeLinePage({super.key});
+class TimeLinePage extends StatefulWidget {
+  TimeLinePage({super.key});
+
+  @override
+  State<TimeLinePage> createState() => _TimeLinePageState();
+}
+
+class _TimeLinePageState extends State<TimeLinePage> {
+  final timeLineController = Get.put(TimeLineController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    timeLineController.fetchTimeLine(timeLineController.leadId.value);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TimeLineController timeLineController = Get.put(TimeLineController());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

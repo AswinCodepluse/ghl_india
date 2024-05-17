@@ -61,7 +61,7 @@ Widget timeLineContainer(Data data) {
             SizedBox(
               width: 115,
               child: CustomText(
-                text: "Status : ${data.oldStatus}",
+                text: "Status : ${data.newStatus}",
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),

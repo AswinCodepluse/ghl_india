@@ -5,7 +5,7 @@ import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardRepository {
-  Future<List<Data>> fetchDashboardCount() async {
+  Future<Map<String,dynamic>> fetchDashboardCount() async {
     final response = await http.get(
       Uri.parse('https://sales.ghlindia.com/api/sales-person/dashboard'),
       headers: {
@@ -15,8 +15,8 @@ class DashboardRepository {
     print("response Leads---->${response.body}");
 
     if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body)['data'];
-      return list.map((model) => Data.fromJson(model)).toList();
+      Map<String,dynamic> dashboardData = json.decode(response.body);
+      return dashboardData;
     } else {
       throw Exception('Failed to load leads');
     }

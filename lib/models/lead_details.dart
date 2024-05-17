@@ -8,6 +8,7 @@ class LeadDetails {
   String? email;
   String? phoneNo;
   String? status;
+  int? statusInt;
   String? source;
   String? assigned;
   String? campaign;
@@ -35,6 +36,7 @@ class LeadDetails {
         this.email,
         this.phoneNo,
         this.status,
+        this.statusInt,
         this.source,
         this.assigned,
         this.campaign,
@@ -62,6 +64,7 @@ class LeadDetails {
     email = json['email'];
     phoneNo = json['phone_no'];
     status = json['status'];
+    statusInt = json['status_int'];
     source = json['source'];
     assigned = json['assigned'];
     campaign = json['campaign'];
@@ -91,6 +94,7 @@ class LeadDetails {
     data['email'] = this.email;
     data['phone_no'] = this.phoneNo;
     data['status'] = this.status;
+    data['status_int'] = this.statusInt;
     data['source'] = this.source;
     data['assigned'] = this.assigned;
     data['campaign'] = this.campaign;
@@ -110,6 +114,7 @@ class LeadDetails {
     return data;
   }
 }
+
 
 
 

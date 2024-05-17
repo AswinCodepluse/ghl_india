@@ -3,14 +3,22 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-class LeadScreen extends StatelessWidget {
-  const LeadScreen({super.key});
+class LeadScreen extends StatefulWidget {
+  const LeadScreen({super.key, required this.platforms});
 
+  final String platforms;
+
+  @override
+  State<LeadScreen> createState() => _LeadScreenState();
+}
+
+class _LeadScreenState extends State<LeadScreen> {
   @override
   Widget build(BuildContext context) {
     DashboardController dashboardController = Get.find();
@@ -19,7 +27,13 @@ class LeadScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: CustomText(
-          text: "Leads",
+          text: widget.platforms == 'allLeads'
+              ? "Leads"
+              : widget.platforms == 'website'
+                  ? "Website Leads"
+                  : widget.platforms == "facebook"
+                      ? "Facebook Leads"
+                      : "Google Leads",
         ),
         leading: GestureDetector(
             onTap: () {
@@ -55,12 +69,30 @@ class LeadScreen extends StatelessWidget {
                             itemCount:
                                 dashboardController.searchCon.text.isNotEmpty
                                     ? dashboardController.searchLeadsList.length
-                                    : dashboardController.leadsList.length,
+                                    : widget.platforms == "allLeads"
+                                        ? dashboardController.leadsList.length
+                                        : widget.platforms == "website"
+                                            ? dashboardController
+                                                .websiteLeads.length
+                                            : widget.platforms == "facebook"
+                                                ? dashboardController
+                                                    .facebookLeads.length
+                                                : dashboardController
+                                                    .googleLeads.length,
                             itemBuilder: (context, index) {
                               final data = dashboardController
                                       .searchCon.text.isNotEmpty
                                   ? dashboardController.searchLeadsList[index]
-                                  : dashboardController.leadsList[index];
+                                  : widget.platforms == "allLeads"
+                                      ? dashboardController.leadsList[index]
+                                      : widget.platforms == "website"
+                                          ? dashboardController
+                                              .websiteLeads[index]
+                                          : widget.platforms == "facebook"
+                                              ? dashboardController
+                                                  .facebookLeads[index]
+                                              : dashboardController
+                                                  .googleLeads[index];
                               final randomColor = dashboardController.colors[
                                   Random().nextInt(
                                       dashboardController.colors.length)];
@@ -81,14 +113,18 @@ class LeadScreen extends StatelessWidget {
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();
     return GestureDetector(
-      onTap: () {
+      onTap: ()async {
+        var userName = await SharedPreference().getUserName();
         Get.to(
           () => LeadDetailsScreen(
-              phoneNumber: data.phoneNo!,
-              firstLetter: firstLetter,
-              lastLetter: lastLetter,
-              leadName: data.name!,
-              leadId: data.id!),
+            phoneNumber: data.phoneNo!,
+            firstLetter: firstLetter,
+            lastLetter: lastLetter,
+            leadName: data.name!,
+            leadId: data.id!,
+            email: data.email!,
+            userName: userName,
+          ),
         );
       },
       child: Container(

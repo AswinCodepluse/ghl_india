@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/common/custom_button.dart';
@@ -22,26 +23,36 @@ import 'package:ghl_callrecoding/views/attachment/widget/attachment_container.da
 import 'package:ghl_callrecoding/views/time_line/time_line_page.dart';
 import 'package:ghl_callrecoding/views/time_line/widget/time_line_container.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
+import 'package:intl/intl.dart';
+import 'package:one_context/one_context.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../controllers/dashboard_controller.dart';
+import '../../controllers/file_controller.dart';
 import '../../models/lead_details.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
-  const LeadDetailsScreen(
-      {super.key,
-      required this.phoneNumber,
-      required this.firstLetter,
-      required this.lastLetter,
-      required this.leadName,
-      required this.leadId});
+  const LeadDetailsScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.firstLetter,
+    required this.lastLetter,
+    required this.leadName,
+    required this.leadId,
+    required this.email,
+    required this.userName,
+  });
 
   final String phoneNumber;
   final String leadName;
   final String firstLetter;
   final String lastLetter;
   final int leadId;
+  final String email;
+
+  final String userName;
 
   @override
   State<LeadDetailsScreen> createState() => _LeadDetailsScreenState();
@@ -49,6 +60,7 @@ class LeadDetailsScreen extends StatefulWidget {
 
 class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   String audioFileData = '';
+  File? audioFilesData;
   int? leadID;
   int? userId;
   int? oldStatus;
@@ -57,6 +69,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   String? dates;
   TimeLineController timeLineController = Get.put(TimeLineController());
   AttachmentController attachmentController = Get.put(AttachmentController());
+  FileController fileController = Get.find<FileController>();
+  DashboardController dashboardController = Get.find<DashboardController>();
   int? user_Id;
 
   @override
@@ -64,16 +78,30 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     // TODO: implement initState
     initRecorder();
     Dashboard().fetchOIndividualLeads(widget.leadId);
+    timeLineController.leadId.value = widget.leadId;
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
     // fetchUserId();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    leadsController.isSubmitted = false;
+    super.dispose();
+  }
+
   // fetchUserId() async {
   //   user_Id = await SharedPreference().getUserId();
   //   print('user_Id ========== $user_Id');
   // }
+
+  void setButtonEnabled(bool isButtonEnabled) {
+    setState(() {
+      isButtonEnabled != isButtonEnabled;
+    });
+  }
 
   final recorder = FlutterSoundRecorder();
   List<BoxShadow> shadow = [
@@ -112,41 +140,20 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     final filePath = await recorder.stopRecorder();
     final file = File(filePath!);
     // String base64File = await convertFileToBase64(file);
+    audioFilesData = File(filePath);
     print("file. path======>${file.path}");
     audioFileData = FileHelper.getBase64FormateFile(file.path);
     print("file. path======>$audioFileData");
     String fileName = file.path.split("/").last;
-    // var customOrderUpdateResponse =
-    // await FileUploadRepository().getCustomOrderResponse(
-    //   base64File,
-    //   fileName,
-    // );
-    // if (customOrderUpdateResponse.result == false) {
-    //   ToastComponent.showDialog(
-    //     customOrderUpdateResponse.message,
-    //     gravity: Toast.center,
-    //     duration: Toast.lengthLong,
-    //   );
-    //   return;
-    // } else {
-    //   ToastComponent.showDialog(
-    //     customOrderUpdateResponse.message,
-    //     gravity: Toast.center,
-    //     duration: Toast.lengthLong,
-    //   );
-    //   refresh();
-    //   // loadedAudio.add(customOrderUpdateResponse.path!);
-    //   // _images.add(customOrderUpdateResponse.path!);
-    //   setState(() {});
-    // }
     setState(() {});
     print('Recorded file path: $filePath');
   }
 
+  LeadsController leadsController = Get.put(LeadsController());
+
   @override
   Widget build(BuildContext context) {
     // final LeadsController leadsController = Get.find();
-    LeadsController leadsController = Get.put(LeadsController());
     leadsController.selectedLeadPhoneNumber.value = widget.phoneNumber;
     return Scaffold(
       appBar: AppBar(
@@ -193,6 +200,16 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
+            CustomText(
+              text: widget.email,
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
+            CustomText(
+              text: widget.phoneNumber,
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
             // SizedBox(
             //   height: 10,
             // ),
@@ -200,120 +217,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             //   text: "Customer Service Manager",
             //   color: Colors.grey,
             // ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              child: FutureBuilder(
-                future: Dashboard().fetchOIndividualLeads(widget.leadId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.red,
-                    ));
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    LeadDetails leadDetails = snapshot.data!;
-                    leadID = leadDetails.id;
-                    status = leadDetails.status.toString();
-                    dates = leadDetails.lastUpdatedDate;
-                    oldStatus = 12;
-                    return Container(
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: shadow),
-                      margin: EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          titleRow(
-                              firstTitle: "Lead Name",
-                              secondTitle: "Assigned to"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                            firstSubTitle: leadDetails.name!,
-                            secondSubTitle: 'Staff',
-                            firstIcon: 'assets/image/person_icon.png',
-                            secondIcon: 'assets/image/person_icon.png',
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(firstTitle: "Email", secondTitle: "Phone"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.email!,
-                              secondSubTitle: leadDetails.phoneNo!,
-                              firstIcon: 'assets/image/message_icon.png',
-                              secondIcon: 'assets/image/call_icon.png'),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(firstTitle: "Source", secondTitle: "Medium"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.source!,
-                              secondSubTitle: leadDetails.medium!,
-                              firstIcon: 'assets/image/location_icon.png',
-                              secondIcon: 'assets/image/instagram_icon.png'),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(
-                              firstTitle: "Created On",
-                              secondTitle: "Updated On"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.lastUpdatedDate!,
-                              secondSubTitle: leadDetails.createdDate!,
-                              firstIcon: 'assets/image/calender_icon.png',
-                              secondIcon: 'assets/image/calender_icon.png'),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(
-                              firstTitle: "Status", secondTitle: "Designation"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.status!.toString(),
-                              secondSubTitle: leadDetails.designation ?? "",
-                              firstIcon: 'assets/image/status_icon.png',
-                              secondIcon: 'assets/image/calender_icon.png'),
-
-                          // SizedBox(
-                          //     width: 300,
-                          //     child:
-                          //         CustomText(text: 'Name: ${leadDetails.name}')),
-                          // SizedBox(
-                          //     width: 300,
-                          //     child: CustomText(
-                          //         text: 'Email: ${leadDetails.email}')),
-                          // SizedBox(
-                          //   width: 300,
-                          //   child: CustomText(
-                          //       text: 'Phone Number: ${leadDetails.phoneNo}'),
-                          // ),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
             SizedBox(
               height: 20,
             ),
@@ -343,7 +246,10 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                             }
                           },
                           child: Image(
-                            image: AssetImage("assets/image/call_icon.png"),
+                            height: 40,
+                            image: AssetImage(
+                              "assets/image/call_img.png",
+                            ),
                           )),
                       CustomText(
                         text: "Call",
@@ -364,9 +270,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                           width: 40,
                           child: Image(
                             image: AssetImage(
-                              'assets/image/message_icon.png',
+                              'assets/image/message_img.png',
                             ),
-                            color: Colors.red,
+                            // color: Colors.red,
                           ),
                         ),
                       ),
@@ -400,7 +306,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                               width: 40,
                               child: Image(
                                   image: AssetImage(
-                                "assets/image/whatsapp_icon.png",
+                                "assets/image/whatsapp_img.png",
                               ))),
                         ),
                       ),
@@ -410,9 +316,218 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       )
                     ],
                   ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TimeLinePage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          // child: SizedBox(
+                          //   height: 40,
+                          //   width: 40,
+                          //   child: Image(
+                          //     image: AssetImage('assets/image/whatsapp.png',),
+                          //     color: Colors.red,
+                          //   ),
+                          // ),
+                          child: const SizedBox(
+                              height: 40,
+                              width: 40,
+                              child: Image(
+                                  image: AssetImage(
+                                "assets/image/activities_img.png",
+                              ))),
+                        ),
+                      ),
+                      CustomText(
+                        text: "Activities",
+                        color: Colors.red,
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AttachmentScreen()));
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          // child: SizedBox(
+                          //   height: 40,
+                          //   width: 40,
+                          //   child: Image(
+                          //     image: AssetImage('assets/image/whatsapp.png',),
+                          //     color: Colors.red,
+                          //   ),
+                          // ),
+                          child: const SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: Image(
+                              image: AssetImage(
+                                "assets/image/record_img.png",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      CustomText(
+                        text: "Record",
+                        color: Colors.red,
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: FutureBuilder(
+                future: Dashboard().fetchOIndividualLeads(widget.leadId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.red,
+                    ));
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    LeadDetails leadDetails = snapshot.data!;
+                    leadID = leadDetails.id;
+                    status = leadDetails.status.toString();
+                    dates = leadDetails.lastUpdatedDate;
+                    oldStatus = leadDetails.statusInt;
+                    return Container(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: shadow),
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // titleRow(
+                          //     firstTitle: "Lead Name",
+                          //     secondTitle: "Assigned to"),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
+                          // subTitleRow(
+                          //   firstSubTitle: leadDetails.name!,
+                          //   secondSubTitle: 'Staff',
+                          //   firstIcon: Icons.account_circle,
+                          //   secondIcon: Icons.account_circle,
+                          // ),
+                          // SizedBox(
+                          //   height: 15,
+                          // ),
+                          // titleRow(firstTitle: "Email", secondTitle: "Phone"),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
+                          // subTitleRow(
+                          //     firstSubTitle: leadDetails.email!,
+                          //     secondSubTitle: leadDetails.phoneNo!,
+                          //     firstIcon: Icons.email,
+                          //     secondIcon: Icons.call),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          titleRow(firstTitle: "Source", secondTitle: "Medium"),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          subTitleRow(
+                              firstSubTitle: leadDetails.source!,
+                              secondSubTitle: leadDetails.medium!,
+                              firstIcon: Icons.location_on_sharp,
+                              secondIcon: Icons.account_tree_rounded),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          titleRow(
+                              firstTitle: "Status", secondTitle: "Occupation"),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          subTitleRow(
+                              firstSubTitle: leadDetails.status!.toString(),
+                              secondSubTitle: leadDetails.occupation ?? "",
+                              firstIcon: Icons.circle_rounded,
+                              secondIcon: Icons.work),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          titleRow(
+                              firstTitle: "Designation",
+                              secondTitle: "Planning"),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          subTitleRow(
+                              firstSubTitle: leadDetails.designation ?? "",
+                              secondSubTitle: leadDetails.planning!,
+                              firstIcon: Icons.cases_outlined,
+                              secondIcon: Icons.alarm),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          titleRow(
+                              firstTitle: "Created On",
+                              secondTitle: "Updated On"),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          subTitleRow(
+                              firstSubTitle: leadDetails.lastUpdatedDate!,
+                              secondSubTitle: leadDetails.createdDate!,
+                              firstIcon: Icons.calendar_month,
+                              secondIcon: Icons.calendar_month),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          // SizedBox(
+                          //     width: 300,
+                          //     child:
+                          //         CustomText(text: 'Name: ${leadDetails.name}')),
+                          // SizedBox(
+                          //     width: 300,
+                          //     child: CustomText(
+                          //         text: 'Email: ${leadDetails.email}')),
+                          // SizedBox(
+                          //   width: 300,
+                          //   child: CustomText(
+                          //       text: 'Phone Number: ${leadDetails.phoneNo}'),
+                          // ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+
             SizedBox(
               height: 15,
             ),
@@ -440,7 +555,26 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       controller: leadsController.fileCon,
                       readOnly: true,
                       onTap: () {
-                        leadsController.pickFile();
+                        leadsController.pickFile("");
+                      },
+                      prefixIcon: Image(
+                          image: AssetImage("assets/image/file_icon.png"))),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomText(text: "Upload Call Recording File"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomTextField(
+                      controller: leadsController.callRecordingFileCon,
+                      readOnly: true,
+                      hintText: "Select Call Recording file",
+                      onChange: (String value) {
+                        leadsController.isDisable();
+                      },
+                      onTap: () {
+                        leadsController.pickFile("Call");
                       },
                       prefixIcon: Image(
                           image: AssetImage("assets/image/file_icon.png"))),
@@ -469,10 +603,19 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         ),
                         value: leadsController.leadStatusList.isNotEmpty
                             ? leadsController.leadStatusList.firstWhere(
-                                (leads) =>
-                                    leads.id ==
-                                    leadsController.selectedLeadIds.value,
-                                orElse: () => leadsController.leadStatusList[0],
+                                (leads) {
+                                  print(
+                                      "00000000+${leadsController.selectedLeadIds.value}");
+                                  return leads.id ==
+                                      leadsController.selectedLeadIds.value;
+                                },
+                                orElse: () {
+                                  leadsController.selectedLeadIds.value =
+                                      leadsController.leadStatusList[0].id!;
+                                  print(
+                                      "00000000+${leadsController.selectedLeadIds.value}");
+                                  return leadsController.leadStatusList[0];
+                                },
                               )
                             : null,
                         borderRadius: BorderRadius.circular(10),
@@ -480,9 +623,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                           return DropdownMenuItem<Data>(
                             value: item,
                             child: Container(
-                              width: 290,
+                              width: 320,
                               height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.only(left: 10),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(item.name!),
@@ -494,7 +637,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         onChanged: (value) {
                           leadsController.selectedLeadIds.value = value!.id!;
                         },
-                        hint: Text('Select Product'),
+                        hint: Text('Select Status'),
                         style: TextStyle(
                           color: MyTheme.black,
                         ),
@@ -510,6 +653,51 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 10,
                   ),
+                  CustomText(text: "Followup Dates"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        boxShadow: shadow,
+                        color: MyTheme.white),
+                    child: TextFormField(
+                      controller: leadsController.datePickedCon,
+                      textAlign: TextAlign.start,
+                      decoration: const InputDecoration(
+                        suffixIcon: Icon(
+                          Icons.date_range,
+                          color: Colors.red,
+                        ),
+                        hintText: "Select Date",
+                        hintStyle:
+                            TextStyle(color: MyTheme.grey_153, fontSize: 14),
+                        // contentPadding: EdgeInsets.symmetric(
+                        //     vertical: 1, horizontal: 10),
+                        border: InputBorder.none,
+                        // This removes the border
+                        enabledBorder: InputBorder.none,
+                        // Optional: removes the border when enabled
+                        focusedBorder: InputBorder.none,
+                        // Optional: removes the border when focused
+                        errorBorder: InputBorder.none,
+                        // Optional: removes the border when an error is displayed
+                        disabledBorder: InputBorder.none,
+                        // Optional: removes the border when disabled
+                        focusedErrorBorder: InputBorder.none,
+                      ),
+                      onTap: () async {
+                        await leadsController.displayDatePicker(
+                            context, leadsController.datePickedCon);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   CustomText(text: "Followup Notes"),
                   SizedBox(
                     height: 10,
@@ -518,6 +706,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 110,
                     child: CustomTextField(
                         controller: leadsController.followupNotesCon,
+                        onChange: (String value) {
+                          leadsController.isDisable();
+                        },
                         maxLines: 4),
                   ),
                   SizedBox(
@@ -577,113 +768,232 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-            CustomButton(
-                buttonText: "Submit",
-                onTap: () async {
-                  String user_Id = await SharedPreference().getUserId();
-                  LeadDatasCreate response = await Dashboard().postLeadDatas(
+            Obx(() {
+              return CustomButton(
+                  buttonText: "Submit",
+                  disable: leadsController.setDisable.value,
+                  onTap: () async {
+                    String user_Id = await SharedPreference().getUserId();
+                    // if (fileController.filePathsWithPhoneNumber.isEmpty &&
+                    //     leadsController.callRecordingFileCon.text.isEmpty) {
+                    //   ToastComponent.showDialog(
+                    //       "Your Storage Access Denied So Please Upload a Call Recording Files",
+                    //       gravity: Toast.center,
+                    //       duration: Toast.lengthLong);
+                    //   return;
+                    // }
+                    LeadDatasCreate response = await Dashboard().postLeadDatas(
                       leadID,
                       int.parse(user_Id),
                       oldStatus,
-                      1,
+                      leadsController.selectedLeadIds.value,
                       leadsController.followupNotesCon.text,
-                      dates!,
-                      leadsController.files!,
-                      leadsController.lastCallRecording);
+                      leadsController.datePickedCon.text,
+                      leadsController.files ?? File(""),
+                      leadsController.lastCallRecording,
+                      audioFilesData ?? File(""),
+                    );
 
-                  if (response.result == true) {
-                    leadsController.clearAll();
-                    ToastComponent.showDialog(response.message!,
-                        gravity: Toast.center, duration: Toast.lengthLong);
-                  }
-                }),
+                    if (response.result == true) {
+                      leadsController.clearAll();
+                      ToastComponent.showDialog(response.message!,
+                          gravity: Toast.center, duration: Toast.lengthLong);
+                      // leadsController.setNotification();
+                      // String token = '';
+                      // FirebaseRepository firebaseRepo = FirebaseRepository();
+                      // token = await firebaseRepo.getToken();
+                      // firebaseRepo.sendPushNotification(
+                      //     token, "Lead Created Successfully");
+                      await dashboardController.fetchDashboardData();
+                      await Dashboard().fetchOIndividualLeads(widget.leadId);
+                      setState(() {});
+                      final shouldPop = (await OneContext().showDialog<bool>(
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            contentPadding: const EdgeInsets.only(
+                              left: 15,
+                              right: 15,
+                              top: 15,
+                            ),
+                            content: SizedBox(
+                              height: 57,
+                              width: 250,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Records are all Submitted"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("OK"),
+                              ),
+                              // TextButton(
+                              //     onPressed: () {
+                              //       Navigator.pop(context);
+                              //     },
+                              //     child: Text("No")),
+                            ],
+                          );
+                        },
+                      ))!;
+                    }
+                  });
+            }),
+            // GestureDetector(
+            //   onTap: leadsController.isSubmitted == false
+            //       ? () async {
+            //     setState(() {
+            //       leadsController.isSubmitted = true;
+            //     });
+            //
+            //     String user_Id = await SharedPreference().getUserId();
+            //     LeadDatasCreate response =
+            //     await Dashboard().postLeadDatas(
+            //       leadID,
+            //       int.parse(user_Id),
+            //       oldStatus,
+            //       leadsController.selectedLeadIds.value,
+            //       leadsController.followupNotesCon.text,
+            //       leadsController.datePicked.toString(),
+            //       leadsController.files!,
+            //       leadsController.lastCallRecording,
+            //       audioFilesData!,
+            //     );
+            //
+            //     if (response.result == true) {
+            //       leadsController.clearAll();
+            //       ToastComponent.showDialog(
+            //         response.message!,
+            //         gravity: Toast.center,
+            //         duration: Toast.lengthLong,
+            //       );
+            //
+            //       // Assuming fetchOIndividualLeads triggers a network request, await it
+            //       await Dashboard().fetchOIndividualLeads(widget.leadId);
+            //     }
+            //
+            //     // setState(() {
+            //     //   leadsController.isSubmitted = false;
+            //     // });
+            //   }
+            //       : null,
+            //   child: Container(
+            //     width: 200,
+            //     height: 60,
+            //     decoration: BoxDecoration(
+            //       color: leadsController.isSubmitted ? Colors.grey : Colors.red,
+            //       borderRadius: BorderRadius.circular(15.0),
+            //     ),
+            //     child: Center(
+            //       child: CustomText(
+            //         text: "Submit",
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.w700,
+            //         fontSize: 16,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            //
+
             SizedBox(
               height: 20,
             ),
-            Obx(() {
-              return attachmentController.attachmentList.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: "Attachment",
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AttachmentScreen()));
-                              },
-                              child: CustomText(text: "View All"))
-                        ],
-                      ),
-                    )
-                  : Container();
-            }),
-            SizedBox(
-              height: 10,
-            ),
-            Obx(() {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: attachmentController.attachmentList.length < 2
-                      ? attachmentController.attachmentList.length
-                      : 2,
-                  itemBuilder: (context, index) {
-                    final data = attachmentController.attachmentList[index];
-                    return attachmentContainer(data);
-                  });
-            }),
-            SizedBox(
-              height: 10,
-            ),
-            Obx(() {
-              return timeLineController.activeTimeLineList.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: "Activity TimeLine",
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => TimeLinePage()));
-                              },
-                              child: CustomText(text: "View All"))
-                        ],
-                      ),
-                    )
-                  : Container();
-            }),
-            SizedBox(
-              height: 10,
-            ),
-            Obx(() {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: timeLineController.activeTimeLineList.length < 2
-                      ? timeLineController.activeTimeLineList.length
-                      : 2,
-                  itemBuilder: (context, index) {
-                    final data = timeLineController.activeTimeLineList[index];
-                    return timeLineContainer(data);
-                  });
-            })
+            // Obx(() {
+            //   return attachmentController.attachmentList.isNotEmpty
+            //       ? Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            //           child: Row(
+            //             children: [
+            //               CustomText(
+            //                 text: "Attachment",
+            //                 fontWeight: FontWeight.w500,
+            //                 fontSize: 16,
+            //               ),
+            //               Spacer(),
+            //               GestureDetector(
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                         context,
+            //                         MaterialPageRoute(
+            //                             builder: (context) =>
+            //                                 AttachmentScreen()));
+            //                   },
+            //                   child: CustomText(text: "View All"))
+            //             ],
+            //           ),
+            //         )
+            //       : Container();
+            // }),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Obx(() {
+            //   return ListView.builder(
+            //       shrinkWrap: true,
+            //       physics: NeverScrollableScrollPhysics(),
+            //       itemCount: attachmentController.attachmentList.length < 2
+            //           ? attachmentController.attachmentList.length
+            //           : 2,
+            //       itemBuilder: (context, index) {
+            //         final data = attachmentController.attachmentList[index];
+            //         return attachmentContainer(data);
+            //       });
+            // }),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Obx(() {
+            //   return timeLineController.activeTimeLineList.isNotEmpty
+            //       ? Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            //           child: Row(
+            //             children: [
+            //               CustomText(
+            //                 text: "Activity TimeLine",
+            //                 fontWeight: FontWeight.w500,
+            //                 fontSize: 16,
+            //               ),
+            //               Spacer(),
+            //               GestureDetector(
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                         context,
+            //                         MaterialPageRoute(
+            //                             builder: (context) => TimeLinePage()));
+            //                   },
+            //                   child: CustomText(text: "View All"))
+            //             ],
+            //           ),
+            //         )
+            //       : Container();
+            // }),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Obx(() {
+            //   return ListView.builder(
+            //       shrinkWrap: true,
+            //       physics: NeverScrollableScrollPhysics(),
+            //       itemCount: timeLineController.activeTimeLineList.length < 2
+            //           ? timeLineController.activeTimeLineList.length
+            //           : 2,
+            //       itemBuilder: (context, index) {
+            //         final data = timeLineController.activeTimeLineList[index];
+            //         return timeLineContainer(data);
+            //       });
+            // })
           ],
         ),
       ),
@@ -725,8 +1035,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   Widget subTitleRow(
       {required String firstSubTitle,
       required String secondSubTitle,
-      required String firstIcon,
-      required String secondIcon}) {
+      required IconData firstIcon,
+      required IconData secondIcon}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Row(
@@ -737,9 +1047,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             child: Row(
               children: [
                 SizedBox(
-                    height: 25,
-                    width: 25,
-                    child: Image(image: AssetImage(firstIcon))),
+                  height: 25,
+                  width: 25,
+                  child: Icon(
+                    firstIcon,
+                    color: Colors.red,
+                  ),
+                ),
                 SizedBox(
                   width: 5,
                 ),
@@ -762,9 +1076,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             child: Row(
               children: [
                 SizedBox(
-                    height: 25,
-                    width: 25,
-                    child: Image(image: AssetImage(secondIcon))),
+                  height: 25,
+                  width: 25,
+                  child: Icon(
+                    secondIcon,
+                    color: Colors.red,
+                  ),
+                ),
                 SizedBox(
                   width: 5,
                 ),
@@ -790,6 +1108,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
       Widget? suffixIcon,
       Widget? prefixIcon,
       int? maxLines,
+      String? hintText,
+      void Function(String)? onChange,
       bool? readOnly}) {
     return Container(
       height: 50,
@@ -800,9 +1120,12 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
         maxLines: maxLines ?? 1,
         // onChanged: dashboardController.searchLead,
         cursorHeight: 20,
+        onChanged: onChange,
+
         onTap: onTap,
         decoration: InputDecoration(
           border: InputBorder.none,
+          hintText: hintText,
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           contentPadding: EdgeInsets.all(8),

@@ -5,10 +5,14 @@ class TimeLineController extends GetxController {
   var activeTimeLineList = [].obs;
   var firstFollowupDate = "".obs;
   var firstOldStatus = "".obs;
+  var leadId = 0.obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
+    print("oniti called");
+    print(leadId.value);
+    fetchTimeLine(leadId.value);
     super.onInit();
   }
 

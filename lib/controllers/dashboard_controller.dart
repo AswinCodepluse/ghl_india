@@ -9,9 +9,16 @@ import 'package:permission_handler/permission_handler.dart';
 
 class DashboardController extends GetxController {
   var leadsList = <AllLeads>[].obs;
-  var dashboardCountList = <Data>[].obs;
+  var facebookLeads = <AllLeads>[].obs;
+  var websiteLeads = <AllLeads>[].obs;
+  var googleLeads = <AllLeads>[].obs;
+  var dashboardCountList = [].obs;
   var searchLeadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
+  var googleLead = 0.obs;
+  var websiteLead = 0.obs;
+  var facebookLead = 0.obs;
+  var totalLead = 0.obs;
   TextEditingController searchCon = TextEditingController();
   var colors = [
     'red',
@@ -40,9 +47,8 @@ class DashboardController extends GetxController {
     Future.delayed(Duration(seconds: 1), () {
       checkPermission();
     });
-    // fetchDashboardCount();
-    // fetchAll();
-
+    fetchDashboardData();
+    fetchAll();
 
     super.onInit();
   }
@@ -59,21 +65,38 @@ class DashboardController extends GetxController {
     var leadsResponse = await Dashboard().fetchLeads();
     leadsList.addAll(leadsResponse);
     for (int i = 0; i < leadsList.length; i++) {
+      if (leadsList[i].source == 'facebook') {
+        facebookLeads.add(leadsList[i]);
+      } else if (leadsList[i].source == 'google') {
+        googleLeads.add(leadsList[i]);
+      } else if (leadsList[i].source == 'website') {
+        websiteLeads.add(leadsList[i]);
+      }
       leadPhoneNumbers.add(leadsList[i].phoneNo!);
     }
     isLeads.value = false;
     update();
   }
 
-  fetchDashboardCount() async {
+  fetchDashboardData() async {
     isLeads.value = true;
+    dashboardCountList.clear();
     var response = await DashboardRepository().fetchDashboardCount();
-    dashboardCountList.addAll(response);
-    // for (int i = 0; i < dashboardCountList.length; i++) {
-    //   dashboardCountData.add(dashboardCountList[i].phoneNo!);
-    // }
+    DashboardModel dashboardData = DashboardModel.fromJson(response);
+    googleLead.value = dashboardData.google!;
+    websiteLead.value = dashboardData.website!;
+    facebookLead.value = dashboardData.facebook!;
+    totalLead.value = dashboardData.total!;
+    dashboardData.leadStatus?.data?.forEach((element) {
+      dashboardCountList.add(element);
+    });
     isLeads.value = false;
     update();
+  }
+
+  Future<void> refreshData() async {
+    dashboardCountList.clear();
+    await fetchDashboardData();
   }
 
   fetchAll() {

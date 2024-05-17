@@ -40,8 +40,8 @@ class FileController extends GetxController {
       Directory? externalDir = await getExternalStorageDirectory();
       if (externalDir != null) {
         print('enter find record file ===========+++++++++++========');
-        // Directory? directoryPath = Directory('/storage/emulated/0/MIUI/sound_recorder/call_rec/');
-        Directory? directoryPath = Directory('/Internal storage/Recordings/Call/Call recording/');
+        Directory? directoryPath = Directory('/storage/emulated/0/MIUI/sound_recorder/call_rec/');
+        // Directory? directoryPath = Directory('/Internal storage/Recordings/Call/Call recording/');
         List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
         print('files =============> $files');
         recordedFiles.value = files.where((file) {

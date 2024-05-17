@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889931011467",
+    "project_id": "ghlindia",
+    "storage_bucket": "ghlindia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889931011467:android:30b95e0bbeec3450bbcb8e",
+        "android_client_info": {
+          "package_name": "com.example.ghl_callrecoding"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQVIRzQm2JPugRgC2U5v6fGg7jr2Z2vTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

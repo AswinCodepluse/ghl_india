@@ -49,6 +49,11 @@ dependencies:
   flip_card:
   flutter_sound:
   shared_preferences:
+  firebase_core:
+  firebase_messaging:
+  flutter_local_notifications:
+  cloud_firestore:
+  timezone:
 
 
 dev_dependencies:

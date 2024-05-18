@@ -31,7 +31,7 @@ class LeadsController extends GetxController {
   Rx<LeadDetails> leadDetailsData = LeadDetails().obs;
 
 
-  File? callFiles;
+  File callFiles = File("");
   var setDisable = true.obs;
   TextEditingController callRecordingFileCon = TextEditingController();
   TextEditingController pathSetupCon = TextEditingController();
@@ -138,6 +138,7 @@ class LeadsController extends GetxController {
     followupNotesCon.clear();
     callRecordingFileCon.clear();
     datePickedCon.clear();
+
     // selectedLeadIds.value = 0;
     // selectedLeadStatus.value = leadStatusList[0].name!;
     // leadsList.clear();

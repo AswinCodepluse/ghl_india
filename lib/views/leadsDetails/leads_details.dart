@@ -400,123 +400,130 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             SizedBox(
               height: 20,
             ),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 15),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: shadow),
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          child:  Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // titleRow(
-                //     firstTitle: "Lead Name",
-                //     secondTitle: "Assigned to"),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // subTitleRow(
-                //   firstSubTitle: leadDetails.name!,
-                //   secondSubTitle: 'Staff',
-                //   firstIcon: Icons.account_circle,
-                //   secondIcon: Icons.account_circle,
-                // ),
-                // SizedBox(
-                //   height: 15,
-                // ),
-                // titleRow(firstTitle: "Email", secondTitle: "Phone"),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // subTitleRow(
-                //     firstSubTitle: leadDetails.email!,
-                //     secondSubTitle: leadDetails.phoneNo!,
-                //     firstIcon: Icons.email,
-                //     secondIcon: Icons.call),
-                SizedBox(
-                  height: 15,
-                ),
-                titleRow(firstTitle: "Source", secondTitle: "Medium"),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(
-                    ()=> subTitleRow(
-                      firstSubTitle: leadsController.leadDetailsData.value.source ?? "",
-                      secondSubTitle: leadsController.leadDetailsData.value.medium ?? "",
-                      firstIcon: Icons.location_on_sharp,
-                      secondIcon: Icons.account_tree_rounded),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                titleRow(
-                    firstTitle: "Status", secondTitle: "Occupation"),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(
-                    ()=> subTitleRow(
-                      firstSubTitle: leadsController.leadDetailsData.value.status ?? "",
-                      secondSubTitle: leadsController.leadDetailsData.value.occupation ?? "",
-                      firstIcon: Icons.circle_rounded,
-                      secondIcon: Icons.work),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                titleRow(
-                    firstTitle: "Designation",
-                    secondTitle: "Planning"),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(
-                    ()=> subTitleRow(
-                      firstSubTitle: leadsController.leadDetailsData.value.designation ?? "",
-                      secondSubTitle: leadsController.leadDetailsData.value.planning ?? '',
-                      firstIcon: Icons.cases_outlined,
-                      secondIcon: Icons.alarm),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: shadow),
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // titleRow(
+                  //     firstTitle: "Lead Name",
+                  //     secondTitle: "Assigned to"),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // subTitleRow(
+                  //   firstSubTitle: leadDetails.name!,
+                  //   secondSubTitle: 'Staff',
+                  //   firstIcon: Icons.account_circle,
+                  //   secondIcon: Icons.account_circle,
+                  // ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  // titleRow(firstTitle: "Email", secondTitle: "Phone"),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // subTitleRow(
+                  //     firstSubTitle: leadDetails.email!,
+                  //     secondSubTitle: leadDetails.phoneNo!,
+                  //     firstIcon: Icons.email,
+                  //     secondIcon: Icons.call),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  titleRow(firstTitle: "Source", secondTitle: "Medium"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle:
+                            leadsController.leadDetailsData.value.source ?? "",
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.medium ?? "",
+                        firstIcon: Icons.location_on_sharp,
+                        secondIcon: Icons.account_tree_rounded),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  titleRow(firstTitle: "Status", secondTitle: "Occupation"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle:
+                            leadsController.leadDetailsData.value.status ?? "",
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.occupation ??
+                                "",
+                        firstIcon: Icons.circle_rounded,
+                        secondIcon: Icons.work),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  titleRow(firstTitle: "Designation", secondTitle: "Planning"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle:
+                            leadsController.leadDetailsData.value.designation ??
+                                "",
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.planning ??
+                                '',
+                        firstIcon: Icons.cases_outlined,
+                        secondIcon: Icons.alarm),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
 
-                titleRow(
-                    firstTitle: "Created On",
-                    secondTitle: "Updated On"),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(
-                    ()=> subTitleRow(
-                      firstSubTitle: leadsController.leadDetailsData.value.lastUpdatedDate ?? '',
-                      secondSubTitle: leadsController.leadDetailsData.value.createdDate ?? '',
-                      firstIcon: Icons.calendar_month,
-                      secondIcon: Icons.calendar_month),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
+                  titleRow(firstTitle: "Created On", secondTitle: "Updated On"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle: leadsController
+                                .leadDetailsData.value.lastUpdatedDate ??
+                            '',
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.createdDate ??
+                                '',
+                        firstIcon: Icons.calendar_month,
+                        secondIcon: Icons.calendar_month),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
 
-                // SizedBox(
-                //     width: 300,
-                //     child:
-                //         CustomText(text: 'Name: ${leadDetails.name}')),
-                // SizedBox(
-                //     width: 300,
-                //     child: CustomText(
-                //         text: 'Email: ${leadDetails.email}')),
-                // SizedBox(
-                //   width: 300,
-                //   child: CustomText(
-                //       text: 'Phone Number: ${leadDetails.phoneNo}'),
-                // ),
-              ],
+                  // SizedBox(
+                  //     width: 300,
+                  //     child:
+                  //         CustomText(text: 'Name: ${leadDetails.name}')),
+                  // SizedBox(
+                  //     width: 300,
+                  //     child: CustomText(
+                  //         text: 'Email: ${leadDetails.email}')),
+                  // SizedBox(
+                  //   width: 300,
+                  //   child: CustomText(
+                  //       text: 'Phone Number: ${leadDetails.phoneNo}'),
+                  // ),
+                ],
+              ),
             ),
-        ),
-
 
             // Container(
             //   child: FutureBuilder(
@@ -907,6 +914,15 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     //       duration: Toast.lengthLong);
                     //   return;
                     // }
+                    // var callRecordingFile =
+                    //     leadsController.lastCallRecording == File("")
+                    //         ? leadsController.callFiles!
+                    //         : leadsController.lastCallRecording;
+
+                    File callRecordingFile =
+                        fileController.filePathsWithPhoneNumber.isEmpty
+                            ? leadsController.callFiles
+                            : leadsController.lastCallRecording;
                     LeadDatasCreate response = await Dashboard().postLeadDatas(
                       leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
@@ -915,14 +931,17 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       leadsController.followupNotesCon.text,
                       leadsController.datePickedCon.text,
                       leadsController.files ?? File(""),
-                      leadsController.lastCallRecording,
+                      callRecordingFile,
                       audioFilesData ?? File(""),
                     );
 
                     print("file datas=======>${leadsController.files}");
 
                     if (response.result == true) {
-
+                      audioFilesData =File("");
+                      callRecordingFile=File("");
+                      leadsController.files=File("");
+                      leadsController.clearAll();
                       // ToastComponent.showDialog(response.message!,
                       //     gravity: Toast.center, duration: Toast.lengthLong);
                       FirebaseRepository().setNotification();
@@ -935,7 +954,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});
-                      leadsController.clearAll();
+
                       final shouldPop = (await OneContext().showDialog<bool>(
                         builder: (BuildContext context) {
                           return AlertDialog(

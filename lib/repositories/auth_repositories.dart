@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
+
 import '../app_config.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +15,8 @@ import '../utils/shared_value.dart';
 class AuthRepository {
   Future<LoginResponse> getLoginResponse(
       String? email, String password, String loginBy) async {
+     var deviceToken = await FirebaseRepository().getToken();
+     print("device token Data===================>${deviceToken}");
     // Define the URL for your API endpoint
     var url = Uri.parse('https://sales.ghlindia.com/api/auth/login');
 
@@ -22,7 +26,8 @@ class AuthRepository {
       "password": "$password",
       // "identity_matrix": AppConfig.purchase_code,
       "login_by": loginBy,
-      "role": "staff"
+      "role": "staff",
+      "device_token": "$deviceToken"
     });
 
     try {
@@ -35,10 +40,11 @@ class AuthRepository {
         body: post_body,
       );
 
+      print("post body Login $post_body");
       // Check the status code of the response
       if (response.statusCode == 200) {
         print('POST request successful');
-        print('Response body: ${response.body}');
+        print('Response body Login: ${response.body}');
         return loginResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
@@ -109,8 +115,7 @@ class AuthRepository {
     var post_body = jsonEncode(
         {"verification_code": "$verification_code", "password": "$password"});
 
-    var url =
-        Uri.parse("${AppConfig.BASE_URL}/api/auth/password/confirm_reset");
+    var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/confirm_reset");
     try {
       // Make the POST request
       var response = await http.post(
@@ -145,7 +150,7 @@ class AuthRepository {
     var post_body = jsonEncode(
         {"email_or_code": "$email_or_code", "verify_by": "$verify_by"});
 
-    var url = Uri.parse("${AppConfig.BASE_URL}/api/auth/password/resend_code");
+    var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/resend_code");
     try {
       // Make the POST request
       var response = await http.post(
@@ -180,8 +185,7 @@ class AuthRepository {
     var post_body = jsonEncode(
         {"email_or_phone": "$email_or_phone", "send_code_by": "$send_code_by"});
 
-    var url =
-        Uri.parse("${AppConfig.BASE_URL}/api/auth/password/forget_request");
+    var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/forget_request");
     try {
       // Make the POST request
       var response = await http.post(

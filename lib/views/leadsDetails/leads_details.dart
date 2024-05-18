@@ -82,6 +82,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     timeLineController.leadId.value = widget.leadId;
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
+    leadsController.fetchIndividualLeads(widget.leadId);
     // fetchUserId();
     super.initState();
   }
@@ -254,7 +255,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                           )),
                       CustomText(
                         text: "Call",
-                        color: Colors.red,
+                        // color: Colors.red,
                       )
                     ],
                   ),
@@ -279,7 +280,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                       CustomText(
                         text: "Message",
-                        color: Colors.red,
+                        // color: Colors.red,
                       )
                     ],
                   ),
@@ -313,7 +314,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                       CustomText(
                         text: "Whatsapp",
-                        color: Colors.red,
+                        // color: Colors.red,
                       )
                     ],
                   ),
@@ -351,7 +352,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                       CustomText(
                         text: "Activities",
-                        color: Colors.red,
+                        // color: Colors.red,
                       )
                     ],
                   ),
@@ -389,7 +390,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                       CustomText(
                         text: "Record",
-                        color: Colors.red,
+                        // color: Colors.red,
                       )
                     ],
                   ),
@@ -399,135 +400,255 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              child: FutureBuilder(
-                future: Dashboard().fetchOIndividualLeads(widget.leadId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.red,
-                    ));
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    LeadDetails leadDetails = snapshot.data!;
-                    leadID = leadDetails.id;
-                    status = leadDetails.status.toString();
-                    dates = leadDetails.lastUpdatedDate;
-                    oldStatus = leadDetails.statusInt;
-                    return Container(
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: shadow),
-                      margin: EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // titleRow(
-                          //     firstTitle: "Lead Name",
-                          //     secondTitle: "Assigned to"),
-                          // SizedBox(
-                          //   height: 10,
-                          // ),
-                          // subTitleRow(
-                          //   firstSubTitle: leadDetails.name!,
-                          //   secondSubTitle: 'Staff',
-                          //   firstIcon: Icons.account_circle,
-                          //   secondIcon: Icons.account_circle,
-                          // ),
-                          // SizedBox(
-                          //   height: 15,
-                          // ),
-                          // titleRow(firstTitle: "Email", secondTitle: "Phone"),
-                          // SizedBox(
-                          //   height: 10,
-                          // ),
-                          // subTitleRow(
-                          //     firstSubTitle: leadDetails.email!,
-                          //     secondSubTitle: leadDetails.phoneNo!,
-                          //     firstIcon: Icons.email,
-                          //     secondIcon: Icons.call),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(firstTitle: "Source", secondTitle: "Medium"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.source!,
-                              secondSubTitle: leadDetails.medium!,
-                              firstIcon: Icons.location_on_sharp,
-                              secondIcon: Icons.account_tree_rounded),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(
-                              firstTitle: "Status", secondTitle: "Occupation"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.status!.toString(),
-                              secondSubTitle: leadDetails.occupation ?? "",
-                              firstIcon: Icons.circle_rounded,
-                              secondIcon: Icons.work),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          titleRow(
-                              firstTitle: "Designation",
-                              secondTitle: "Planning"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.designation ?? "",
-                              secondSubTitle: leadDetails.planning!,
-                              firstIcon: Icons.cases_outlined,
-                              secondIcon: Icons.alarm),
-                          SizedBox(
-                            height: 15,
-                          ),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: shadow),
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          child:  Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // titleRow(
+                //     firstTitle: "Lead Name",
+                //     secondTitle: "Assigned to"),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // subTitleRow(
+                //   firstSubTitle: leadDetails.name!,
+                //   secondSubTitle: 'Staff',
+                //   firstIcon: Icons.account_circle,
+                //   secondIcon: Icons.account_circle,
+                // ),
+                // SizedBox(
+                //   height: 15,
+                // ),
+                // titleRow(firstTitle: "Email", secondTitle: "Phone"),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // subTitleRow(
+                //     firstSubTitle: leadDetails.email!,
+                //     secondSubTitle: leadDetails.phoneNo!,
+                //     firstIcon: Icons.email,
+                //     secondIcon: Icons.call),
+                SizedBox(
+                  height: 15,
+                ),
+                titleRow(firstTitle: "Source", secondTitle: "Medium"),
+                SizedBox(
+                  height: 10,
+                ),
+                Obx(
+                    ()=> subTitleRow(
+                      firstSubTitle: leadsController.leadDetailsData.value.source ?? "",
+                      secondSubTitle: leadsController.leadDetailsData.value.medium ?? "",
+                      firstIcon: Icons.location_on_sharp,
+                      secondIcon: Icons.account_tree_rounded),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                titleRow(
+                    firstTitle: "Status", secondTitle: "Occupation"),
+                SizedBox(
+                  height: 10,
+                ),
+                Obx(
+                    ()=> subTitleRow(
+                      firstSubTitle: leadsController.leadDetailsData.value.status ?? "",
+                      secondSubTitle: leadsController.leadDetailsData.value.occupation ?? "",
+                      firstIcon: Icons.circle_rounded,
+                      secondIcon: Icons.work),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                titleRow(
+                    firstTitle: "Designation",
+                    secondTitle: "Planning"),
+                SizedBox(
+                  height: 10,
+                ),
+                Obx(
+                    ()=> subTitleRow(
+                      firstSubTitle: leadsController.leadDetailsData.value.designation ?? "",
+                      secondSubTitle: leadsController.leadDetailsData.value.planning ?? '',
+                      firstIcon: Icons.cases_outlined,
+                      secondIcon: Icons.alarm),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
 
-                          titleRow(
-                              firstTitle: "Created On",
-                              secondTitle: "Updated On"),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          subTitleRow(
-                              firstSubTitle: leadDetails.lastUpdatedDate!,
-                              secondSubTitle: leadDetails.createdDate!,
-                              firstIcon: Icons.calendar_month,
-                              secondIcon: Icons.calendar_month),
-                          SizedBox(
-                            height: 15,
-                          ),
+                titleRow(
+                    firstTitle: "Created On",
+                    secondTitle: "Updated On"),
+                SizedBox(
+                  height: 10,
+                ),
+                Obx(
+                    ()=> subTitleRow(
+                      firstSubTitle: leadsController.leadDetailsData.value.lastUpdatedDate ?? '',
+                      secondSubTitle: leadsController.leadDetailsData.value.createdDate ?? '',
+                      firstIcon: Icons.calendar_month,
+                      secondIcon: Icons.calendar_month),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
 
-                          // SizedBox(
-                          //     width: 300,
-                          //     child:
-                          //         CustomText(text: 'Name: ${leadDetails.name}')),
-                          // SizedBox(
-                          //     width: 300,
-                          //     child: CustomText(
-                          //         text: 'Email: ${leadDetails.email}')),
-                          // SizedBox(
-                          //   width: 300,
-                          //   child: CustomText(
-                          //       text: 'Phone Number: ${leadDetails.phoneNo}'),
-                          // ),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
+                // SizedBox(
+                //     width: 300,
+                //     child:
+                //         CustomText(text: 'Name: ${leadDetails.name}')),
+                // SizedBox(
+                //     width: 300,
+                //     child: CustomText(
+                //         text: 'Email: ${leadDetails.email}')),
+                // SizedBox(
+                //   width: 300,
+                //   child: CustomText(
+                //       text: 'Phone Number: ${leadDetails.phoneNo}'),
+                // ),
+              ],
             ),
+        ),
+
+
+            // Container(
+            //   child: FutureBuilder(
+            //     future: Dashboard().fetchOIndividualLeads(widget.leadId),
+            //     builder: (context, snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.waiting) {
+            //         return Center(
+            //             child: CircularProgressIndicator(
+            //           color: Colors.red,
+            //         ));
+            //       } else if (snapshot.hasError) {
+            //         return Center(child: Text('Error: ${snapshot.error}'));
+            //       } else {
+            //         LeadDetails leadDetails = snapshot.data!;
+            //         leadID = leadDetails.id;
+            //         status = leadDetails.status.toString();
+            //         dates = leadDetails.lastUpdatedDate;
+            //         oldStatus = leadDetails.statusInt;
+            //         // leadsController.selectedLeadIds.value =
+            //         // leadDetails.statusInt!;
+            //         return Container(
+            //           padding: EdgeInsets.symmetric(vertical: 15),
+            //           decoration: BoxDecoration(
+            //               color: Colors.white,
+            //               borderRadius: BorderRadius.circular(15),
+            //               boxShadow: shadow),
+            //           margin: EdgeInsets.symmetric(horizontal: 15),
+            //           child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.center,
+            //             children: [
+            //               // titleRow(
+            //               //     firstTitle: "Lead Name",
+            //               //     secondTitle: "Assigned to"),
+            //               // SizedBox(
+            //               //   height: 10,
+            //               // ),
+            //               // subTitleRow(
+            //               //   firstSubTitle: leadDetails.name!,
+            //               //   secondSubTitle: 'Staff',
+            //               //   firstIcon: Icons.account_circle,
+            //               //   secondIcon: Icons.account_circle,
+            //               // ),
+            //               // SizedBox(
+            //               //   height: 15,
+            //               // ),
+            //               // titleRow(firstTitle: "Email", secondTitle: "Phone"),
+            //               // SizedBox(
+            //               //   height: 10,
+            //               // ),
+            //               // subTitleRow(
+            //               //     firstSubTitle: leadDetails.email!,
+            //               //     secondSubTitle: leadDetails.phoneNo!,
+            //               //     firstIcon: Icons.email,
+            //               //     secondIcon: Icons.call),
+            //               SizedBox(
+            //                 height: 15,
+            //               ),
+            //               titleRow(firstTitle: "Source", secondTitle: "Medium"),
+            //               SizedBox(
+            //                 height: 10,
+            //               ),
+            //               subTitleRow(
+            //                   firstSubTitle: leadDetails.source!,
+            //                   secondSubTitle: leadDetails.medium!,
+            //                   firstIcon: Icons.location_on_sharp,
+            //                   secondIcon: Icons.account_tree_rounded),
+            //               SizedBox(
+            //                 height: 15,
+            //               ),
+            //               titleRow(
+            //                   firstTitle: "Status", secondTitle: "Occupation"),
+            //               SizedBox(
+            //                 height: 10,
+            //               ),
+            //               subTitleRow(
+            //                   firstSubTitle: leadDetails.status!.toString(),
+            //                   secondSubTitle: leadDetails.occupation ?? "",
+            //                   firstIcon: Icons.circle_rounded,
+            //                   secondIcon: Icons.work),
+            //               SizedBox(
+            //                 height: 15,
+            //               ),
+            //               titleRow(
+            //                   firstTitle: "Designation",
+            //                   secondTitle: "Planning"),
+            //               SizedBox(
+            //                 height: 10,
+            //               ),
+            //               subTitleRow(
+            //                   firstSubTitle: leadDetails.designation ?? "",
+            //                   secondSubTitle: leadDetails.planning!,
+            //                   firstIcon: Icons.cases_outlined,
+            //                   secondIcon: Icons.alarm),
+            //               SizedBox(
+            //                 height: 15,
+            //               ),
+            //
+            //               titleRow(
+            //                   firstTitle: "Created On",
+            //                   secondTitle: "Updated On"),
+            //               SizedBox(
+            //                 height: 10,
+            //               ),
+            //               subTitleRow(
+            //                   firstSubTitle: leadDetails.lastUpdatedDate!,
+            //                   secondSubTitle: leadDetails.createdDate!,
+            //                   firstIcon: Icons.calendar_month,
+            //                   secondIcon: Icons.calendar_month),
+            //               SizedBox(
+            //                 height: 15,
+            //               ),
+            //
+            //               // SizedBox(
+            //               //     width: 300,
+            //               //     child:
+            //               //         CustomText(text: 'Name: ${leadDetails.name}')),
+            //               // SizedBox(
+            //               //     width: 300,
+            //               //     child: CustomText(
+            //               //         text: 'Email: ${leadDetails.email}')),
+            //               // SizedBox(
+            //               //   width: 300,
+            //               //   child: CustomText(
+            //               //       text: 'Phone Number: ${leadDetails.phoneNo}'),
+            //               // ),
+            //             ],
+            //           ),
+            //         );
+            //       }
+            //     },
+            //   ),
+            // ),
 
             SizedBox(
               height: 15,
@@ -602,6 +723,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         icon: Image(
                           image: AssetImage("assets/image/arrow_down_icon.png"),
                         ),
+                        // value: status,
                         value: leadsController.leadStatusList.isNotEmpty
                             ? leadsController.leadStatusList.firstWhere(
                                 (leads) {
@@ -611,8 +733,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                                       leadsController.selectedLeadIds.value;
                                 },
                                 orElse: () {
-                                  leadsController.selectedLeadIds.value =
-                                      leadsController.leadStatusList[0].id!;
+                                  leadsController.selectedLeadNames.value =
+                                      leadsController.leadStatusList[0].name!;
                                   print(
                                       "00000000+${leadsController.selectedLeadIds.value}");
                                   return leadsController.leadStatusList[0];
@@ -637,6 +759,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         onTap: () {},
                         onChanged: (value) {
                           leadsController.selectedLeadIds.value = value!.id!;
+                          leadsController.selectedLeadNames.value = value.name!;
                         },
                         hint: Text('Select Status'),
                         style: TextStyle(
@@ -662,13 +785,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     width: double.infinity,
                     height: 50,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: shadow,
                         color: MyTheme.white),
                     child: TextFormField(
                       controller: leadsController.datePickedCon,
                       textAlign: TextAlign.start,
                       decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(10),
                         suffixIcon: Icon(
                           Icons.date_range,
                           color: Colors.red,
@@ -784,9 +908,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     //   return;
                     // }
                     LeadDatasCreate response = await Dashboard().postLeadDatas(
-                      leadID,
+                      leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
-                      oldStatus,
+                      leadsController.leadDetailsData.value.statusInt,
                       leadsController.selectedLeadIds.value,
                       leadsController.followupNotesCon.text,
                       leadsController.datePickedCon.text,
@@ -795,22 +919,27 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       audioFilesData ?? File(""),
                     );
 
+                    print("file datas=======>${leadsController.files}");
+
                     if (response.result == true) {
-                      leadsController.clearAll();
-                      ToastComponent.showDialog(response.message!,
-                          gravity: Toast.center, duration: Toast.lengthLong);
-                      leadsController.setNotification();
-                      String token = '';
-                      FirebaseRepository firebaseRepo = FirebaseRepository();
-                      token = await firebaseRepo.getToken();
-                      firebaseRepo.sendPushNotification(
-                          token, "Lead Created Successfully");
+
+                      // ToastComponent.showDialog(response.message!,
+                      //     gravity: Toast.center, duration: Toast.lengthLong);
+                      // FirebaseRepository().setNotification();
+                      // String token = '';
+                      // FirebaseRepository firebaseRepo = FirebaseRepository();
+                      // token = await firebaseRepo.getToken();
+                      // firebaseRepo.sendPushNotification(
+                      //     token, "Record Submitted Successfully");
                       await dashboardController.fetchDashboardData();
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
+                      leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});
+                      leadsController.clearAll();
                       final shouldPop = (await OneContext().showDialog<bool>(
                         builder: (BuildContext context) {
                           return AlertDialog(
+                            backgroundColor: Colors.grey,
                             contentPadding: const EdgeInsets.only(
                               left: 15,
                               right: 15,
@@ -820,13 +949,17 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                               height: 57,
                               width: 250,
                               child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("Records are all Submitted"),
+                                      Text(
+                                        "Record Submitted Successfully",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -837,7 +970,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text("OK"),
+                                child: Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                ),
                               ),
                               // TextButton(
                               //     onPressed: () {
@@ -847,7 +986,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                             ],
                           );
                         },
-                      ))!;
+                      ));
                     }
                   });
             }),

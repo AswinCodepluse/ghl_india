@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
 
   onPressedLogin() async {
-    Loading.show(context);
+    // Loading.show(context);
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
 
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
     var loginResponse = await AuthRepository().getLoginResponse(
         _login_by == 'email' ? email : _phone, password, _login_by);
-    Loading.close();
+    // Loading.close();
     if (loginResponse.result == false) {
       if (loginResponse.message.runtimeType == List) {
         ToastComponent.showDialog(loginResponse.message!.splitMapJoin("\n"),

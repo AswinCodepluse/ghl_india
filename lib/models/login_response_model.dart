@@ -47,6 +47,7 @@ class User {
   String? type;
   String? email;
   String? phone;
+  String? deviceToken;
   String? name;
   String? lastName;
   String? gender;
@@ -69,6 +70,7 @@ class User {
         this.type,
         this.email,
         this.phone,
+        this.deviceToken,
         this.name,
         this.lastName,
         this.gender,
@@ -91,6 +93,7 @@ class User {
     type = json['type'];
     email = json['email'];
     phone = json['phone'];
+    deviceToken = json['device_token'];
     name = json['name'];
     lastName = json['last_name'];
     gender = json['gender'];
@@ -115,6 +118,7 @@ class User {
     data['type'] = this.type;
     data['email'] = this.email;
     data['phone'] = this.phone;
+    data['device_token'] = this.deviceToken;
     data['name'] = this.name;
     data['last_name'] = this.lastName;
     data['gender'] = this.gender;

@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:http/http.dart' as http;
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class FirebaseRepository {
   final _firebaseInstance = FirebaseMessaging.instance;
@@ -16,7 +13,7 @@ class FirebaseRepository {
   Future<void> requestPermission() async {
     NotificationSettings settings = await _firebaseInstance.requestPermission(
       alert: true,
-      announcement: false,
+      announcement: true,
       badge: true,
       carPlay: false,
       criticalAlert: false,
@@ -35,6 +32,7 @@ class FirebaseRepository {
 
   Future<String> getToken() async {
     String? token = await _firebaseInstance.getToken();
+    print('token  $token');
     return token ?? '';
   }
 
@@ -50,7 +48,7 @@ class FirebaseRepository {
           htmlFormatBigText: true,
           contentTitle: message.notification!.title.toString(),
           htmlFormatContentTitle: true);
-      AndroidNotificationDetails androidPlatformChannelSprcific =
+      AndroidNotificationDetails androidPlatformChannelSpecific =
           AndroidNotificationDetails(
         'GHL', 'GHL',
         importance: Importance.high,
@@ -60,7 +58,7 @@ class FirebaseRepository {
         // sound: const RawResourceAndroidNotificationSound('notification')
       );
       NotificationDetails platformChannelSpecific =
-          NotificationDetails(android: androidPlatformChannelSprcific);
+          NotificationDetails(android: androidPlatformChannelSpecific);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
           message.notification?.body, platformChannelSpecific,
           payload: message.data['title']);
@@ -97,15 +95,12 @@ class FirebaseRepository {
         now.year, now.month, now.day, targetTime.hour, targetTime.minute);
 
     if (targetDateTime.isBefore(now)) {
-      // If the target time is before the current time, schedule it for the next day
-      final tomorrow = now.add(Duration(days: 1));
       return Duration(
         days: 1,
         hours: targetTime.hour,
         minutes: targetTime.minute,
       );
     } else {
-      // Target time is later today
       return targetDateTime.difference(now);
     }
   }
@@ -114,13 +109,26 @@ class FirebaseRepository {
     Duration delay = calculateDelayUntilTargetTime(targetTime);
 
     Timer(delay, () {
-      sendPushNotification(token, "Reminder");
+      sendPushNotification(token, "Reminder", targetTime);
     });
   }
 
-  void sendPushNotification(String token, String message) async {
+  Future<void> setNotification() async {
+    String dateString = await SharedPreference().getRemainderDate();
+    List<String> dateParts = dateString.split('-');
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+    FirebaseRepository firebaseRepo = FirebaseRepository();
+    var deviceToken = await SharedPreference().getDeviceToken();
+    final targetDateTime = DateTime(year, month, day, 10, 00);
+    firebaseRepo.scheduleNotificationAtSpecificTime(
+        targetDateTime, deviceToken);
+  }
+
+  void sendPushNotification(
+      String token, String message, DateTime targetDateTime) async {
     try {
-      print('token===============+ $token');
       await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
           headers: {
             'content-Type': 'application/json',
@@ -128,8 +136,19 @@ class FirebaseRepository {
                 'key=AAAAzzQFlYs:APA91bGpjhllIohYVU7hSKgIwbtAxRrzCe6Ii7gGkgjP-gTg_PhLRjzcaab0mzu8F8MnsmhjcUygzHL3a98RCPVcBRTpt7VQElxz-H5UTLnvPYptfMubHZ2h788I71EDZoNk_Abtu1gr'
           },
           body: jsonEncode({
-            'notification': {'title': 'GHL Notification', 'body': message},
             'priority': 'high',
+            // 'targetDateTime': targetDateTime.toIso8601String(),
+            'data': {
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'body': message,
+              'title': 'GHL Notification',
+            },
+            'notification': {
+              'title': 'GHL Notification',
+              'body': message,
+              'android_channel_id': "GHL"
+            },
             'to': token
           }));
     } catch (e) {

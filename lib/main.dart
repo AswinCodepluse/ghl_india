@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/binding/controller_binding.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/splash_screen.dart';
 import 'package:one_context/one_context.dart';
 
@@ -12,6 +13,7 @@ import 'package:shared_value/shared_value.dart';
 import 'firebase/firebase_repository.dart';
 import 'firebase_options.dart';
 
+@pragma("vm:entry-point")
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('message id ${message.messageId}');
 }
@@ -21,8 +23,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.instance.getInitialMessage();
+  await FirebaseMessaging.instance.getInitialMessage();
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -34,13 +38,10 @@ void main() async {
 
   FirebaseRepository firebaseRepo = FirebaseRepository();
   firebaseRepo.requestPermission();
-  await firebaseRepo.getToken();
+  var token = await firebaseRepo.getToken();
+  SharedPreference().setDeviceToken(token);
   firebaseRepo.initInfo();
-
-  // DateTime targetTime = DateTime.now();
-  // print(targetTime);
-  // await firebaseRepo.scheduleNotification(today);
-  // firebaseRepo.sendPushNotification(token);
+  firebaseRepo.setNotification();
 
   runApp(
     SharedValue.wrapApp(

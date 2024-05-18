@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'dashboard_controller.dart';
 
 class FileController extends GetxController {
@@ -16,10 +14,10 @@ class FileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    isLoading.value = true;
-    Future.delayed(Duration(seconds: 1), () {
-      // checkPermission();
-    });
+    // isLoading.value = true;
+    // Future.delayed(Duration(seconds: 1), () {
+    //    checkPermission();
+    // });
   }
 
   @override
@@ -28,29 +26,21 @@ class FileController extends GetxController {
     super.onClose();
   }
 
-
-
   openFile(filePath) {
     OpenFile.open(filePath);
   }
 
   Future<void> findRecordedFiles() async {
     try {
-      print('enter find record file ==========');
       Directory? externalDir = await getExternalStorageDirectory();
       if (externalDir != null) {
-        print('enter find record file ===========+++++++++++========');
-        Directory? directoryPath = Directory('/storage/emulated/0/MIUI/sound_recorder/call_rec/');
-        // Directory? directoryPath = Directory('/Internal storage/Recordings/Call/Call recording/');
+        Directory? directoryPath = Directory('/storage/emulated/0');
         List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
-        print('files =============> $files');
         recordedFiles.value = files.where((file) {
-          // String fileName = file.path.split('/').last;
           return (file.path.endsWith(".amr") ||
-                  file.path.endsWith(".wav") ||
-                  file.path.endsWith(".mp3") ||
-                  file.path.endsWith(".m4a")) &&
-              RegExp(r'^.*/\+\d{12}-\d{10}\.amr$').hasMatch(file.path);
+              file.path.endsWith(".wav") ||
+              file.path.endsWith(".mp3") ||
+              file.path.endsWith(".m4a"));
         }).toList();
 
         print(recordedFiles);
@@ -62,7 +52,6 @@ class FileController extends GetxController {
             }
           }
         }
-        isLoading.value = false;
         update();
       }
     } catch (e) {

@@ -53,5 +53,27 @@ class SharedPreference {
     await setLogin(false);
     await prefs.remove("user_name");
     await prefs.remove("user_id");
+    await prefs.remove("device_token");
+    await prefs.remove("remainder_date");
+  }
+
+  Future<void> setRemainderDate(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("remainder_date", value);
+  }
+
+  Future<String> getRemainderDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("remainder_date") ?? "";
+  }
+
+  Future<void> setDeviceToken(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("device_token", value);
+  }
+
+  Future<String> getDeviceToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("device_token") ?? "";
   }
 }

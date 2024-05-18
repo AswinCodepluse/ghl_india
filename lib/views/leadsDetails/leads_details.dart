@@ -925,7 +925,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
                       // ToastComponent.showDialog(response.message!,
                       //     gravity: Toast.center, duration: Toast.lengthLong);
-                      // FirebaseRepository().setNotification();
+                      FirebaseRepository().setNotification();
                       // String token = '';
                       // FirebaseRepository firebaseRepo = FirebaseRepository();
                       // token = await firebaseRepo.getToken();

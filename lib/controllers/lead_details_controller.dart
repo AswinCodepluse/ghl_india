@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/lead_details.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
@@ -96,8 +97,8 @@ class LeadsController extends GetxController {
       datePickedCon.text = formatter.format(date);
       // isDisable();
       remindDate = dateValue.text;
-      // SharedPreference().setRemainderDate(remindDate);
-      // FirebaseRepository().setNotification();
+      SharedPreference().setRemainderDate(remindDate);
+      FirebaseRepository().setNotification();
      update();
     }
   }

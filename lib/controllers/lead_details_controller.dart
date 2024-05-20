@@ -27,9 +27,9 @@ class LeadsController extends GetxController {
   RxString selectedLeadPhoneNumber = ''.obs;
   File? files;
   bool isSubmitted = false;
+
   // var leadDetailsData = Rx<LeadDetails?>(LeadDetails);
   Rx<LeadDetails> leadDetailsData = LeadDetails().obs;
-
 
   File callFiles = File("");
   var setDisable = true.obs;
@@ -57,20 +57,34 @@ class LeadsController extends GetxController {
     super.onClose();
   }
 
+  List<BoxShadow> shadow = [
+    BoxShadow(
+      color: Colors.grey.withOpacity(0.0),
+      spreadRadius: 0,
+      blurRadius: 0,
+      offset: Offset(-1, -1),
+    ),
+    BoxShadow(
+      color: Colors.grey.withOpacity(0.2),
+      spreadRadius: 9,
+      blurRadius: 9,
+      offset: Offset(5, 5),
+    ),
+  ];
+
   isDisable() {
     if (
-    // (fileCon.text.isEmpty || fileCon.text == '') ||
-    //     (callRecordingFileCon.text.isEmpty ||
-    //         callRecordingFileCon.text == '')
-    //     || (datePickedCon.text.isEmpty ||
-    //     datePickedCon.text == '') ||
+        // (fileCon.text.isEmpty || fileCon.text == '') ||
+        //     (callRecordingFileCon.text.isEmpty ||
+        //         callRecordingFileCon.text == '')
+        //     || (datePickedCon.text.isEmpty ||
+        //     datePickedCon.text == '') ||
         (followupNotesCon.text.isEmpty || followupNotesCon.text == '')) {
       setDisable.value = true;
     } else {
       setDisable.value = false;
     }
   }
-
 
   Future displayDatePicker(BuildContext context, dateValue) async {
     DateTime date = DateTime(1900);
@@ -88,7 +102,7 @@ class LeadsController extends GetxController {
       remindDate = dateValue.text;
       SharedPreference().setRemainderDate(remindDate);
       FirebaseRepository().setNotification();
-     update();
+      update();
     }
   }
 
@@ -146,12 +160,9 @@ class LeadsController extends GetxController {
     }
   }
 
-
-
   fetchIndividualLeads(int id) async {
     leadDetailsData.value = await Dashboard().fetchOIndividualLeads(id);
-    selectedLeadIds.value =
-    leadDetailsData.value.statusInt!;
+    selectedLeadIds.value = leadDetailsData.value.statusInt!;
   }
 
   fetchLeadStatus() async {

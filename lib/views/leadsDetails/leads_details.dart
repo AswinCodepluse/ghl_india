@@ -16,14 +16,14 @@ import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
-import 'package:ghl_callrecoding/views/attachment/attachment_screen.dart';
-import 'package:ghl_callrecoding/views/time_line/time_line_page.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/conformation_dialog.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/header_icon_container.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/sub_title_row.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/title_row.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:one_context/one_context.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-
 
 class LeadDetailsScreen extends StatefulWidget {
   const LeadDetailsScreen({
@@ -83,7 +83,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     super.dispose();
   }
 
-
   void setButtonEnabled(bool isButtonEnabled) {
     setState(() {
       isButtonEnabled != isButtonEnabled;
@@ -91,20 +90,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   }
 
   final recorder = FlutterSoundRecorder();
-  List<BoxShadow> shadow = [
-    BoxShadow(
-      color: Colors.grey.withOpacity(0.0),
-      spreadRadius: 0,
-      blurRadius: 0,
-      offset: Offset(-1, -1),
-    ),
-    BoxShadow(
-      color: Colors.grey.withOpacity(0.2),
-      spreadRadius: 9,
-      blurRadius: 9,
-      offset: Offset(5, 5),
-    ),
-  ];
 
   Future initRecorder() async {
     final status = await Permission.microphone.request();
@@ -131,14 +116,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     audioFileData = FileHelper.getBase64FormateFile(file.path);
     String fileName = file.path.split("/").last;
     setState(() {});
-    print('Recorded file path: $filePath');
   }
 
   LeadsController leadsController = Get.put(LeadsController());
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth=MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
     print('screenWidth $screenWidth');
     leadsController.selectedLeadPhoneNumber.value = widget.phoneNumber;
     return Scaffold(
@@ -196,173 +180,11 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
-
             SizedBox(
               height: 20,
             ),
-            Container(
-              height: 90,
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: shadow
-                  ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      GestureDetector(
-                          onTap: () async {
-                            final call =
-                                Uri.parse('tel:+91 ${widget.phoneNumber}');
-                            if (await canLaunchUrl(call)) {
-                              launchUrl(call);
-                            } else {
-                              throw 'Could not launch $call';
-                            }
-                          },
-                          child: Image(
-                            height: 40,
-                            image: AssetImage(
-                              "assets/image/call_img.png",
-                            ),
-                          )),
-                      CustomText(
-                        text: "Call",
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          leadsController.openSMS(
-                              context: context,
-                              phoneNumber: widget.phoneNumber);
-                        },
-                        child: SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: Image(
-                            image: AssetImage(
-                              'assets/image/message_img.png',
-                            ),
-                          ),
-                        ),
-                      ),
-                      CustomText(
-                        text: "Message",
-                        // color: Colors.red,
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          leadsController.openWhatsApp(
-                              context, widget.phoneNumber);
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: const SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: Image(
-                                  image: AssetImage(
-                                "assets/image/whatsapp_img.png",
-                              ))),
-                        ),
-                      ),
-                      CustomText(
-                        text: "Whatsapp",
-                        // color: Colors.red,
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TimeLinePage(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          // child: SizedBox(
-                          //   height: 40,
-                          //   width: 40,
-                          //   child: Image(
-                          //     image: AssetImage('assets/image/whatsapp.png',),
-                          //     color: Colors.red,
-                          //   ),
-                          // ),
-                          child: const SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: Image(
-                                  image: AssetImage(
-                                "assets/image/activities_img.png",
-                              ))),
-                        ),
-                      ),
-                      CustomText(
-                        text: "Activities",
-                        // color: Colors.red,
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AttachmentScreen()));
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          // child: SizedBox(
-                          //   height: 40,
-                          //   width: 40,
-                          //   child: Image(
-                          //     image: AssetImage('assets/image/whatsapp.png',),
-                          //     color: Colors.red,
-                          //   ),
-                          // ),
-                          child: const SizedBox(
-                            height: 40,
-                            width: 40,
-                            child: Image(
-                              image: AssetImage(
-                                "assets/image/record_img.png",
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      CustomText(
-                        text: "Record",
-                        // color: Colors.red,
-                      )
-                    ],
-                  ),
-                ],
-              ),
+            HeaderIconContainer(
+              phoneNumber: widget.phoneNumber,
             ),
             SizedBox(
               height: 20,
@@ -372,7 +194,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: shadow),
+                  boxShadow: leadsController.shadow),
               margin: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -431,7 +253,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 15,
                   ),
-
                   titleRow(firstTitle: "Created On", secondTitle: "Updated On"),
                   SizedBox(
                     height: 10,
@@ -453,7 +274,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-
             SizedBox(
               height: 15,
             ),
@@ -517,8 +337,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white,
-                        boxShadow: shadow
-                        ),
+                        boxShadow: leadsController.shadow),
                     child: Obx(
                       () => DropdownButton<Data>(
                         iconSize: 12,
@@ -526,20 +345,15 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         icon: Image(
                           image: AssetImage("assets/image/arrow_down_icon.png"),
                         ),
-
                         value: leadsController.leadStatusList.isNotEmpty
                             ? leadsController.leadStatusList.firstWhere(
                                 (leads) {
-                                  print(
-                                      "00000000+${leadsController.selectedLeadIds.value}");
                                   return leads.id ==
                                       leadsController.selectedLeadIds.value;
                                 },
                                 orElse: () {
                                   leadsController.selectedLeadNames.value =
                                       leadsController.leadStatusList[0].name!;
-                                  print(
-                                      "00000000+${leadsController.selectedLeadIds.value}");
                                   return leadsController.leadStatusList[0];
                                 },
                               )
@@ -549,7 +363,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                           return DropdownMenuItem<Data>(
                             value: item,
                             child: Container(
-                              width: screenWidth/1.24,
+                              width: screenWidth / 1.24,
                               height: 60,
                               padding: EdgeInsets.only(left: 10),
                               child: Align(
@@ -571,12 +385,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                     ),
                   ),
-                  // CustomTextField(
-                  //     controller: leadsController.statusCon,
-                  //     readOnly: true,
-                  //     suffixIcon: Image(
-                  //         image:
-                  //             AssetImage("assets/image/arrow_down_icon.png"))),
                   SizedBox(
                     height: 10,
                   ),
@@ -589,7 +397,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        boxShadow: shadow,
+                        boxShadow: leadsController.shadow,
                         color: MyTheme.white),
                     child: TextFormField(
                       controller: leadsController.datePickedCon,
@@ -655,8 +463,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
-                          boxShadow: shadow
-                          ),
+                          boxShadow: leadsController.shadow),
                       child: Row(
                         children: [
                           CustomText(
@@ -676,7 +483,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -686,19 +492,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   disable: leadsController.setDisable.value,
                   onTap: () async {
                     String user_Id = await SharedPreference().getUserId();
-                    // if (fileController.filePathsWithPhoneNumber.isEmpty &&
-                    //     leadsController.callRecordingFileCon.text.isEmpty) {
-                    //   ToastComponent.showDialog(
-                    //       "Your Storage Access Denied So Please Upload a Call Recording Files",
-                    //       gravity: Toast.center,
-                    //       duration: Toast.lengthLong);
-                    //   return;
-                    // }
-                    // var callRecordingFile =
-                    //     leadsController.lastCallRecording == File("")
-                    //         ? leadsController.callFiles!
-                    //         : leadsController.lastCallRecording;
-
                     File callRecordingFile =
                         fileController.filePathsWithPhoneNumber.isEmpty
                             ? leadsController.callFiles
@@ -715,227 +508,29 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       audioFilesData ?? File(""),
                     );
                     if (response.result == true) {
-                      audioFilesData =File("");
-                      callRecordingFile=File("");
-                      leadsController.files=File("");
+                      audioFilesData = File("");
+                      callRecordingFile = File("");
+                      leadsController.files = File("");
                       leadsController.clearAll();
-                      // ToastComponent.showDialog(response.message!,
-                      //     gravity: Toast.center, duration: Toast.lengthLong);
                       FirebaseRepository().setNotification();
-                      // String token = '';
-                      // FirebaseRepository firebaseRepo = FirebaseRepository();
-                      // token = await firebaseRepo.getToken();
-                      // firebaseRepo.sendPushNotification(
-                      //     token, "Record Submitted Successfully");
                       await dashboardController.fetchDashboardData();
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});
-
                       final shouldPop = (await OneContext().showDialog<bool>(
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.grey,
-                            contentPadding: const EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                              top: 15,
-                            ),
-                            content: SizedBox(
-                              height: 57,
-                              width: 250,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Record Submitted Successfully",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "OK",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red),
-                                ),
-                              ),
-                            ],
-                          );
+                          return conformationDialog(context);
                         },
                       ));
                     }
                   });
             }),
-
             SizedBox(
               height: 20,
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget titleRow({required String firstTitle, required String secondTitle}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 155,
-            child: CustomText(
-              text: firstTitle,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(
-            width: 15,
-          ),
-          SizedBox(
-            width: 120,
-            child: CustomText(
-              text: secondTitle,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget subTitleRow(
-      {required String firstSubTitle,
-      required String secondSubTitle,
-      required IconData firstIcon,
-      required IconData secondIcon}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 155,
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: Icon(
-                    firstIcon,
-                    color: Colors.red,
-                  ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: CustomText(
-                    text: firstSubTitle,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 15,
-          ),
-          SizedBox(
-            width: 120,
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: Icon(
-                    secondIcon,
-                    color: Colors.red,
-                  ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: CustomText(
-                    text: secondSubTitle,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget CustomTextField(
-      {required TextEditingController controller,
-      void Function()? onTap,
-      Widget? suffixIcon,
-      Widget? prefixIcon,
-      int? maxLines,
-      String? hintText,
-      void Function(String)? onChange,
-      bool? readOnly}) {
-    return Container(
-      height: 50,
-      child: TextField(
-        controller: controller,
-        readOnly: readOnly ?? false,
-        cursorColor: Colors.grey,
-        maxLines: maxLines ?? 1,
-        // onChanged: dashboardController.searchLead,
-        cursorHeight: 20,
-        onChanged: onChange,
-
-        onTap: onTap,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: hintText,
-          suffixIcon: suffixIcon,
-          prefixIcon: prefixIcon,
-          contentPadding: EdgeInsets.all(8),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none),
-          disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none),
-        ),
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: shadow
-          ),
     );
   }
 }

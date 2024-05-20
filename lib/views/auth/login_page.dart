@@ -76,16 +76,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //key: _scaffoldKey,
-      //drawer: MainDrawer(),
       backgroundColor: Colors.white,
-      //appBar: buildAppBar(context),
       body: buildBody(context),
     );
   }
 
   Widget buildBody(BuildContext context) {
     return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

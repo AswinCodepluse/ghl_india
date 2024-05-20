@@ -14,31 +14,29 @@ class AuthRepository {
   Future<LoginResponse> getLoginResponse(
       String? email, String password, String loginBy) async {
     var deviceToken = await FirebaseRepository().getToken();
-    print("device token : ${deviceToken}");
     var url = Uri.parse('https://sales.ghlindia.com/api/auth/login');
 
     var post_body = jsonEncode({
-      "email": "${email}",
-      "password": "$password",
-      // "identity_matrix": AppConfig.purchase_code,
+      "email": email,
+      "password": password,
       "login_by": loginBy,
       "role": "staff",
-      "device_token": "$deviceToken"
+      "device_token": deviceToken
     });
 
     try {
-      var response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: post_body,
-      );
+      var response = await http.post(url,
+          headers: {
+            "Content-Type": "application/json",
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: post_body);
 
-      print("post body Login $post_body");
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response body Login: ${response.body}');
+        return loginResponseFromJson(response.body);
+      } else if (response.statusCode == 401) {
         return loginResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
@@ -176,6 +174,8 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
+        return passwordForgetResponseFromJson(response.body);
+      } else if (response.statusCode == 404) {
         return passwordForgetResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');

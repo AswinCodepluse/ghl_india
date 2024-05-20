@@ -126,6 +126,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
 
   Widget buildBody(BuildContext context, String _verify_by) {
     return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
         children: [
           FlipCard(

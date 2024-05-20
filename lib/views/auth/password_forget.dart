@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:ghl_callrecoding/views/auth/password_otp.dart';
 import 'package:toast/toast.dart';
 import '../../repositories/auth_repositories.dart';
-import '../../utils/colors.dart';
 import '../../utils/toast_component.dart';
 import 'components/btn_elements.dart';
 import 'components/input_decorations.dart';

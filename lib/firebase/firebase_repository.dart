@@ -65,30 +65,7 @@ class FirebaseRepository {
     });
   }
 
-  // Future<void> scheduleNotification(DateTime scheduledTime) async {
-  //   final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //   AndroidNotificationDetails(
-  //     'your channel id',
-  //     'your channel name',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //     showWhen: false,
-  //   );
-  //   const NotificationDetails platformChannelSpecifics =
-  //   NotificationDetails(android: androidPlatformChannelSpecifics);
-  //
-  //   await flutterLocalNotificationsPlugin.zonedSchedule(
-  //       0,
-  //       'Scheduled Notification',
-  //       'This is a test notification scheduled at 3:28 PM',
-  //       tzScheduledTime,
-  //       platformChannelSpecifics,
-  //       androidAllowWhileIdle: true,
-  //       uiLocalNotificationDateInterpretation:
-  //       UILocalNotificationDateInterpretation.absoluteTime,
-  //       matchDateTimeComponents: DateTimeComponents.time);
-  // }
+
   Duration calculateDelayUntilTargetTime(DateTime targetTime) {
     final now = DateTime.now();
     final targetDateTime = DateTime(

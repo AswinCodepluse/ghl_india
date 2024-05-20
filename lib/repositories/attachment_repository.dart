@@ -11,8 +11,6 @@ class AttachmentRepository {
         "Authorization": "Bearer ${access_token.$}",
       },
     );
-    print("response Leads---->${response.body}");
-
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['data'];
       return list.map((model) => AttachmentData.fromJson(model)).toList();

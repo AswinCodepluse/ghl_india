@@ -34,8 +34,7 @@ class Loading{
     return value? Container(
       alignment: Alignment.center,
       child: const SizedBox(
-          height: 20,
-          width: 20,
+          height: 20, width: 20,
           child: CircularProgressIndicator()),
     ):const SizedBox(height: 5,width: 5,);
   }

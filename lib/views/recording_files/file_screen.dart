@@ -25,9 +25,6 @@ class FileScreen extends StatelessWidget {
                     // itemCount: fileController.recordedFiles.length,
                     itemCount: fileController.filePathsWithPhoneNumber.length,
                     itemBuilder: (context, index) {
-                      // String fileName = fileController.recordedFiles[index].path
-                      //     .split('/')
-                      //     .last;
                       String fileName = fileController
                           .filePathsWithPhoneNumber[index]
                           .split('/')

@@ -1,26 +1,22 @@
 import 'dart:convert';
 
+import 'package:ghl_callrecoding/app_config.dart';
 import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
-
-import '../app_config.dart';
+import 'package:ghl_callrecoding/models/login_response_model.dart';
+import 'package:ghl_callrecoding/models/logout_response_model.dart';
+import 'package:ghl_callrecoding/models/password_confirm_response.dart';
+import 'package:ghl_callrecoding/models/password_forgot_model.dart';
+import 'package:ghl_callrecoding/models/resend_code_model.dart';
+import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:http/http.dart' as http;
-
-import '../models/login_response_model.dart';
-import '../models/logout_response_model.dart';
-import '../models/password_confirm_response.dart';
-import '../models/password_forgot_model.dart';
-import '../models/resend_code_model.dart';
-import '../utils/shared_value.dart';
 
 class AuthRepository {
   Future<LoginResponse> getLoginResponse(
       String? email, String password, String loginBy) async {
-     var deviceToken = await FirebaseRepository().getToken();
-     print("device token Data===================>${deviceToken}");
-    // Define the URL for your API endpoint
+    var deviceToken = await FirebaseRepository().getToken();
+    print("device token : ${deviceToken}");
     var url = Uri.parse('https://sales.ghlindia.com/api/auth/login');
 
-    // Define your POST request body
     var post_body = jsonEncode({
       "email": "${email}",
       "password": "$password",
@@ -31,7 +27,6 @@ class AuthRepository {
     });
 
     try {
-      // Make the POST request
       var response = await http.post(
         url,
         headers: {
@@ -41,31 +36,26 @@ class AuthRepository {
       );
 
       print("post body Login $post_body");
-      // Check the status code of the response
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response body Login: ${response.body}');
         return loginResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
-        // Return a default LoginResponse or throw an exception
         throw Exception(
             'Failed to make POST request. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here if needed
       print('Exception occurred: $e');
-      throw e; // Rethrow the exception
+      throw e;
     }
   }
 
   Future<LoginResponse> getUserByTokenResponse() async {
-    print("access token''''''''''''''${access_token.$}");
     var post_body = jsonEncode({"access_token": "${access_token.$}"});
 
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/get-user-by-access-token");
     try {
-      // Make the POST request
       var response = await http.post(
         url,
         headers: {
@@ -75,21 +65,18 @@ class AuthRepository {
         body: post_body,
       );
 
-      // Check the status code of the response
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response body: ${response.body}');
         return loginResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
-        // Return a default LoginResponse or throw an exception
         throw Exception(
             'Failed to make POST request. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here if needed
       print('Exception occurred: $e');
-      throw e; // Rethrow the exception
+      throw e;
     }
   }
 
@@ -101,7 +88,7 @@ class AuthRepository {
         "App-Language": app_language.$!,
       },
     );
-    print("response Logout---->${response.body}");
+    print("response Logout : ${response.body}");
 
     if (response.statusCode == 200) {
       return logoutResponseFromJson(response.body);
@@ -117,7 +104,6 @@ class AuthRepository {
 
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/confirm_reset");
     try {
-      // Make the POST request
       var response = await http.post(
         url,
         headers: {
@@ -127,21 +113,18 @@ class AuthRepository {
         body: post_body,
       );
 
-      // Check the status code of the response
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response body: ${response.body}');
         return passwordConfirmResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
-        // Return a default LoginResponse or throw an exception
         throw Exception(
             'Failed to make POST request. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here if needed
       print('Exception occurred: $e');
-      throw e; // Rethrow the exception
+      throw e;
     }
   }
 
@@ -152,7 +135,6 @@ class AuthRepository {
 
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/resend_code");
     try {
-      // Make the POST request
       var response = await http.post(
         url,
         headers: {
@@ -162,21 +144,18 @@ class AuthRepository {
         body: post_body,
       );
 
-      // Check the status code of the response
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response body: ${response.body}');
         return resendCodeResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
-        // Return a default LoginResponse or throw an exception
         throw Exception(
             'Failed to make POST request. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here if needed
       print('Exception occurred: $e');
-      throw e; // Rethrow the exception
+      throw e;
     }
   }
 
@@ -187,7 +166,6 @@ class AuthRepository {
 
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/password/forget_request");
     try {
-      // Make the POST request
       var response = await http.post(
         url,
         headers: {
@@ -197,21 +175,16 @@ class AuthRepository {
         body: post_body,
       );
 
-      // Check the status code of the response
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         return passwordForgetResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
-        // Return a default LoginResponse or throw an exception
         throw Exception(
             'Failed to make POST request. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here if needed
       print('Exception occurred: $e');
-      throw e; // Rethrow the exception
+      throw e;
     }
   }
 }

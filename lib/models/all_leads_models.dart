@@ -1,6 +1,3 @@
-
-
-
 class LeadsData {
   List<AllLeads>? data;
   bool? success;

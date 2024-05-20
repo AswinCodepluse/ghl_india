@@ -34,29 +34,6 @@ class AttachmentScreen extends StatelessWidget {
                       return attachmentContainer(data);
                     }),
               ),
-              // FutureBuilder(
-              //   future: attachmentController.fetchAttachment(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.waiting) {
-              //       return Center(
-              //           child: CircularProgressIndicator(
-              //         color: Colors.red,
-              //       ));
-              //     } else if (snapshot.hasError) {
-              //       return Text('Error: ${snapshot.error}');
-              //     } else {
-              //       return Expanded(
-              //         child: ListView.builder(
-              //             itemCount: attachmentController.attachmentList.length,
-              //             itemBuilder: (context, index) {
-              //               final data =
-              //                   attachmentController.attachmentList[index];
-              //               return attachmentContainer(data);
-              //             }),
-              //       );
-              //     }
-              //   },
-              // ),
             ],
           );
         }),

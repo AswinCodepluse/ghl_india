@@ -3,13 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
-import '../../helpers/auth_helpers.dart';
-import '../../utils/shared_value.dart';
-import '../auth/login_page.dart';
 
 class DashBoard extends StatelessWidget {
   DashBoard({super.key});
@@ -32,14 +31,6 @@ class DashBoard extends StatelessWidget {
                 padding: EdgeInsets.only(right: 15.0),
                 child: Icon(Icons.file_copy),
               )),
-          // GestureDetector(
-          //     onTap: () {
-          //       Get.to(() => LeadScreen());
-          //     },
-          //     child: const Padding(
-          //       padding: EdgeInsets.only(right: 15.0),
-          //       child: Icon(Icons.person),
-          //     )),
         ],
       ),
       body: RefreshIndicator(
@@ -62,18 +53,12 @@ class DashBoard extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: [
-                        // searchBar(dashboardController.searchCon, dashboardController),
-                        // SizedBox(
-                        //   height: 15,
-                        // ),
                         Row(
                           children: [
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Colors.green,
-                                    // color: Color(0xFFBFF945),
-                                    // color2: Color(0XFF665F5F),
                                     text: "Total Leads",
                                     icon: "assets/image/dashboard_icon_1.png",
                                     count: dashboardController.totalLead.value),
@@ -90,9 +75,7 @@ class DashBoard extends StatelessWidget {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    // color: Color(0xFFE8846E),
                                     color: Colors.red,
-                                    // color2: Color(0xFFDF1C1C),
                                     text: "Website Lead",
                                     icon: "assets/image/dashboard_icon_2.png",
                                     count:
@@ -115,7 +98,6 @@ class DashBoard extends StatelessWidget {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Color(0xFF7569DE),
-                                    // color2: Color(0xFF2E1FAF),
                                     text: "Facebook Lead",
                                     icon: "assets/image/dashboard_icon_3.png",
                                     count:
@@ -134,7 +116,6 @@ class DashBoard extends StatelessWidget {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Color(0xFFF3C41F),
-                                    // color2: Color(0xFFF88C29),
                                     text: "Google Lead",
                                     icon: "assets/image/google_drive_icon.png",
                                     count:
@@ -291,10 +272,6 @@ class DashBoard extends StatelessWidget {
         ],
       ),
       decoration: BoxDecoration(
-        // gradient: LinearGradient(
-        //     // colors: [color1, color2],
-        //     end: Alignment.bottomRight,
-        //     begin: Alignment.topLeft),
         color: color,
         borderRadius: BorderRadius.circular(10),
       ),

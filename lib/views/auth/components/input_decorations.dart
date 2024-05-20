@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../utils/colors.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 class InputDecorations {
   static InputDecoration buildInputDecoration_1({hint_text = "", suffixIcon,}) {
     return InputDecoration(

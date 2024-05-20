@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ghl_callrecoding/repositories/auth_repositories.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
+import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:toast/toast.dart';
-import '../../repositories/auth_repositories.dart';
-import '../../utils/colors.dart';
-import '../../utils/toast_component.dart';
+
 import 'components/btn_elements.dart';
 import 'components/input_decorations.dart';
 import 'package:flip_card/flip_card.dart';
@@ -115,90 +116,12 @@ class _PasswordOtpState extends State<PasswordOtp> {
   @override
   Widget build(BuildContext context) {
     String _verify_by = widget.verify_by; //phone or email
-    final _screen_height = MediaQuery.of(context).size.height;
-    final _screen_width = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      //key: _scaffoldKey,
-      //drawer: MainDrawer(),
       backgroundColor: Colors.white,
-      //appBar: buildAppBar(context),
       body: buildBody(context, _verify_by),
-      // body: Stack(
-      //   children: [
-      //     Container(
-      //       height: MediaQuery.of(context).size.height,
-      //       width: MediaQuery.of(context).size.width,
-      //       color: Color(0XFF9BD1E5),
-      //       // alignment: Alignment.topRight,
-      //       child: Image.asset(
-      //         "assets/image/login_background.png",
-      //       ),
-      //     ),
-      //     CustomScrollView(
-      //       //controller: _mainScrollController,
-      //       physics: const BouncingScrollPhysics(
-      //           parent: AlwaysScrollableScrollPhysics()),
-      //       slivers: [
-      //         SliverList(
-      //           delegate: SliverChildListDelegate(
-      //             [
-      //               Padding(
-      //                 padding: const EdgeInsets.only(top: 48.0),
-      //                 child: Row(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: [
-      //                     Container(
-      //                       padding: const EdgeInsets.symmetric(
-      //                           horizontal: 8, vertical: 12),
-      //                       width: 72,
-      //                       height: 72,
-      //                       decoration: BoxDecoration(
-      //                           color: Colors.white,
-      //                           borderRadius: BorderRadius.circular(8)),
-      //                       child: Image.asset('assets/image/app_logo.jpg'),
-      //                     ),
-      //                   ],
-      //                 ),
-      //               ),
-      //               Padding(
-      //                 padding: const EdgeInsets.only(bottom: 20.0, top: 10),
-      //                 child: Text(
-      //                   'Password OTP',
-      //                   style: const TextStyle(
-      //                       color: MyTheme.accent_color,
-      //                       fontSize: 18,
-      //                       fontWeight: FontWeight.w600),
-      //                   textAlign: TextAlign.center,
-      //                 ),
-      //               ),
-      //               Padding(
-      //                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
-      //                 child: Container(
-      //                   padding: const EdgeInsets.symmetric(vertical: 20),
-      //                   decoration: BoxDecoration(
-      //                     borderRadius: BorderRadius.circular(6.0),
-      //                     color: Colors.transparent,
-      //                   ),
-      //                   child: buildBody(context, _verify_by),
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         )
-      //       ],
-      //     ),
-      //   ],
-      // ),
     );
-    // return AuthScreen.buildScreen(
-    //     context,
-    //     headeText,
-    //     WillPopScope(
-    //         onWillPop: (){
-    //           gotoLoginScreen();
-    //           return Future.delayed(Duration.zero);
-    //         },
-    //         child: buildBody(context, _screen_width, _verify_by)));
   }
 
   Widget buildBody(BuildContext context, String _verify_by) {
@@ -221,8 +144,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage("assets/image/ghl_login_bg.png"),
-                        fit: BoxFit.fill
-                    ),
+                        fit: BoxFit.fill),
                   ),
                 ),
                 Padding(
@@ -244,8 +166,8 @@ class _PasswordOtpState extends State<PasswordOtp> {
                           ? Text(
                               "Enter the verification code that sent to your email recently.",
                               textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: MyTheme.dark_grey, fontSize: 14))
+                              style: TextStyle(
+                                  color: MyTheme.dark_grey, fontSize: 14))
                           : Text(
                               "Enter the verification code that sent to your phone recently.",
                               textAlign: TextAlign.center,
@@ -262,8 +184,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
                         child: Text(
                           'Enter the code',
                           style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600),
+                              color: Colors.red, fontWeight: FontWeight.w600),
                         ),
                       ),
                       Padding(
@@ -276,8 +197,9 @@ class _PasswordOtpState extends State<PasswordOtp> {
                               child: TextField(
                                 controller: _codeController,
                                 autofocus: false,
-                                decoration: InputDecorations.buildInputDecoration_1(
-                                    hint_text: "A X B 4 J H"),
+                                decoration:
+                                    InputDecorations.buildInputDecoration_1(
+                                        hint_text: "A X B 4 J H"),
                               ),
                             ),
                           ],
@@ -288,8 +210,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
                         child: Text(
                           "Password",
                           style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600),
+                              color: Colors.red, fontWeight: FontWeight.w600),
                         ),
                       ),
                       Padding(
@@ -305,8 +226,9 @@ class _PasswordOtpState extends State<PasswordOtp> {
                                 obscureText: true,
                                 enableSuggestions: false,
                                 autocorrect: false,
-                                decoration: InputDecorations.buildInputDecoration_1(
-                                    hint_text: "• • • • • • • •"),
+                                decoration:
+                                    InputDecorations.buildInputDecoration_1(
+                                        hint_text: "• • • • • • • •"),
                               ),
                             ),
                             Text(
@@ -323,8 +245,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
                         child: Text(
                           "Retype Password",
                           style: TextStyle(
-                              color:Colors.red,
-                              fontWeight: FontWeight.w600),
+                              color: Colors.red, fontWeight: FontWeight.w600),
                         ),
                       ),
                       Padding(
@@ -349,14 +270,14 @@ class _PasswordOtpState extends State<PasswordOtp> {
                           decoration: BoxDecoration(
                               border: Border.all(
                                   color: MyTheme.textfield_grey, width: 1),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12.0))),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(12.0))),
                           child: Btn.basic(
                             minWidth: MediaQuery.of(context).size.width,
                             color: Colors.red,
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(12.0))),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(12.0))),
                             child: Text(
                               "Confirm",
                               style: TextStyle(

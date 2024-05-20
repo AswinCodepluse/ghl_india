@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 
-import '../../../utils/colors.dart';
 
 class Btn {
   static Widget basic(

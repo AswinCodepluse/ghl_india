@@ -20,8 +20,6 @@ class TimeLineRepository {
       );
 
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         var json = jsonDecode(response.body)["data"];
         return json.map((e) => Data.fromJson(e)).toList();
       } else {

@@ -14,15 +14,10 @@ class FileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // isLoading.value = true;
-    // Future.delayed(Duration(seconds: 1), () {
-    //    checkPermission();
-    // });
   }
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 

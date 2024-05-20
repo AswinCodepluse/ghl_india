@@ -1,6 +1,7 @@
+import 'package:ghl_callrecoding/models/login_response_model.dart';
+import 'package:ghl_callrecoding/repositories/auth_repositories.dart';
 import 'package:ghl_callrecoding/utils/shared_value.dart';
-import '../models/login_response_model.dart';
-import '../repositories/auth_repositories.dart';
+
 
 
 class AuthHelper {
@@ -9,7 +10,7 @@ class AuthHelper {
       is_logged_in.$ = true;
       is_logged_in.save();
       access_token.$ = loginResponse.accessToken;
-      print("Accesss token======>${access_token.$}");
+
       access_token.save();
       user_id.$ = loginResponse.user?.id;
       user_id.save();

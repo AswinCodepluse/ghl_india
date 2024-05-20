@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ghl_callrecoding/models/time_line_model.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-
-
 Widget timeLineContainer(Data data) {
   return Container(
     child: Row(

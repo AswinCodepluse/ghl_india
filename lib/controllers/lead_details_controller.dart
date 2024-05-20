@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
-import 'package:ghl_callrecoding/models/lead_details.dart';
+import 'package:ghl_callrecoding/models/lead_details_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:intl/intl.dart';
@@ -70,17 +70,7 @@ class LeadsController extends GetxController {
       setDisable.value = false;
     }
   }
-  // isDisable() {
-  //   if ((fileCon.text.isEmpty || fileCon.text == '') ||
-  //       (callRecordingFileCon.text.isEmpty ||
-  //           callRecordingFileCon.text == '') || (datePickedCon.text.isEmpty ||
-  //       datePickedCon.text == '') ||
-  //       (followupNotesCon.text.isEmpty || followupNotesCon.text == '')) {
-  //     setDisable.value = true;
-  //   } else {
-  //     setDisable.value = false;
-  //   }
-  // }
+
 
   Future displayDatePicker(BuildContext context, dateValue) async {
     DateTime date = DateTime(1900);
@@ -90,12 +80,11 @@ class LeadsController extends GetxController {
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime(2100)) as DateTime;
-    DateFormat formatter = DateFormat('yyyy-MM-dd');
     if (date != null) {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       dateValue.text = formatter.format(date);
       datePickedCon.text = formatter.format(date);
-      // isDisable();
+
       remindDate = dateValue.text;
       SharedPreference().setRemainderDate(remindDate);
       FirebaseRepository().setNotification();
@@ -105,26 +94,18 @@ class LeadsController extends GetxController {
 
   setNotification() async {
     String dateString = datePickedCon.text;
-    print('======================= ${dateString}');
-    print('======================= ${datePickedCon.text}');
-    print("yes entered");
     List<String> dateParts = dateString.split('-');
-    print("i8484664737=======>${dateParts}");
     int year = int.parse(dateParts[0]);
     int month = int.parse(dateParts[1]);
     int day = int.parse(dateParts[2]);
-    print("year========>${year}=---${month}----${day}");
     FirebaseRepository firebaseRepo = FirebaseRepository();
     await firebaseRepo.getToken().then((value) => token = value);
     final targetDateTime = DateTime(year, month, day, 10, 00);
-    print('targetTime  $targetDateTime');
     firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
   }
 
   fetchAllLeadsDatas() async {
     isLeads.value = true;
-    // var leadsResponse = await Dashboard().fetchLeads();
-    // leadsList.addAll(leadsResponse);
     isLeads.value = false;
     update();
   }
@@ -138,10 +119,6 @@ class LeadsController extends GetxController {
     followupNotesCon.clear();
     callRecordingFileCon.clear();
     datePickedCon.clear();
-
-    // selectedLeadIds.value = 0;
-    // selectedLeadStatus.value = leadStatusList[0].name!;
-    // leadsList.clear();
   }
 
   onChanged(String? newValue) {
@@ -150,14 +127,12 @@ class LeadsController extends GetxController {
   }
 
   Future<void> pickFile(String fileType) async {
-    print('fileType $fileType');
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (fileType == "Call") {
       if (result != null) {
         callFiles = File(result.files.single.path!);
         callFileName.value = callFiles!.path.split('/').last;
         callRecordingFileCon.text = callFiles!.path.split('/').last;
-        // isDisable();
         update();
       }
     } else {
@@ -165,32 +140,13 @@ class LeadsController extends GetxController {
         files = File(result.files.single.path!);
         fileName.value = files!.path.split('/').last;
         fileCon.text = files!.path.split('/').last;
-        // isDisable();
+
         update();
       }
     }
   }
 
-  // Future fetchLeadStatus() async {
-  //   List<LeadStatusModel> data = await Dashboard().fetchLeadStatus();
-  //  print('================================');
-  //  print(data.first.data![0].name);
-  //  print('================================');
-  // }
-  // fetchLeadStatus() async {
-  //   isLeads.value = true;
-  //   var leadsResponse = await Dashboard().fetchLeadStatus();
-  //   leadStatusList.addAll(leadsResponse);
-  //
-  //   for (int i = 0; i < leadStatusList.length; i++) {
-  //     leadStatusNameList.add(leadStatusList[i].name!);
-  //   }
-  //   print('================================');
-  //   print(leadStatusList[0].name);
-  //   print('================================');
-  //   isLeads.value = false;
-  //   update();
-  // }
+
 
   fetchIndividualLeads(int id) async {
     leadDetailsData.value = await Dashboard().fetchOIndividualLeads(id);
@@ -219,7 +175,6 @@ class LeadsController extends GetxController {
 
   openSMS({required String phoneNumber, required BuildContext context}) async {
     try {
-      print('phoneNumber ========= $phoneNumber');
       if (Platform.isAndroid) {
         String uri =
             'sms:$phoneNumber?body=${Uri.encodeComponent("Hello, I have a question about https://ghlindia.com/")}';

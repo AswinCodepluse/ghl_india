@@ -10,8 +10,6 @@ class TimeLineController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    print("oniti called");
-    print(leadId.value);
     fetchTimeLine(leadId.value);
     super.onInit();
   }
@@ -29,7 +27,6 @@ class TimeLineController extends GetxController {
     if (activeTimeLineList.isNotEmpty) {
       firstOldStatus.value = activeTimeLineList.first.oldStatus;
       firstFollowupDate.value = activeTimeLineList.first.nextFollowUpDate;
-      print('==========check==========');
     }
   }
 }

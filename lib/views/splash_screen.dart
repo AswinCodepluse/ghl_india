@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:ghl_callrecoding/app_config.dart';
+import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:package_info/package_info.dart';
-import '../app_config.dart';
-import '../helpers/auth_helpers.dart';
-import '../utils/shared_value.dart';
+
 import 'dashboard/dashboard.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -35,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _initPackageInfo();
     getSharedValueHelperData().then((value) {
-      print("access Value====>${value}");
       Future.delayed(const Duration(seconds: 3)).then((value) async {
         final isLogged = await SharedPreference().getLogin();
         if (isLogged) {

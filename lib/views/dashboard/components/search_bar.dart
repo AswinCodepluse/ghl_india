@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 
 Widget searchBar(
-    TextEditingController controller, DashboardController dashboardController) {
+    TextEditingController controller, LeadsDataController leadsDataController) {
   return Container(
     height: 40,
     child: TextField(
       controller: controller,
       cursorColor: Colors.grey,
-      onChanged: dashboardController.searchLead,
+      onChanged: leadsDataController.searchLead,
       cursorHeight: 20,
       decoration: InputDecoration(
         hintText: "Search...",
@@ -19,7 +20,7 @@ Widget searchBar(
         ),
         suffixIcon: GestureDetector(
           onTap: () {
-            dashboardController.clearSearchText();
+            leadsDataController.clearSearchText();
           },
           child: Icon(
             Icons.clear,

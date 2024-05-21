@@ -139,14 +139,26 @@ class _PasswordOtpState extends State<PasswordOtp> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/image/ghl_login_bg.png"),
-                        fit: BoxFit.fill),
-                  ),
+                Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/image/ghl_login_bg.png"),
+                            fit: BoxFit.fill),
+                      ),
+                    ),
+                    Positioned(
+                      right: 38,
+                      top: 15,
+                      child: Image(
+                        image: AssetImage("assets/image/GHL_main_logo.png"),
+                        width: 200,
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20.0, top: 10),

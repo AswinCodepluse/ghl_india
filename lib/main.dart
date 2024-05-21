@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       builder: OneContext().builder,
       navigatorKey: OneContext().navigator.key,
-      title: 'GHL Call Recording',
+      title: 'GHL Leads',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),

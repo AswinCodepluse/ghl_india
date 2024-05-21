@@ -271,6 +271,20 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 15,
                   ),
+                  titleRow(firstTitle: "Interest", secondTitle: "Assigned"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                        () => subTitleRow(
+                        firstSubTitle:
+                        leadsController.leadDetailsData.value.interest ?? "",
+                        secondSubTitle:
+                        leadsController.leadDetailsData.value.assigned ??
+                            "",
+                        firstIcon: Icons.interests,
+                        secondIcon: Icons.work),
+                  ),
                 ],
               ),
             ),
@@ -484,6 +498,19 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                // await leadsController.shareDocument(widget.phoneNumber);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  color: Colors.blue,
+                  child: Center(child: CustomText(text: 'Document')),
+                ),
               ),
             ),
             Obx(() {

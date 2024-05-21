@@ -3,15 +3,11 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/models/dashboard_model.dart';
-import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:ghl_callrecoding/repositories/dashboard_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DashboardController extends GetxController {
-  var leadsList = <AllLeads>[].obs;
-  var facebookLeads = <AllLeads>[].obs;
-  var websiteLeads = <AllLeads>[].obs;
-  var googleLeads = <AllLeads>[].obs;
+
   var dashboardCountList = [].obs;
   var searchLeadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
@@ -44,39 +40,21 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
+    fetchDashboardData();
     Future.delayed(Duration(seconds: 1), () {
       checkPermission();
     });
-    fetchDashboardData();
-    fetchAll();
+
 
     super.onInit();
   }
 
   @override
   void onClose() {
-    clearAll();
     // TODO: implement onClose
     super.onClose();
   }
 
-  fetchAllLeadsData() async {
-    isLeads.value = true;
-    var leadsResponse = await Dashboard().fetchLeads();
-    leadsList.addAll(leadsResponse);
-    for (int i = 0; i < leadsList.length; i++) {
-      if (leadsList[i].source == 'facebook') {
-        facebookLeads.add(leadsList[i]);
-      } else if (leadsList[i].source == 'google') {
-        googleLeads.add(leadsList[i]);
-      } else if (leadsList[i].source == 'website') {
-        websiteLeads.add(leadsList[i]);
-      }
-      leadPhoneNumbers.add(leadsList[i].phoneNo!);
-    }
-    isLeads.value = false;
-    update();
-  }
 
   fetchDashboardData() async {
     isLeads.value = true;
@@ -99,13 +77,7 @@ class DashboardController extends GetxController {
     await fetchDashboardData();
   }
 
-  fetchAll() {
-    fetchAllLeadsData();
-  }
 
-  clearAll() {
-    leadsList.clear();
-  }
 
   Color getColor(String colorName) {
     switch (colorName) {
@@ -132,18 +104,5 @@ class DashboardController extends GetxController {
       default:
         return Colors.black;
     }
-  }
-
-  searchLead(String str) {
-    searchLeadsList.value = leadsList
-        .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-        .toList();
-    update();
-  }
-
-  clearSearchText() {
-    searchLeadsList.value = [];
-    searchCon.clear();
-    update();
   }
 }

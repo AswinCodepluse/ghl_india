@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
@@ -19,9 +20,16 @@ class LeadScreen extends StatefulWidget {
 }
 
 class _LeadScreenState extends State<LeadScreen> {
+  LeadsDataController leadsDataController = Get.put(LeadsDataController());
+
+  @override
+  void initState() {
+    super.initState();
+    leadsDataController.fetchAllLeadsData(); // Move the call here
+  }
+
   @override
   Widget build(BuildContext context) {
-    DashboardController dashboardController = Get.find();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -30,75 +38,76 @@ class _LeadScreenState extends State<LeadScreen> {
           text: widget.platforms == 'allLeads'
               ? "Leads"
               : widget.platforms == 'website'
-                  ? "Website Leads"
-                  : widget.platforms == "facebook"
-                      ? "Facebook Leads"
-                      : "Google Leads",
+              ? "Website Leads"
+              : widget.platforms == "facebook"
+              ? "Facebook Leads"
+              : "Google Leads",
         ),
         leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(Icons.arrow_back)),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Icon(Icons.arrow_back),
+        ),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
             child:
-                searchBar(dashboardController.searchCon, dashboardController),
+            searchBar(leadsDataController.searchCon, leadsDataController),
           ),
           Expanded(
-            child: GetBuilder<DashboardController>(
-              builder: (dashboardController) {
-                return dashboardController.isLeads.value
+            child: GetBuilder<LeadsDataController>(
+              builder: (leadsDataController) {
+                return leadsDataController.isLeads.value
                     ? Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ),
-                      )
-                    : dashboardController.searchCon.text.isNotEmpty &&
-                            dashboardController.searchLeadsList.isEmpty
-                        ? Center(
-                            child: CustomText(
-                            text: "No Search Lead Found",
-                          ))
-                        : ListView.builder(
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount:
-                                dashboardController.searchCon.text.isNotEmpty
-                                    ? dashboardController.searchLeadsList.length
-                                    : widget.platforms == "allLeads"
-                                        ? dashboardController.leadsList.length
-                                        : widget.platforms == "website"
-                                            ? dashboardController
-                                                .websiteLeads.length
-                                            : widget.platforms == "facebook"
-                                                ? dashboardController
-                                                    .facebookLeads.length
-                                                : dashboardController
-                                                    .googleLeads.length,
-                            itemBuilder: (context, index) {
-                              final data = dashboardController
-                                      .searchCon.text.isNotEmpty
-                                  ? dashboardController.searchLeadsList[index]
-                                  : widget.platforms == "allLeads"
-                                      ? dashboardController.leadsList[index]
-                                      : widget.platforms == "website"
-                                          ? dashboardController
-                                              .websiteLeads[index]
-                                          : widget.platforms == "facebook"
-                                              ? dashboardController
-                                                  .facebookLeads[index]
-                                              : dashboardController
-                                                  .googleLeads[index];
-                              final randomColor = dashboardController.colors[
-                                  Random().nextInt(
-                                      dashboardController.colors.length)];
-                              return leadsContainer(
-                                  data, randomColor, dashboardController);
-                            });
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                )
+                    : leadsDataController.searchCon.text.isNotEmpty &&
+                    leadsDataController.searchLeadsList.isEmpty
+                    ? Center(
+                    child: CustomText(
+                      text: "No Search Lead Found",
+                    ))
+                    : ListView.builder(
+                    keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                    itemCount:
+                    leadsDataController.searchCon.text.isNotEmpty
+                        ? leadsDataController.searchLeadsList.length
+                        : widget.platforms == "allLeads"
+                        ? leadsDataController.leadsList.length
+                        : widget.platforms == "website"
+                        ? leadsDataController
+                        .websiteLeads.length
+                        : widget.platforms == "facebook"
+                        ? leadsDataController
+                        .facebookLeads.length
+                        : leadsDataController
+                        .googleLeads.length,
+                    itemBuilder: (context, index) {
+                      final data = leadsDataController
+                          .searchCon.text.isNotEmpty
+                          ? leadsDataController.searchLeadsList[index]
+                          : widget.platforms == "allLeads"
+                          ? leadsDataController.leadsList[index]
+                          : widget.platforms == "website"
+                          ? leadsDataController
+                          .websiteLeads[index]
+                          : widget.platforms == "facebook"
+                          ? leadsDataController
+                          .facebookLeads[index]
+                          : leadsDataController
+                          .googleLeads[index];
+                      final randomColor = leadsDataController.colors[
+                      Random().nextInt(
+                          leadsDataController.colors.length)];
+                      return leadsContainer(
+                          data, randomColor, leadsDataController);
+                    });
               },
             ),
           )
@@ -108,12 +117,12 @@ class _LeadScreenState extends State<LeadScreen> {
   }
 
   Widget leadsContainer(AllLeads data, String randomColor,
-      DashboardController dashboardController) {
+      LeadsDataController leadsDataController) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();
     return GestureDetector(
-      onTap: ()async {
+      onTap: () async {
         var userName = await SharedPreference().getUserName();
         Get.to(
           () => LeadDetailsScreen(
@@ -138,7 +147,7 @@ class _LeadScreenState extends State<LeadScreen> {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                  color: dashboardController.getColor(randomColor),
+                  color: leadsDataController.getColor(randomColor),
                   shape: BoxShape.circle),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

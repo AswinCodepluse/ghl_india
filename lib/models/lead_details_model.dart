@@ -10,6 +10,7 @@ class LeadDetails {
   String? status;
   int? statusInt;
   String? source;
+  String? interest;
   String? assigned;
   String? campaign;
   String? medium;
@@ -38,6 +39,7 @@ class LeadDetails {
         this.status,
         this.statusInt,
         this.source,
+        this.interest,
         this.assigned,
         this.campaign,
         this.medium,
@@ -66,6 +68,7 @@ class LeadDetails {
     status = json['status'];
     statusInt = json['status_int'];
     source = json['source'];
+    interest = json['interest'];
     assigned = json['assigned'];
     campaign = json['campaign'];
     medium = json['medium'];
@@ -96,6 +99,7 @@ class LeadDetails {
     data['status'] = this.status;
     data['status_int'] = this.statusInt;
     data['source'] = this.source;
+    data['interest'] = this.interest;
     data['assigned'] = this.assigned;
     data['campaign'] = this.campaign;
     data['medium'] = this.medium;

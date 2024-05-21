@@ -18,7 +18,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="GHL CallRecorder"
+        android:label="GHL Leads"
         android:requestLegacyExternalStorage="true">
 
         <activity
@@ -39,6 +39,7 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -76,6 +77,15 @@
         <!--                <category android:name="${applicationId}" />-->
         <!--            </intent-filter>-->
         <!--        </receiver>-->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
     <queries>
         <!-- If your app checks for SMS support -->

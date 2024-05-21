@@ -55,6 +55,8 @@ dependencies:
   cloud_firestore:
   timezone:
   intl:
+  share_plus: ^4.0.1
+  whatsapp_share: ^2.0.2
 
 
 dev_dependencies:

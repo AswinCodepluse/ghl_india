@@ -9,7 +9,12 @@ import 'package:ghl_callrecoding/models/lead_details_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'package:whatsapp_share/whatsapp_share.dart';
 
 class LeadsController extends GetxController {
   var isLeads = false.obs;
@@ -238,6 +243,50 @@ class LeadsController extends GetxController {
             fileController.filePathsWithPhoneNumber.last;
         lastCallRecording = File(fileController.filePathsWithPhoneNumber.last);
       }
+    }
+  }
+
+  Future<void> shareDocument(String phoneNumber) async {
+    final permissionStatus = await _requestPermissions();
+    if (permissionStatus.isGranted) {
+      final filePath = await downloadFile();
+      if (filePath != null) {
+        await WhatsappShare.shareFile(
+          phone: '91$phoneNumber',
+          filePath: [filePath],
+        );
+      } else {
+        print('Error creating document');
+      }
+    } else {
+      print('Storage permissions are not granted');
+    }
+  }
+
+  Future<PermissionStatus> _requestPermissions() async {
+    final status = await Permission.storage.request();
+    return status;
+  }
+
+  Future<String?> downloadFile() async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final path = '${directory!.path}/downloaded_document.pdf';
+      final file = File(path);
+
+      final url = 'https://sales.ghlindia.com/uploads/documents/1715620608.pdf';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        await file.writeAsBytes(response.bodyBytes);
+        return path;
+      } else {
+        print('Error downloading file: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error downloading file: $e');
+      return null;
     }
   }
 }

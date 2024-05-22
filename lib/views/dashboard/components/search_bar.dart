@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 
@@ -18,15 +19,20 @@ Widget searchBar(
           Icons.search,
           color: Colors.grey,
         ),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            leadsDataController.clearSearchText();
-          },
-          child: Icon(
-            Icons.clear,
-            color: Colors.grey,
-          ),
-        ),
+        suffixIcon: Obx(() {
+          return controller.text.isEmpty &&
+                  leadsDataController.searchLeadsList.isEmpty
+              ? SizedBox()
+              : GestureDetector(
+                  onTap: () {
+                    leadsDataController.clearSearchText();
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    color: Colors.grey,
+                  ),
+                );
+        }),
         contentPadding: EdgeInsets.all(8),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

@@ -26,12 +26,14 @@ class DocumentScreen extends StatelessWidget {
           children: [
             Expanded(
               child: Obx(() {
-                return ListView.builder(
-                    itemCount: documentController.documentList.length,
-                    itemBuilder: (context, index) {
-                      final data = documentController.documentList[index];
-                      return documentContainer(data: data);
-                    });
+                return documentController.documentList.isEmpty
+                    ? Center(child: CustomText(text: "No Document Found"))
+                    : ListView.builder(
+                        itemCount: documentController.documentList.length,
+                        itemBuilder: (context, index) {
+                          final data = documentController.documentList[index];
+                          return documentContainer(data: data);
+                        });
               }),
             )
           ],

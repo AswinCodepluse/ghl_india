@@ -39,6 +39,7 @@ void main() async {
   FirebaseRepository firebaseRepo = FirebaseRepository();
   firebaseRepo.requestPermission();
   var token = await firebaseRepo.getToken();
+  print('device token $token');
   SharedPreference().setDeviceToken(token);
   firebaseRepo.initInfo();
   firebaseRepo.setNotification();

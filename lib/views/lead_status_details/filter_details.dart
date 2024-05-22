@@ -11,19 +11,20 @@ import '../../models/leads_filter_models.dart';
 import '../leadsDetails/leads_details.dart';
 
 class LeadDatasFilterStatus extends StatefulWidget {
-  LeadDatasFilterStatus({super.key, required this.statusId});
+  LeadDatasFilterStatus(
+      {super.key, required this.statusId, required this.status});
+
   final int statusId;
+  final String status;
 
   @override
   State<LeadDatasFilterStatus> createState() => _LeadDatasFilterStatusState();
 }
 
 class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
-
   @override
   void initState() {
     // TODO: implement initState
-    print("widget status id======.${widget.statusId}");
     leadStatusFilterController.fetchFilterLeadStatus(widget.statusId);
     super.initState();
   }
@@ -35,6 +36,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
     leadStatusFilterController.filterLeadStatusList.clear();
     super.dispose();
   }
+
   final LeadStatusFilterController leadStatusFilterController =
       Get.put(LeadStatusFilterController());
 
@@ -47,7 +49,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: CustomText(text: "Yet To Call"),
+        title: CustomText(text: widget.status),
         leading: GestureDetector(
           onTap: () {
             Navigator.of(context).pop();
@@ -55,33 +57,41 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
           child: Icon(Icons.arrow_back),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(
-              () {
-                print(leadStatusFilterController.filterLeadStatusList.length);
-                return ListView.builder(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemCount:
-                        leadStatusFilterController.filterLeadStatusList.length,
-                    itemBuilder: (context, index) {
-                      final data = leadStatusFilterController
-                          .filterLeadStatusList[index];
-                      final randomColor = leadsDataController.colors[
-                          Random().nextInt(leadsDataController.colors.length)];
-                      return leadsContainer(data, randomColor);
-                    });
-              },
-            ),
-          )
-        ],
-      ),
+      body: Obx(() {
+        return leadStatusFilterController.loadingState.value
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Colors.red,
+                ),
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    child:
+                        leadStatusFilterController.filterLeadStatusList.isEmpty
+                            ? Center(
+                                child: CustomText(
+                                  text: "No Leads Available For This Status",
+                                ),
+                              )
+                            : ListView.builder(
+                                keyboardDismissBehavior:
+                                    ScrollViewKeyboardDismissBehavior.onDrag,
+                                itemCount: leadStatusFilterController
+                                    .filterLeadStatusList.length,
+                                itemBuilder: (context, index) {
+                                  final data = leadStatusFilterController
+                                      .filterLeadStatusList[index];
+                                  return leadsContainer(data);
+                                }),
+                  )
+                ],
+              );
+      }),
     );
   }
 
-  Widget leadsContainer(UserLeadsDetails data, String randomColor) {
+  Widget leadsContainer(UserLeadsDetails data) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();

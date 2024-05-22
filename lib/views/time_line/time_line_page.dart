@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
 import 'package:ghl_callrecoding/views/time_line/widget/time_line_container.dart';
+import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class TimeLinePage extends StatefulWidget {
   TimeLinePage({super.key});
@@ -38,14 +39,19 @@ class _TimeLinePageState extends State<TimeLinePage> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: ListView.builder(
-                    itemCount: timeLineController.activeTimeLineList.length,
-                    itemBuilder: (context, index) {
-                      final data = timeLineController.activeTimeLineList[index];
-                      return timeLineContainer(data);
-                    }), // FutureBuilder(
-              ),
+              timeLineController.activeTimeLineList.isEmpty
+                  ? Center(
+                      child: CustomText(text: "No Activity TimeLine Found"))
+                  : Expanded(
+                      child: ListView.builder(
+                          itemCount:
+                              timeLineController.activeTimeLineList.length,
+                          itemBuilder: (context, index) {
+                            final data =
+                                timeLineController.activeTimeLineList[index];
+                            return timeLineContainer(data);
+                          }), // FutureBuilder(
+                    ),
             ],
           );
         }),

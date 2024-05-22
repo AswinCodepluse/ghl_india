@@ -55,6 +55,7 @@ class SharedPreference {
     await prefs.remove("user_id");
     await prefs.remove("device_token");
     await prefs.remove("remainder_date");
+    await prefs.remove("remainder_time");
   }
 
   Future<void> setRemainderDate(String value) async {

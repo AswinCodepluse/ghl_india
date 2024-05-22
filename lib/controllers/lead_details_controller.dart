@@ -104,10 +104,6 @@ class LeadsController extends GetxController {
       final String formattedTime = picked.format(context);
 
       postTime = formatTimeOfDay(picked);
-      print("=======================");
-      print("formattedTime  $formattedTime");
-      print("postTime  $postTime");
-      print("=======================");
       controller.text = formattedTime;
     }
   }
@@ -196,10 +192,6 @@ class LeadsController extends GetxController {
         //   callRecordingFileCon.text = callFiles.path.split('/').last;
         //   print(reNameFilePath);
         // }
-        print('+=================================================');
-        print(callFiles);
-        print(callFileName.value);
-        print('+=================================================');
 
         update();
       }
@@ -322,12 +314,6 @@ class LeadsController extends GetxController {
   Future<void> shareDocument(String url, String phoneNumber) async {
     if (url.isNotEmpty && phoneNumber.isNotEmpty) {
       try {
-        var whatsappUrl = "whatsapp://send?phone=$phoneNumber";
-        if (await canLaunch(whatsappUrl.toString())) {
-          await launch(whatsappUrl.toString());
-        } else {
-          throw 'Could not launch WhatsApp';
-        }
         final filePath = await downloadFile(url: url);
         await WhatsappShare.shareFile(
           phone: "91$phoneNumber",
@@ -341,6 +327,12 @@ class LeadsController extends GetxController {
             'phone': '91$phoneNumber',
           },
         );
+        var whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+        if (await canLaunch(whatsappUrl.toString())) {
+          await launch(whatsappUrl.toString());
+        } else {
+          throw 'Could not launch WhatsApp';
+        }
       } catch (e) {
         print('Error sharing document: $e');
       }

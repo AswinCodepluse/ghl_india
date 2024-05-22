@@ -7,8 +7,9 @@ import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:http/http.dart' as http;
 
 class LeadStatusRepository {
-  Future<LeadsFilterResponse> fetchFilterLeadStatus() async {
-    var post_body = jsonEncode({"status": '1'});
+  Future<LeadsFilterResponse> fetchFilterLeadStatus({int? id}) async {
+    var post_body = jsonEncode({"status": '$id'});
+    print("post_body leads Filter------>$post_body");
 
     var url =
         Uri.parse("${AppConfig.BASE_URL}/sales-person/leads/status/filter");

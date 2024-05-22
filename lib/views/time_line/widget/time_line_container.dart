@@ -13,9 +13,10 @@ Widget timeLineContainer(Data data) {
           height: 70,
           width: 70,
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(data.file!), fit: BoxFit.fill),
-              borderRadius: BorderRadius.circular(10)),
+            image: DecorationImage(
+                image: NetworkImage(data.file!), fit: BoxFit.fill),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
         SizedBox(
           width: 8,

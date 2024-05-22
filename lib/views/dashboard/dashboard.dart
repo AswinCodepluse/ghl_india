@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/controllers/lead_status_filter_controller.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
@@ -17,6 +18,7 @@ class DashBoard extends StatelessWidget {
   final DashboardController dashboardController = Get.find();
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +151,9 @@ class DashBoard extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final data =
                                   dashboardController.dashboardCountList[index];
+                              int statusId =
+                                  dashboardController
+                                      .dashboardCountList[index].id;
                               final randomColor = dashboardController.colors[
                                   Random().nextInt(
                                       dashboardController.colors.length)];
@@ -157,11 +162,14 @@ class DashBoard extends StatelessWidget {
                                   text: data.name!,
                                   index: index,
                                   onTap: () {
+                                    print("status Id====>${statusId}");
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LeadDatasFilterStatus()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            LeadDatasFilterStatus(statusId: statusId),
+                                      ),
+                                    );
                                   },
                                   color: randomColor);
                             },
@@ -213,7 +221,7 @@ class DashBoard extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: index == 0 ? onTap : null,
+          onTap: onTap,
           child: Container(
             height: 50,
             width: 50,

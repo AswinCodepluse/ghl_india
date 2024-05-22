@@ -25,6 +25,7 @@ class _LeadScreenState extends State<LeadScreen> {
   @override
   void initState() {
     super.initState();
+    leadsDataController.leadType = widget.platforms;
     leadsDataController.fetchAllLeadsData();
   }
 
@@ -38,10 +39,10 @@ class _LeadScreenState extends State<LeadScreen> {
           text: widget.platforms == 'allLeads'
               ? "Leads"
               : widget.platforms == 'website'
-              ? "Website Leads"
-              : widget.platforms == "facebook"
-              ? "Facebook Leads"
-              : "Google Leads",
+                  ? "Website Leads"
+                  : widget.platforms == "facebook"
+                      ? "Facebook Leads"
+                      : "Google Leads",
         ),
         leading: GestureDetector(
           onTap: () {
@@ -55,59 +56,59 @@ class _LeadScreenState extends State<LeadScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
             child:
-            searchBar(leadsDataController.searchCon, leadsDataController),
+                searchBar(leadsDataController.searchCon, leadsDataController),
           ),
           Expanded(
             child: GetBuilder<LeadsDataController>(
               builder: (leadsDataController) {
                 return leadsDataController.isLeads.value
                     ? Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
-                )
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      )
                     : leadsDataController.searchCon.text.isNotEmpty &&
-                    leadsDataController.searchLeadsList.isEmpty
-                    ? Center(
-                    child: CustomText(
-                      text: "No Search Lead Found",
-                    ))
-                    : ListView.builder(
-                    keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemCount:
-                    leadsDataController.searchCon.text.isNotEmpty
-                        ? leadsDataController.searchLeadsList.length
-                        : widget.platforms == "allLeads"
-                        ? leadsDataController.leadsList.length
-                        : widget.platforms == "website"
-                        ? leadsDataController
-                        .websiteLeads.length
-                        : widget.platforms == "facebook"
-                        ? leadsDataController
-                        .facebookLeads.length
-                        : leadsDataController
-                        .googleLeads.length,
-                    itemBuilder: (context, index) {
-                      final data = leadsDataController
-                          .searchCon.text.isNotEmpty
-                          ? leadsDataController.searchLeadsList[index]
-                          : widget.platforms == "allLeads"
-                          ? leadsDataController.leadsList[index]
-                          : widget.platforms == "website"
-                          ? leadsDataController
-                          .websiteLeads[index]
-                          : widget.platforms == "facebook"
-                          ? leadsDataController
-                          .facebookLeads[index]
-                          : leadsDataController
-                          .googleLeads[index];
-                      final randomColor = leadsDataController.colors[
-                      Random().nextInt(
-                          leadsDataController.colors.length)];
-                      return leadsContainer(
-                          data, randomColor, leadsDataController);
-                    });
+                            leadsDataController.searchLeadsList.isEmpty
+                        ? Center(
+                            child: CustomText(
+                            text: "No Search Lead Found",
+                          ))
+                        : ListView.builder(
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount:
+                                leadsDataController.searchCon.text.isNotEmpty
+                                    ? leadsDataController.searchLeadsList.length
+                                    : widget.platforms == "allLeads"
+                                        ? leadsDataController.leadsList.length
+                                        : widget.platforms == "website"
+                                            ? leadsDataController
+                                                .websiteLeads.length
+                                            : widget.platforms == "facebook"
+                                                ? leadsDataController
+                                                    .facebookLeads.length
+                                                : leadsDataController
+                                                    .googleLeads.length,
+                            itemBuilder: (context, index) {
+                              final data = leadsDataController
+                                      .searchCon.text.isNotEmpty
+                                  ? leadsDataController.searchLeadsList[index]
+                                  : widget.platforms == "allLeads"
+                                      ? leadsDataController.leadsList[index]
+                                      : widget.platforms == "website"
+                                          ? leadsDataController
+                                              .websiteLeads[index]
+                                          : widget.platforms == "facebook"
+                                              ? leadsDataController
+                                                  .facebookLeads[index]
+                                              : leadsDataController
+                                                  .googleLeads[index];
+                              final randomColor = leadsDataController.colors[
+                                  Random().nextInt(
+                                      leadsDataController.colors.length)];
+                              return leadsContainer(
+                                  data, randomColor, leadsDataController);
+                            });
               },
             ),
           )

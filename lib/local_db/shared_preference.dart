@@ -67,6 +67,16 @@ class SharedPreference {
     return prefs.getString("remainder_date") ?? "";
   }
 
+  Future<void> setRemainderTime(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("remainder_time", value);
+  }
+
+  Future<String> getRemainderTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("remainder_time") ?? "";
+  }
+
   Future<void> setDeviceToken(String value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("device_token", value);

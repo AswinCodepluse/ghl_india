@@ -521,18 +521,20 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   buttonText: "Submit",
                   disable: leadsController.setDisable.value,
                   onTap: () async {
+                    SharedPreference sharedPreference = SharedPreference();
                     if (leadsController.selectedLeadIds.value == 4 &&
                         leadsController.timeCon.text.isEmpty) {
                       ToastComponent.showDialog("Select Time",
                           gravity: Toast.center, duration: Toast.lengthLong);
                       return;
                     }
-                    String user_Id = await SharedPreference().getUserId();
+                    String user_Id = await sharedPreference.getUserId();
                     File callRecordingFile =
                         fileController.filePathsWithPhoneNumber.isEmpty
                             ? leadsController.callFiles
                             : leadsController.lastCallRecording;
-                    print('leadsController.callFiles ${leadsController.callFiles}');
+                    print(
+                        'leadsController.callFiles ${leadsController.callFiles}');
                     LeadDatasCreate response = await Dashboard().postLeadDatas(
                       leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
@@ -546,6 +548,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       audioFilesData ?? File(""),
                     );
                     if (response.result == true) {
+                      sharedPreference
+                          .setRemainderDate(leadsController.remindDate);
+                      if (leadsController.selectedLeadIds.value == 4) {
+                        sharedPreference
+                            .setRemainderTime(leadsController.postTime);
+                      }
+
                       audioFilesData = File("");
                       callRecordingFile = File("");
                       leadsController.files = File("");

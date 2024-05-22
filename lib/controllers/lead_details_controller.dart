@@ -32,6 +32,8 @@ class LeadsController extends GetxController {
   RxString selectedLeadPhoneNumber = ''.obs;
   File? files;
   bool isSubmitted = false;
+  String hours = '';
+  String minutes = '';
 
   // var leadDetailsData = Rx<LeadDetails?>(LeadDetails);
   Rx<LeadDetails> leadDetailsData = LeadDetails().obs;
@@ -100,14 +102,19 @@ class LeadsController extends GetxController {
     );
     if (picked != null) {
       final String formattedTime = picked.format(context);
+
       postTime = formatTimeOfDay(picked);
+      print("=======================");
+      print("formattedTime  $formattedTime");
+      print("postTime  $postTime");
+      print("=======================");
       controller.text = formattedTime;
     }
   }
 
   String formatTimeOfDay(TimeOfDay time) {
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
+    hours = time.hour.toString().padLeft(2, '0');
+    minutes = time.minute.toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
 
@@ -123,25 +130,29 @@ class LeadsController extends GetxController {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       dateValue.text = formatter.format(date);
       datePickedCon.text = formatter.format(date);
-
       remindDate = dateValue.text;
-      SharedPreference().setRemainderDate(remindDate);
-      FirebaseRepository().setNotification();
+      // SharedPreference().setRemainderDate(remindDate);
+      // FirebaseRepository().setNotification();
       update();
     }
   }
 
-  setNotification() async {
-    String dateString = datePickedCon.text;
-    List<String> dateParts = dateString.split('-');
-    int year = int.parse(dateParts[0]);
-    int month = int.parse(dateParts[1]);
-    int day = int.parse(dateParts[2]);
-    FirebaseRepository firebaseRepo = FirebaseRepository();
-    await firebaseRepo.getToken().then((value) => token = value);
-    final targetDateTime = DateTime(year, month, day, 10, 00);
-    firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
-  }
+  // setNotification() async {
+  //   String dateString = datePickedCon.text;
+  //   List<String> dateParts = dateString.split('-');
+  //   // final pickedHours = time.hour.toString().padLeft(2, '0');
+  //   // final pickedMinutes = time.minute.toString().padLeft(2, '0');
+  //   int year = int.parse(dateParts[0]);
+  //   int month = int.parse(dateParts[1]);
+  //   int day = int.parse(dateParts[2]);
+  //   int pickedHours = int.parse(hours);
+  //   int pickedMinutes = int.parse(minutes);
+  //   FirebaseRepository firebaseRepo = FirebaseRepository();
+  //   await firebaseRepo.getToken().then((value) => token = value);
+  //   final targetDateTime =
+  //       DateTime(year, month, day, pickedHours, pickedMinutes);
+  //   firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
+  // }
 
   fetchAllLeadsDatas() async {
     isLeads.value = true;

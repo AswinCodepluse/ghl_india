@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 
-
 class LeadsDataController extends GetxController {
   var leadsList = <AllLeads>[].obs;
   var facebookLeads = <AllLeads>[].obs;
@@ -11,6 +10,7 @@ class LeadsDataController extends GetxController {
   var googleLeads = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
   var searchLeadsList = <AllLeads>[].obs;
+  String leadType = "";
   TextEditingController searchCon = TextEditingController();
   var isLeads = false.obs;
 
@@ -26,8 +26,9 @@ class LeadsDataController extends GetxController {
     isLeads.value = true;
     var leadsResponse = await Dashboard().fetchLeads();
     leadsList.addAll(leadsResponse);
-    facebookLeads.value =
-        leadsResponse.where((n) => n.source == "Fb_leads_GHL India Asset").toList();
+    facebookLeads.value = leadsResponse
+        .where((n) => n.source == "Fb_leads_GHL India Asset")
+        .toList();
     googleLeads.value =
         leadsResponse.where((n) => n.source == 'google').toList();
     websiteLeads.value =
@@ -81,9 +82,27 @@ class LeadsDataController extends GetxController {
   }
 
   searchLead(String str) {
-    searchLeadsList.value = leadsList
-        .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-        .toList();
+    if (leadType == "website") {
+      searchLeadsList.value = websiteLeads
+          .where(
+              (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+          .toList();
+    } else if (leadType == "facebook") {
+      searchLeadsList.value = facebookLeads
+          .where(
+              (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+          .toList();
+    } else if (leadType == "google") {
+      searchLeadsList.value = googleLeads
+          .where(
+              (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+          .toList();
+    } else {
+      searchLeadsList.value = leadsList
+          .where(
+              (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+          .toList();
+    }
     update();
   }
 

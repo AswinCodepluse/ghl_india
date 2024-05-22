@@ -7,7 +7,6 @@ import 'package:ghl_callrecoding/repositories/dashboard_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DashboardController extends GetxController {
-
   var dashboardCountList = [].obs;
   var searchLeadsList = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
@@ -45,7 +44,6 @@ class DashboardController extends GetxController {
       checkPermission();
     });
 
-
     super.onInit();
   }
 
@@ -54,7 +52,6 @@ class DashboardController extends GetxController {
     // TODO: implement onClose
     super.onClose();
   }
-
 
   fetchDashboardData() async {
     isLeads.value = true;
@@ -76,8 +73,6 @@ class DashboardController extends GetxController {
     dashboardCountList.clear();
     await fetchDashboardData();
   }
-
-
 
   Color getColor(String colorName) {
     switch (colorName) {

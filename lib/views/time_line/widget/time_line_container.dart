@@ -42,7 +42,16 @@ Widget timeLineContainer(Data data) {
             SizedBox(
               width: 120,
               child: CustomText(
-                text: data.createdAt ?? '',
+                text: "Next Followup Date",
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(
+              width: 120,
+              child: CustomText(
+                text: "Next Followup Time",
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
                 color: Colors.grey,
@@ -58,6 +67,7 @@ Widget timeLineContainer(Data data) {
           children: [
             SizedBox(
               width: 115,
+              height: 28,
               child: CustomText(
                 text: "Status : ${data.newStatus}",
                 fontSize: 12,
@@ -66,8 +76,9 @@ Widget timeLineContainer(Data data) {
             ),
             SizedBox(
               width: 115,
+              height: 20,
               child: CustomText(
-                text: "Next Followup Date",
+                text: data.createdAt ?? '',
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey,
@@ -75,8 +86,19 @@ Widget timeLineContainer(Data data) {
             ),
             SizedBox(
               width: 115,
+              height: 20,
               child: CustomText(
                 text: data.nextFollowUpDate ?? '',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(
+              width: 115,
+              height: 20,
+              child: CustomText(
+                text: data.nextFollowUpTime ?? '',
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey,

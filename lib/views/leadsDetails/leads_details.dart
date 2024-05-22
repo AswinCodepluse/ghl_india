@@ -16,6 +16,7 @@ import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
+import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/conformation_dialog.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/header_icon_container.dart';
@@ -24,6 +25,7 @@ import 'package:ghl_callrecoding/views/leadsDetails/widget/title_row.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:one_context/one_context.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
   const LeadDetailsScreen({
@@ -276,12 +278,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                        () => subTitleRow(
+                    () => subTitleRow(
                         firstSubTitle:
-                        leadsController.leadDetailsData.value.interest ?? "",
+                            leadsController.leadDetailsData.value.interest ??
+                                "",
                         secondSubTitle:
-                        leadsController.leadDetailsData.value.assigned ??
-                            "",
+                            leadsController.leadDetailsData.value.assigned ??
+                                "",
                         firstIcon: Icons.interests,
                         secondIcon: Icons.work),
                   ),
@@ -313,6 +316,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   ),
                   CustomTextField(
                       controller: leadsController.fileCon,
+                      hintText: "Select Image File",
                       readOnly: true,
                       onTap: () {
                         leadsController.pickFile("");
@@ -329,7 +333,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   CustomTextField(
                       controller: leadsController.callRecordingFileCon,
                       readOnly: true,
-                      hintText: "Select Call Recording file",
+                      hintText: "Select Call Recording File",
                       onChange: (String value) {
                         leadsController.isDisable();
                       },
@@ -390,6 +394,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         onTap: () {},
                         onChanged: (value) {
                           leadsController.selectedLeadIds.value = value!.id!;
+                          leadsController.timeCon.clear();
                           leadsController.selectedLeadNames.value = value.name!;
                         },
                         hint: Text('Select Status'),
@@ -402,40 +407,50 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 10,
                   ),
+                  Obx(() {
+                    return leadsController.selectedLeadIds.value == 4
+                        ? Wrap(
+                            children: [
+                              CustomText(text: "Select Time"),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                child: CustomTextField(
+                                  controller: leadsController.timeCon,
+                                  readOnly: true,
+                                  hintText: "Select Time",
+                                  onTap: () async {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    await leadsController.displayTimePicker(
+                                        context, leadsController.timeCon);
+                                  },
+                                  suffixIcon: Icon(
+                                    Icons.access_time,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container();
+                  }),
                   CustomText(text: "Followup Dates"),
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: leadsController.shadow,
-                        color: MyTheme.white),
-                    child: TextFormField(
-                      controller: leadsController.datePickedCon,
-                      textAlign: TextAlign.start,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        suffixIcon: Icon(
-                          Icons.date_range,
-                          color: Colors.red,
-                        ),
-                        hintText: "Select Date",
-                        hintStyle:
-                            TextStyle(color: MyTheme.grey_153, fontSize: 14),
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
-                      ),
-                      onTap: () async {
-                        await leadsController.displayDatePicker(
-                            context, leadsController.datePickedCon);
-                      },
+                  CustomTextField(
+                    controller: leadsController.datePickedCon,
+                    readOnly: true,
+                    hintText: "Select Date",
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      await leadsController.displayDatePicker(
+                          context, leadsController.datePickedCon);
+                    },
+                    suffixIcon: Icon(
+                      Icons.date_range,
+                      color: Colors.red,
                     ),
                   ),
                   SizedBox(
@@ -449,6 +464,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 110,
                     child: CustomTextField(
                         controller: leadsController.followupNotesCon,
+                        hintText: "Enter Notes",
                         onChange: (String value) {
                           leadsController.isDisable();
                         },
@@ -500,29 +516,23 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () async {
-                // await leadsController.shareDocument(widget.phoneNumber);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  color: Colors.blue,
-                  child: Center(child: CustomText(text: 'Document')),
-                ),
-              ),
-            ),
             Obx(() {
               return CustomButton(
                   buttonText: "Submit",
                   disable: leadsController.setDisable.value,
                   onTap: () async {
+                    if (leadsController.selectedLeadIds.value == 4 &&
+                        leadsController.timeCon.text.isEmpty) {
+                      ToastComponent.showDialog("Select Time",
+                          gravity: Toast.center, duration: Toast.lengthLong);
+                      return;
+                    }
                     String user_Id = await SharedPreference().getUserId();
                     File callRecordingFile =
                         fileController.filePathsWithPhoneNumber.isEmpty
                             ? leadsController.callFiles
                             : leadsController.lastCallRecording;
+                    print('leadsController.callFiles ${leadsController.callFiles}');
                     LeadDatasCreate response = await Dashboard().postLeadDatas(
                       leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
@@ -530,6 +540,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       leadsController.selectedLeadIds.value,
                       leadsController.followupNotesCon.text,
                       leadsController.datePickedCon.text,
+                      leadsController.postTime,
                       leadsController.files ?? File(""),
                       callRecordingFile,
                       audioFilesData ?? File(""),

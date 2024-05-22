@@ -9,7 +9,6 @@ import 'dart:io';
 import '../models/all_leads_models.dart';
 import 'package:http/http.dart' as http;
 
-
 class Dashboard {
   Future<List<AllLeads>> fetchLeads() async {
     final response = await http.get(
@@ -81,6 +80,7 @@ class Dashboard {
     int status,
     String testNotes,
     String date,
+    String time,
     File files,
     File callRecord,
     File voiceRecord,
@@ -102,14 +102,35 @@ class Dashboard {
       'status': '$status',
       'notes': '$testNotes',
       'next_follow_up_date': '$date',
+      'next_follow_up_time': time
     });
 
     if (files.existsSync()) {
+      print('+++++++++++++++++++++');
       request.files.add(http.MultipartFile(
           'file', files.readAsBytes().asStream(), files.lengthSync(),
           filename: files.path.split('/').last));
     }
+    print('callRecord   ${callRecord.path}');
     if (callRecord.existsSync()) {
+      // if (!callRecord.path.contains(".mp3") &&
+      //     !callRecord.path.contains(".amr") &&
+      //     !callRecord.path.contains(".jpg") &&
+      //     !callRecord.path.contains(".jpeg") &&
+      //     !callRecord.path.contains(".m4a")) {
+      //   String reNameFilePath = '';
+      //   reNameFilePath += "${callRecord.path}.mp3";
+      //   callRecord = File(reNameFilePath);
+      //   print("reNameFilePath  $reNameFilePath");
+      // }
+      print('+++++++++++++++++++++');
+      print(callRecord.readAsBytes().asStream());
+      print(
+        callRecord.lengthSync(),
+      );
+      print(callRecord.path.split('/').last);
+      print('+++++++++++++++++++++');
+
       request.files.add(http.MultipartFile('call_record',
           callRecord.readAsBytes().asStream(), callRecord.lengthSync(),
           filename: callRecord.path.split('/').last));
@@ -139,5 +160,4 @@ class Dashboard {
       throw e;
     }
   }
-
 }

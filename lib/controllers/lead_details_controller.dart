@@ -11,7 +11,6 @@ import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:whatsapp_share/whatsapp_share.dart';
@@ -25,6 +24,7 @@ class LeadsController extends GetxController {
   TextEditingController statusCon = TextEditingController();
   TextEditingController followupNotesCon = TextEditingController();
   TextEditingController datePickedCon = TextEditingController();
+  TextEditingController timeCon = TextEditingController();
   var leadStatusList = <Data>[].obs;
   RxList<String> leadStatusNameList = <String>[].obs;
   RxString selectedLeadStatus = ''.obs;
@@ -42,6 +42,7 @@ class LeadsController extends GetxController {
   TextEditingController pathSetupCon = TextEditingController();
   RxString callFileName = ''.obs;
   String token = '';
+  String postTime = '';
   var remindDate = "";
   FileController fileController = Get.put(FileController());
 
@@ -91,6 +92,25 @@ class LeadsController extends GetxController {
     }
   }
 
+  Future<void> displayTimePicker(
+      BuildContext context, TextEditingController controller) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      final String formattedTime = picked.format(context);
+      postTime = formatTimeOfDay(picked);
+      controller.text = formattedTime;
+    }
+  }
+
+  String formatTimeOfDay(TimeOfDay time) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
   Future displayDatePicker(BuildContext context, dateValue) async {
     DateTime date = DateTime(1900);
     FocusScope.of(context).requestFocus(FocusNode());
@@ -138,6 +158,7 @@ class LeadsController extends GetxController {
     followupNotesCon.clear();
     callRecordingFileCon.clear();
     datePickedCon.clear();
+    timeCon.clear();
   }
 
   onChanged(String? newValue) {
@@ -150,8 +171,25 @@ class LeadsController extends GetxController {
     if (fileType == "Call") {
       if (result != null) {
         callFiles = File(result.files.single.path!);
-        callFileName.value = callFiles!.path.split('/').last;
-        callRecordingFileCon.text = callFiles!.path.split('/').last;
+        callFileName.value = callFiles.path.split('/').last;
+        callRecordingFileCon.text = callFiles.path.split('/').last;
+
+        // if (!callFiles.path.contains(".mp3") &&
+        //     !callFiles.path.contains(".amr") &&
+        //     !callFiles.path.contains(".jpg") &&
+        //     !callFiles.path.contains(".jpeg") &&
+        //     !callFiles.path.contains(".m4a")) {
+        //   String reNameFilePath = '';
+        //   reNameFilePath += "${callFiles.path}.mp3";
+        //   callFiles = await File(reNameFilePath).rename(reNameFilePath);
+        //   callRecordingFileCon.text = callFiles.path.split('/').last;
+        //   print(reNameFilePath);
+        // }
+        print('+=================================================');
+        print(callFiles);
+        print(callFileName.value);
+        print('+=================================================');
+
         update();
       }
     } else {
@@ -246,20 +284,57 @@ class LeadsController extends GetxController {
     }
   }
 
-  Future<void> shareDocument(String phoneNumber) async {
-    final permissionStatus = await _requestPermissions();
-    if (permissionStatus.isGranted) {
-      final filePath = await downloadFile();
-      if (filePath != null) {
+  // Future<void> shareDocument(
+  //     {required String phoneNumber, required String url}) async {
+  //   final permissionStatus = await _requestPermissions();
+  //   if (permissionStatus.isGranted) {
+  //     final filePath = await downloadFile(url: url);
+  //     if (filePath != null) {
+  //       print('phoneNumber $phoneNumber');
+  //       try {
+  //         print('91$phoneNumber');
+  //         await WhatsappShare.shareFile(
+  //           phone: "91$phoneNumber",
+  //           filePath: [filePath],
+  //         );
+  //       } catch (e) {
+  //         print(e);
+  //       }
+  //     } else {
+  //       print('Error creating document');
+  //     }
+  //   } else {
+  //     print('Storage permissions are not granted');
+  //   }
+  // }
+
+  Future<void> shareDocument(String url, String phoneNumber) async {
+    if (url.isNotEmpty && phoneNumber.isNotEmpty) {
+      try {
+        var whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+        if (await canLaunch(whatsappUrl.toString())) {
+          await launch(whatsappUrl.toString());
+        } else {
+          throw 'Could not launch WhatsApp';
+        }
+        final filePath = await downloadFile(url: url);
         await WhatsappShare.shareFile(
-          phone: '91$phoneNumber',
-          filePath: [filePath],
+          phone: "91$phoneNumber",
+          filePath: [filePath!],
         );
-      } else {
-        print('Error creating document');
+        Uri(
+          scheme: 'https',
+          host: 'api.whatsapp.com',
+          path: 'send',
+          queryParameters: {
+            'phone': '91$phoneNumber',
+          },
+        );
+      } catch (e) {
+        print('Error sharing document: $e');
       }
     } else {
-      print('Storage permissions are not granted');
+      print('Error: File path or phone number is empty');
     }
   }
 
@@ -268,13 +343,11 @@ class LeadsController extends GetxController {
     return status;
   }
 
-  Future<String?> downloadFile() async {
+  Future<String?> downloadFile({required String url}) async {
     try {
       final directory = await getExternalStorageDirectory();
       final path = '${directory!.path}/downloaded_document.pdf';
       final file = File(path);
-
-      final url = 'https://sales.ghlindia.com/uploads/documents/1715620608.pdf';
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {

@@ -25,7 +25,7 @@ class _LeadScreenState extends State<LeadScreen> {
   @override
   void initState() {
     super.initState();
-    leadsDataController.fetchAllLeadsData(); // Move the call here
+    leadsDataController.fetchAllLeadsData();
   }
 
   @override

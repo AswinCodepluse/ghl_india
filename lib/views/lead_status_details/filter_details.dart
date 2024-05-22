@@ -10,11 +10,34 @@ import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import '../../models/leads_filter_models.dart';
 import '../leadsDetails/leads_details.dart';
 
-class LeadDatasFilterStatus extends StatelessWidget {
-  LeadDatasFilterStatus({super.key});
+class LeadDatasFilterStatus extends StatefulWidget {
+  LeadDatasFilterStatus({super.key, required this.statusId});
+  final int statusId;
 
+  @override
+  State<LeadDatasFilterStatus> createState() => _LeadDatasFilterStatusState();
+}
+
+class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("widget status id======.${widget.statusId}");
+    leadStatusFilterController.fetchFilterLeadStatus(widget.statusId);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    print("called Dispose");
+    // TODO: implement dispose
+    leadStatusFilterController.filterLeadStatusList.clear();
+    super.dispose();
+  }
   final LeadStatusFilterController leadStatusFilterController =
       Get.put(LeadStatusFilterController());
+
   final LeadsDataController leadsDataController =
       Get.put(LeadsDataController());
 

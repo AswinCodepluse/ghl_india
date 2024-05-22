@@ -57,6 +57,8 @@ dependencies:
   intl:
   share_plus: ^4.0.1
   whatsapp_share: ^2.0.2
+  call_log: ^4.0.0
+
 
 
 dev_dependencies:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 import 'package:ghl_callrecoding/views/attachment/attachment_screen.dart';
+import 'package:ghl_callrecoding/views/call_log/call_log_screen.dart';
 import 'package:ghl_callrecoding/views/document/document_screen.dart';
 import 'package:ghl_callrecoding/views/time_line/time_line_page.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
@@ -203,6 +204,41 @@ class HeaderIconContainer extends StatelessWidget {
                 ),
                 CustomText(
                   text: "Documents",
+                  // color: Colors.red,
+                )
+              ],
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CallLogScreen(
+                                  leadPhoneNumber: phoneNumber,
+                                )));
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Image(
+                        image: AssetImage(
+                          "assets/image/document_icon.png",
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                CustomText(
+                  text: "Call Log",
                   // color: Colors.red,
                 )
               ],

@@ -49,33 +49,32 @@ class AuthRepository {
     }
   }
 
-  Future<LoginResponse> getUserByTokenResponse() async {
+  Future<LoginResponse?> getUserByTokenResponse() async {
     var post_body = jsonEncode({"access_token": "${access_token.$}"});
-    print('+++++++++++++++++++++++++++');
-    print('access_token ${access_token.$}');
-    print('+++++++++++++++++++++++++++');
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/get-user-by-access-token");
     try {
+      http.Response response;
       if (access_token.$ != "") {
+        response = await http.post(
+          url,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${access_token.$}",
+          },
+          body: post_body,
+        );
 
-      }
-      var response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer ${access_token.$}",
-        },
-        body: post_body,
-      );
-
-      if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
-        return loginResponseFromJson(response.body);
+        if (response.statusCode == 200) {
+          print('POST request successful');
+          print('Response body: ${response.body}');
+          return loginResponseFromJson(response.body);
+        } else {
+          print('Failed to make POST request. Error: ${response.statusCode}');
+          throw Exception(
+              'Failed to make POST request. Error: ${response.statusCode}');
+        }
       } else {
-        print('Failed to make POST request. Error: ${response.statusCode}');
-        throw Exception(
-            'Failed to make POST request. Error: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       print('Exception occurred: $e');

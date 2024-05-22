@@ -62,7 +62,7 @@ class DocumentScreen extends StatelessWidget {
                 )),
             Spacer(),
             GestureDetector(
-                onTap: () {
+                onTap: () async {
                   print(phoneNUmber);
                   String leadPhoneNumber = '';
                   if (phoneNUmber.startsWith('+91')) {
@@ -70,7 +70,7 @@ class DocumentScreen extends StatelessWidget {
                   } else {
                     leadPhoneNumber = phoneNUmber;
                   }
-                  leadsController.shareDocument(
+                 await leadsController.shareDocument(
                     data.file!,
                     leadPhoneNumber,
                   );

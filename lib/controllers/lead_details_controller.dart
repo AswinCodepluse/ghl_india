@@ -289,25 +289,26 @@ class LeadsController extends GetxController {
 
   // Future<void> shareDocument(
   //     {required String phoneNumber, required String url}) async {
-  //   final permissionStatus = await _requestPermissions();
-  //   if (permissionStatus.isGranted) {
-  //     final filePath = await downloadFile(url: url);
-  //     if (filePath != null) {
-  //       print('phoneNumber $phoneNumber');
-  //       try {
-  //         print('91$phoneNumber');
-  //         await WhatsappShare.shareFile(
-  //           phone: "91$phoneNumber",
-  //           filePath: [filePath],
-  //         );
-  //       } catch (e) {
-  //         print(e);
+  //   final filePath = await downloadFile(url: url);
+  //   if (filePath != null) {
+  //     print('phoneNumber $phoneNumber');
+  //     try {
+  //       print('91$phoneNumber');
+  //       await WhatsappShare.shareFile(
+  //         phone: "91$phoneNumber",
+  //         filePath: [filePath],
+  //       );
+  //       var whatsappUrl = "whatsapp://send?phone=91$phoneNumber";
+  //       if (await canLaunch(whatsappUrl)) {
+  //         await launch(whatsappUrl);
+  //       } else {
+  //         throw 'Could not launch WhatsApp';
   //       }
-  //     } else {
-  //       print('Error creating document');
+  //     } catch (e) {
+  //       print(e);
   //     }
   //   } else {
-  //     print('Storage permissions are not granted');
+  //     print('Error creating document');
   //   }
   // }
 
@@ -327,7 +328,7 @@ class LeadsController extends GetxController {
             'phone': '91$phoneNumber',
           },
         );
-        var whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+        var whatsappUrl = "whatsapp://phone=$phoneNumber";
         if (await canLaunch(whatsappUrl.toString())) {
           await launch(whatsappUrl.toString());
         } else {

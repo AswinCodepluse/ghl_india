@@ -1,0 +1,96 @@
+import 'package:call_log/call_log.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+
+class CallLogController extends GetxController {
+  String leadPhoneNumber = "";
+  RxList<CallLogEntry> callLogsList = <CallLogEntry>[].obs;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    // fetchCallLogs();
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+
+    super.onClose();
+  }
+
+  Future<void> fetchCallLogs(String phoneNumber) async {
+    var status = await Permission.phone.status;
+
+    if (!status.isGranted) {
+      if (await Permission.phone.request().isGranted) {
+        retrieveCallLogs(phoneNumber);
+      }
+    } else {
+      retrieveCallLogs(phoneNumber);
+    }
+  }
+
+  Future<void> retrieveCallLogs(String phoneNumber) async {
+    Iterable<CallLogEntry> queryEntries = await CallLog.query(
+      number: phoneNumber,
+    );
+
+    callLogsList.addAll(queryEntries);
+
+    int? timestamp = queryEntries.first.timestamp;
+    int? duration = queryEntries.first.duration;
+    formatTimestamp(timestamp!);
+    formatDuration(duration!);
+
+    update();
+  }
+
+  String formatDuration(int seconds) {
+    Duration duration = Duration(seconds: seconds);
+    int hours = duration.inHours;
+    int minutes = duration.inMinutes.remainder(60);
+    int secs = duration.inSeconds.remainder(60);
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
+  String formatTimestamp(int timestamp) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+    return formattedDate;
+  }
+
+  String callTypeToString(CallType callType) {
+    switch (callType) {
+      case CallType.incoming:
+        return "incoming";
+      case CallType.outgoing:
+        return "outgoing";
+      case CallType.missed:
+        return "missed";
+      case CallType.rejected:
+        return "rejected";
+      default:
+        return "unknown";
+    }
+  }
+
+  String callTypeIcon(CallType callType) {
+    switch (callType) {
+      case CallType.incoming:
+        return "assets/image/call_incoming_icon.png";
+      case CallType.outgoing:
+        return "assets/image/call_outgoing_icon.png";
+      case CallType.missed:
+        return "assets/image/call_missed_icon.png";
+      case CallType.rejected:
+        return "assets/image/call_rejected_icon.png";
+      default:
+        return "unknown";
+    }
+  }
+}

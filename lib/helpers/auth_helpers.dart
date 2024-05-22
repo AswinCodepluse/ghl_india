@@ -45,8 +45,8 @@ class AuthHelper {
 
   fetch_and_set() async {
     var userByTokenResponse = await AuthRepository().getUserByTokenResponse();
-    if (userByTokenResponse.result == true) {
-      setUserData(userByTokenResponse);
+    if (userByTokenResponse?.result == true) {
+      setUserData(userByTokenResponse!);
     }else{
       clearUserData();
     }

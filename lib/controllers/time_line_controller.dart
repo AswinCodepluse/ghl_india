@@ -25,8 +25,8 @@ class TimeLineController extends GetxController {
     var response = await TimeLineRepository().fetchTimeLine(leadId);
     activeTimeLineList.addAll(response);
     if (activeTimeLineList.isNotEmpty) {
-      firstOldStatus.value = activeTimeLineList.first.oldStatus;
-      firstFollowupDate.value = activeTimeLineList.first.nextFollowUpDate;
+      firstOldStatus.value = activeTimeLineList.first.oldStatus ?? '';
+      firstFollowupDate.value = activeTimeLineList.first.nextFollowUpDate ?? '';
     }
   }
 }

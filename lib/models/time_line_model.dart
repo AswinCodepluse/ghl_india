@@ -35,17 +35,19 @@ class Data {
   String? notes;
   String? file;
   String? nextFollowUpDate;
+  String? nextFollowUpTime;
   String? createdAt;
 
   Data(
       {this.id,
-        this.user,
-        this.oldStatus,
-        this.newStatus,
-        this.notes,
-        this.file,
-        this.nextFollowUpDate,
-        this.createdAt});
+      this.user,
+      this.oldStatus,
+      this.newStatus,
+      this.notes,
+      this.file,
+      this.nextFollowUpDate,
+      this.nextFollowUpTime,
+      this.createdAt});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,6 +57,7 @@ class Data {
     notes = json['notes'];
     file = json['file'];
     nextFollowUpDate = json['next_follow_up_date'];
+    nextFollowUpTime = json['next_follow_up_time'];
     createdAt = json['created_at'];
   }
 
@@ -67,6 +70,7 @@ class Data {
     data['notes'] = this.notes;
     data['file'] = this.file;
     data['next_follow_up_date'] = this.nextFollowUpDate;
+    data['next_follow_up_time'] = this.nextFollowUpTime;
     data['created_at'] = this.createdAt;
     return data;
   }

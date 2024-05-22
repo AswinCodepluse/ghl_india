@@ -17,7 +17,8 @@ class LeadsDataController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    fetchAllLeadsData();
+    // fetchAllLeadsData();
+
     super.onInit();
   }
 

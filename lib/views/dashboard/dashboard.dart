@@ -6,6 +6,7 @@ import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
+import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
@@ -154,6 +155,14 @@ class DashBoard extends StatelessWidget {
                               return roundContainer(
                                   count: data.count!,
                                   text: data.name!,
+                                  index: index,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LeadDatasFilterStatus()));
+                                  },
                                   color: randomColor);
                             },
                           );
@@ -196,23 +205,30 @@ class DashBoard extends StatelessWidget {
   }
 
   Widget roundContainer(
-      {required int count, String? color, required String text}) {
+      {required int count,
+      int? index,
+      String? color,
+      required String text,
+      void Function()? onTap}) {
     return Column(
       children: [
-        Container(
-          height: 50,
-          width: 50,
-          child: Center(
-            child: CustomText(
-              text: count.toString(),
-              fontWeight: FontWeight.w800,
-              fontSize: 20,
-              color: Colors.white,
+        GestureDetector(
+          onTap: index == 0 ? onTap : null,
+          child: Container(
+            height: 50,
+            width: 50,
+            child: Center(
+              child: CustomText(
+                text: count.toString(),
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: Colors.white,
+              ),
             ),
+            decoration: BoxDecoration(
+                color: dashboardController.getColor(color!),
+                shape: BoxShape.circle),
           ),
-          decoration: BoxDecoration(
-              color: dashboardController.getColor(color!),
-              shape: BoxShape.circle),
         ),
         SizedBox(
           height: 3,

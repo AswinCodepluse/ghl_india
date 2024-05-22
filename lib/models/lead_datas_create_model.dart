@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-LeadDatasCreate leadDatasCreateResponseFromJson(String str) => LeadDatasCreate.fromJson(json.decode(str));
+LeadDatasCreate leadDatasCreateResponseFromJson(String str) =>
+    LeadDatasCreate.fromJson(json.decode(str));
 
-String leadDatasCreateResponseToJson(LeadDatasCreate data) => json.encode(data.toJson());
+String leadDatasCreateResponseToJson(LeadDatasCreate data) =>
+    json.encode(data.toJson());
 
 class LeadDatasCreate {
   bool? result;

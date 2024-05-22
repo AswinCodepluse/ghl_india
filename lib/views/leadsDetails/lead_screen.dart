@@ -53,11 +53,31 @@ class _LeadScreenState extends State<LeadScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-            child:
-                searchBar(leadsDataController.searchCon, leadsDataController),
-          ),
+          Obx(() {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+              child: widget.platforms == "allLeads"
+                  ? leadsDataController.leadsList.isEmpty
+                      ? Container()
+                      : searchBar(
+                          leadsDataController.searchCon, leadsDataController)
+                  : widget.platforms == "website"
+                      ? leadsDataController.websiteLeads.isEmpty
+                          ? Container()
+                          : searchBar(leadsDataController.searchCon,
+                              leadsDataController)
+                      : widget.platforms == "facebook"
+                          ? leadsDataController.facebookLeads.isEmpty
+                              ? Container()
+                              : searchBar(leadsDataController.searchCon,
+                                  leadsDataController)
+                          : leadsDataController.googleLeads.isEmpty
+                              ? Container()
+                              : searchBar(leadsDataController.searchCon,
+                                  leadsDataController),
+            );
+          }),
           Expanded(
             child: GetBuilder<LeadsDataController>(
               builder: (leadsDataController) {
@@ -73,48 +93,66 @@ class _LeadScreenState extends State<LeadScreen> {
                             child: CustomText(
                             text: "No Search Lead Found",
                           ))
-                        : ListView.builder(
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount:
-                                leadsDataController.searchCon.text.isNotEmpty
-                                    ? leadsDataController.searchLeadsList.length
-                                    : widget.platforms == "allLeads"
-                                        ? leadsDataController.leadsList.length
-                                        : widget.platforms == "website"
-                                            ? leadsDataController
-                                                .websiteLeads.length
-                                            : widget.platforms == "facebook"
-                                                ? leadsDataController
-                                                    .facebookLeads.length
-                                                : leadsDataController
-                                                    .googleLeads.length,
-                            itemBuilder: (context, index) {
-                              final data = leadsDataController
-                                      .searchCon.text.isNotEmpty
-                                  ? leadsDataController.searchLeadsList[index]
-                                  : widget.platforms == "allLeads"
-                                      ? leadsDataController.leadsList[index]
-                                      : widget.platforms == "website"
-                                          ? leadsDataController
-                                              .websiteLeads[index]
-                                          : widget.platforms == "facebook"
-                                              ? leadsDataController
-                                                  .facebookLeads[index]
-                                              : leadsDataController
-                                                  .googleLeads[index];
-                              final randomColor = leadsDataController.colors[
-                                  Random().nextInt(
-                                      leadsDataController.colors.length)];
-                              return leadsContainer(
-                                  data, randomColor, leadsDataController);
-                            });
+                        : widget.platforms == "allLeads"
+                            ? leadsDataController.leadsList.isEmpty
+                                ? Center(
+                                    child: CustomText(
+                                    text: "No Leads Found",
+                                  ))
+                                : leadListViewBuilder()
+                            : widget.platforms == "website"
+                                ? leadsDataController.websiteLeads.isEmpty
+                                    ? Center(
+                                        child: CustomText(
+                                        text: "No WebsiteLeads Found",
+                                      ))
+                                    : leadListViewBuilder()
+                                : widget.platforms == "facebook"
+                                    ? leadsDataController.facebookLeads.isEmpty
+                                        ? Center(
+                                            child: CustomText(
+                                            text: "No FaceBookLeads Found",
+                                          ))
+                                        : leadListViewBuilder()
+                                    : leadsDataController.googleLeads.isEmpty
+                                        ? CustomText(
+                                            text: "No GoogleLeads Found",
+                                          )
+                                        : leadListViewBuilder();
               },
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget leadListViewBuilder() {
+    return ListView.builder(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: leadsDataController.searchCon.text.isNotEmpty
+            ? leadsDataController.searchLeadsList.length
+            : widget.platforms == "allLeads"
+                ? leadsDataController.leadsList.length
+                : widget.platforms == "website"
+                    ? leadsDataController.websiteLeads.length
+                    : widget.platforms == "facebook"
+                        ? leadsDataController.facebookLeads.length
+                        : leadsDataController.googleLeads.length,
+        itemBuilder: (context, index) {
+          final data = leadsDataController.searchCon.text.isNotEmpty
+              ? leadsDataController.searchLeadsList[index]
+              : widget.platforms == "allLeads"
+                  ? leadsDataController.leadsList[index]
+                  : widget.platforms == "website"
+                      ? leadsDataController.websiteLeads[index]
+                      : widget.platforms == "facebook"
+                          ? leadsDataController.facebookLeads[index]
+                          : leadsDataController.googleLeads[index];
+          final randomColor = leadsDataController
+              .colors[Random().nextInt(leadsDataController.colors.length)];
+          return leadsContainer(data, randomColor, leadsDataController);
+        });
   }
 
   Widget leadsContainer(AllLeads data, String randomColor,

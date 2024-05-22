@@ -51,9 +51,14 @@ class AuthRepository {
 
   Future<LoginResponse> getUserByTokenResponse() async {
     var post_body = jsonEncode({"access_token": "${access_token.$}"});
-
+    print('+++++++++++++++++++++++++++');
+    print('access_token ${access_token.$}');
+    print('+++++++++++++++++++++++++++');
     var url = Uri.parse("${AppConfig.BASE_URL}/auth/get-user-by-access-token");
     try {
+      if (access_token.$ != "") {
+
+      }
       var response = await http.post(
         url,
         headers: {

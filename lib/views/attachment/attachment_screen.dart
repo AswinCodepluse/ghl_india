@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/attachment_controller.dart';
 import 'package:ghl_callrecoding/views/attachment/widget/attachment_container.dart';
+import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class AttachmentScreen extends StatelessWidget {
   const AttachmentScreen({super.key});
@@ -26,14 +27,17 @@ class AttachmentScreen extends StatelessWidget {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: ListView.builder(
-                    itemCount: attachmentController.attachmentList.length,
-                    itemBuilder: (context, index) {
-                      final data = attachmentController.attachmentList[index];
-                      return attachmentContainer(data);
-                    }),
-              ),
+              attachmentController.attachmentList.isEmpty
+                  ? Center(child: CustomText(text: "No Attachment Found"))
+                  : Expanded(
+                      child: ListView.builder(
+                          itemCount: attachmentController.attachmentList.length,
+                          itemBuilder: (context, index) {
+                            final data =
+                                attachmentController.attachmentList[index];
+                            return attachmentContainer(data);
+                          }),
+                    ),
             ],
           );
         }),

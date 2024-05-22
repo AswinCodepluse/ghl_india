@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
-import 'package:ghl_callrecoding/controllers/lead_status_filter_controller.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
@@ -19,9 +18,10 @@ class DashBoard extends StatelessWidget {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
-
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    print("screenWidth $screenWidth");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -62,6 +62,7 @@ class DashBoard extends StatelessWidget {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Colors.green,
+                                    screenWidth: screenWidth,
                                     text: "Total Leads",
                                     icon: "assets/image/dashboard_icon_1.png",
                                     count: dashboardController.totalLead.value),
@@ -73,12 +74,13 @@ class DashBoard extends StatelessWidget {
                               );
                             })),
                             SizedBox(
-                              width: 15,
+                              width: screenWidth / 24,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Colors.red,
+                                    screenWidth: screenWidth,
                                     text: "Website Lead",
                                     icon: "assets/image/dashboard_icon_2.png",
                                     count:
@@ -93,7 +95,7 @@ class DashBoard extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 15,
+                          height: screenWidth / 24,
                         ),
                         Row(
                           children: [
@@ -101,6 +103,7 @@ class DashBoard extends StatelessWidget {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Color(0xFF7569DE),
+                                    screenWidth: screenWidth,
                                     text: "Facebook Lead",
                                     icon: "assets/image/dashboard_icon_3.png",
                                     count:
@@ -113,12 +116,13 @@ class DashBoard extends StatelessWidget {
                               );
                             })),
                             SizedBox(
-                              width: 15,
+                              width: screenWidth / 24,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
                                     color: Color(0xFFF3C41F),
+                                    screenWidth: screenWidth,
                                     text: "Google Lead",
                                     icon: "assets/image/google_drive_icon.png",
                                     count:
@@ -133,7 +137,7 @@ class DashBoard extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 15,
+                          height: screenWidth / 24,
                         ),
                         Obx(() {
                           return GridView.builder(
@@ -142,8 +146,8 @@ class DashBoard extends StatelessWidget {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 4,
-                              mainAxisSpacing: 10.0,
-                              crossAxisSpacing: 10.0,
+                              mainAxisSpacing: screenWidth / 36,
+                              crossAxisSpacing: screenWidth / 36,
                               childAspectRatio: 1.0,
                             ),
                             itemCount:
@@ -151,23 +155,24 @@ class DashBoard extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final data =
                                   dashboardController.dashboardCountList[index];
-                              int statusId =
-                                  dashboardController
-                                      .dashboardCountList[index].id;
+                              int statusId = dashboardController
+                                  .dashboardCountList[index].id;
+                              String status = data.name;
                               final randomColor = dashboardController.colors[
                                   Random().nextInt(
                                       dashboardController.colors.length)];
                               return roundContainer(
+                                  screenWidth: screenWidth,
                                   count: data.count!,
                                   text: data.name!,
-                                  index: index,
                                   onTap: () {
-                                    print("status Id====>${statusId}");
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            LeadDatasFilterStatus(statusId: statusId),
+                                            LeadDatasFilterStatus(
+                                                status: status,
+                                                statusId: statusId),
                                       ),
                                     );
                                   },
@@ -176,7 +181,7 @@ class DashBoard extends StatelessWidget {
                           );
                         }),
                         SizedBox(
-                          height: 15,
+                          height: screenWidth / 24,
                         ),
                       ],
                     ),
@@ -214,23 +219,28 @@ class DashBoard extends StatelessWidget {
 
   Widget roundContainer(
       {required int count,
-      int? index,
       String? color,
+      required double screenWidth,
       required String text,
-      void Function()? onTap}) {
+      required void Function() onTap}) {
     return Column(
       children: [
         GestureDetector(
           onTap: onTap,
           child: Container(
-            height: 50,
-            width: 50,
+            height: screenWidth / 7.2,
+            width: screenWidth / 7.2,
             child: Center(
-              child: CustomText(
-                text: count.toString(),
-                fontWeight: FontWeight.w800,
-                fontSize: 20,
-                color: Colors.white,
+              child: FittedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomText(
+                    text: count.toString(),
+                    fontWeight: FontWeight.w800,
+                    fontSize: screenWidth / 18,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
             decoration: BoxDecoration(
@@ -239,14 +249,16 @@ class DashBoard extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 3,
+          height: screenWidth / 120,
         ),
-        Container(
-          width: 68,
+        SizedBox(
+          width: screenWidth / 5.3,
           child: Center(
-            child: CustomText(
-              text: text,
-              fontSize: 13,
+            child: FittedBox(
+              child: CustomText(
+                text: text,
+                fontSize: screenWidth / 27.7,
+              ),
             ),
           ),
         ),
@@ -256,48 +268,50 @@ class DashBoard extends StatelessWidget {
 
   Widget dashboardContainer(
       {required Color color,
-      // required Color color2,
+      required double screenWidth,
       required String text,
       required int count,
       required String icon}) {
     return Container(
-      padding: EdgeInsets.all(15),
-      height: 150,
+      padding: EdgeInsets.all(screenWidth / 24),
+      height: screenWidth / 2.4,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 30,
-            width: 30,
+            height: screenWidth / 12,
+            width: screenWidth / 12,
             child: Image(
               image: AssetImage(icon),
               color: Colors.white,
             ),
           ),
           SizedBox(
-            height: 10,
+            height: screenWidth / 36,
           ),
           FittedBox(
             child: CustomText(
               text: text,
               fontWeight: FontWeight.w700,
-              fontSize: 20,
+              fontSize: screenWidth / 18,
               color: Colors.white,
             ),
           ),
           Spacer(),
           Center(
-              child: CustomText(
-            text: count.toString(),
-            fontSize: 32,
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
+              child: FittedBox(
+            child: CustomText(
+              text: count.toString(),
+              fontSize: screenWidth / 11.25,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            ),
           ))
         ],
       ),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(screenWidth / 36),
       ),
     );
   }

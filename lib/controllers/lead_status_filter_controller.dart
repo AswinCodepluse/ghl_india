@@ -5,6 +5,7 @@ import 'package:ghl_callrecoding/repositories/lead_status_repository.dart';
 class LeadStatusFilterController extends GetxController {
   RxList<UserLeadsDetails> filterLeadStatusList = <UserLeadsDetails>[].obs;
   int statusId = 0;
+  RxBool loadingState = false.obs;
 
   // @override
   // void onInit() {
@@ -13,8 +14,11 @@ class LeadStatusFilterController extends GetxController {
   // }
 
   fetchFilterLeadStatus(int statusIds) async {
-    var response = await LeadStatusRepository().fetchFilterLeadStatus(id: statusIds);
+    loadingState.value = true;
+    var response =
+        await LeadStatusRepository().fetchFilterLeadStatus(id: statusIds);
     filterLeadStatusList.addAll(response.data!);
+    loadingState.value = false;
     print('================');
     print(response);
   }

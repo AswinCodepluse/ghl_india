@@ -189,8 +189,8 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               icon: Icon(
                                 _passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: MyTheme.accent_color,
                                 size: 20,
                               ),

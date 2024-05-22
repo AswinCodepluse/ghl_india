@@ -16,7 +16,6 @@ class DashboardController extends GetxController {
   var totalLead = 0.obs;
   TextEditingController searchCon = TextEditingController();
   var colors = [
-    'red',
     'blue',
     'orange',
     'green',
@@ -76,8 +75,6 @@ class DashboardController extends GetxController {
 
   Color getColor(String colorName) {
     switch (colorName) {
-      case 'red':
-        return Colors.red;
       case 'blue':
         return Colors.blue;
       case 'orange':

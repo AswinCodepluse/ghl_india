@@ -95,19 +95,21 @@ class FirebaseRepository {
     SharedPreference sharedPreference = SharedPreference();
     String dateString = await sharedPreference.getRemainderDate();
     String getRemainderTime = await sharedPreference.getRemainderTime();
-    String TimeString = getRemainderTime == "" ? "10:00" : getRemainderTime;
-    List<String> dateParts = dateString.split('-');
-    List<String> timeParts = TimeString.split(':');
-    int year = int.parse(dateParts[0]);
-    int month = int.parse(dateParts[1]);
-    int day = int.parse(dateParts[2]);
-    int hour = int.parse(timeParts[0]);
-    int minute = int.parse(timeParts[1]);
-    FirebaseRepository firebaseRepo = FirebaseRepository();
-    var deviceToken = await sharedPreference.getDeviceToken();
-    final targetDateTime = DateTime(year, month, day, hour, minute);
-    firebaseRepo.scheduleNotificationAtSpecificTime(
-        targetDateTime, deviceToken);
+    if (dateString != "") {
+      String TimeString = getRemainderTime == "" ? "10:00" : getRemainderTime;
+      List<String> dateParts = dateString.split('-');
+      List<String> timeParts = TimeString.split(':');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2]);
+      int hour = int.parse(timeParts[0]);
+      int minute = int.parse(timeParts[1]);
+      FirebaseRepository firebaseRepo = FirebaseRepository();
+      var deviceToken = await sharedPreference.getDeviceToken();
+      final targetDateTime = DateTime(year, month, day, hour, minute);
+      firebaseRepo.scheduleNotificationAtSpecificTime(
+          targetDateTime, deviceToken);
+    }
   }
 
   void sendPushNotification(

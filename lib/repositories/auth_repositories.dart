@@ -83,20 +83,48 @@ class AuthRepository {
   }
 
   Future<LogoutResponse> getLogoutResponse() async {
-    final response = await http.get(
-      Uri.parse('${AppConfig.BASE_URL}/api/auth/logout'),
-      headers: {
-        "Authorization": "Bearer ${access_token.$}",
-        "App-Language": app_language.$!,
-      },
-    );
-    print("response Logout : ${response.body}");
+    var deviceToken = await FirebaseRepository().getToken();
+    print("post logout=======>$deviceToken ${access_token.$}");
+    var post_body = jsonEncode(
+        {"device_token": "$deviceToken"});
 
-    if (response.statusCode == 200) {
-      return logoutResponseFromJson(response.body);
-    } else {
-      throw Exception('Failed to load leads');
+    var url = Uri.parse("${AppConfig.BASE_URL}/auth/logout");
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${access_token.$}",
+        },
+        body: post_body,
+      );
+      print("post logout=======>$deviceToken ${access_token.$} ======${post_body}");
+      if (response.statusCode == 200) {
+        print("response Logout : ${response.body}");
+        return logoutResponseFromJson(response.body);
+      } else {
+        print('Failed to make POST request. Error: ${response.statusCode}');
+        throw Exception(
+            'Failed to make POST request. Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      throw e;
     }
+    // final response = await http.get(
+    //   Uri.parse('${AppConfig.BASE_URL}/api/auth/logout'),
+    //   headers: {
+    //     "Authorization": "Bearer ${access_token.$}",
+    //     "App-Language": app_language.$!,
+    //   },
+    // );
+    // print("response Logout : ${response.body}");
+    //
+    // if (response.statusCode == 200) {
+    //   return logoutResponseFromJson(response.body);
+    // } else {
+    //   throw Exception('Failed to load leads');
+    // }
   }
 
   Future<PasswordConfirmResponse> getPasswordConfirmResponse(

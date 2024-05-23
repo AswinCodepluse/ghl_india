@@ -231,7 +231,7 @@ class HeaderIconContainer extends StatelessWidget {
                       width: 40,
                       child: Image(
                         image: AssetImage(
-                          "assets/image/document_icon.png",
+                          "assets/image/call_log_image.png",
                         ),
                       ),
                     ),

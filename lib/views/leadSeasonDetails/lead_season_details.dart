@@ -6,6 +6,7 @@ import 'package:ghl_callrecoding/models/leads_filter_models.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 import '../leadsDetails/leads_details.dart';
+
 class LeadSeasonDetails extends StatefulWidget {
   const LeadSeasonDetails({super.key});
 
@@ -14,9 +15,8 @@ class LeadSeasonDetails extends StatefulWidget {
 }
 
 class _LeadSeasonDetailsState extends State<LeadSeasonDetails> {
-
   final LeadsSeasonController leadsSeasonController =
-  Get.put(LeadsSeasonController());
+      Get.put(LeadsSeasonController());
 
   @override
   void initState() {
@@ -24,6 +24,7 @@ class _LeadSeasonDetailsState extends State<LeadSeasonDetails> {
     leadsSeasonController.fetchFilterLeadSeason();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,45 +42,45 @@ class _LeadSeasonDetailsState extends State<LeadSeasonDetails> {
       body: Obx(() {
         return leadsSeasonController.loadingState.value
             ? Center(
-          child: CircularProgressIndicator(
-            color: Colors.red,
-          ),
-        )
-            : Column(
-          children: [
-            Expanded(
-              child:
-              leadsSeasonController.filterLeadSeasonList.isEmpty
-                  ? Center(
-                child: CustomText(
-                  text: "No Leads Available For This Status",
+                child: CircularProgressIndicator(
+                  color: Colors.red,
                 ),
               )
-                  : ListView.builder(
-                  keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
-                  itemCount: leadsSeasonController
-                      .filterLeadSeasonList.length,
-                  itemBuilder: (context, index) {
-                    final data = leadsSeasonController
-                        .filterLeadSeasonList[index];
-                    return leadsContainer(data);
-                  }),
-            )
-          ],
-        );
+            : Column(
+                children: [
+                  Expanded(
+                    child: leadsSeasonController.filterLeadSeasonList.isEmpty
+                        ? Center(
+                            child: CustomText(
+                              text: "No Leads Available For This Session",
+                            ),
+                          )
+                        : ListView.builder(
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount: leadsSeasonController
+                                .filterLeadSeasonList.length,
+                            itemBuilder: (context, index) {
+                              final data = leadsSeasonController
+                                  .filterLeadSeasonList[index];
+                              return leadsContainer(data);
+                            }),
+                  )
+                ],
+              );
       }),
     );
   }
+
   Widget leadsContainer(UserLeadsDetails data) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
-    data.name!.substring(data.name!.length - 1).toUpperCase();
+        data.name!.substring(data.name!.length - 1).toUpperCase();
     return GestureDetector(
       onTap: () async {
         var userName = await SharedPreference().getUserName();
         Get.to(
-              () => LeadDetailsScreen(
+          () => LeadDetailsScreen(
             phoneNumber: data.phoneNo!,
             firstLetter: firstLetter,
             lastLetter: lastLetter,

@@ -3,13 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
-import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
-import 'package:ghl_callrecoding/local_db/shared_preference.dart';
-import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:ghl_callrecoding/views/leadSeasonDetails/lead_season_details.dart';
 import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
-import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
@@ -140,39 +136,6 @@ class DashBoardScreen extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 15,
-                        ),
-                        InkWell(
-                          child: Container(
-                            height: 40,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth / 36),
-                              color: Colors.grey,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomText(
-                                  text: "Todays Leads",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: screenWidth / 20,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LeadSeasonDetails(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
                           height: screenWidth / 24,
                         ),
                         Obx(() {
@@ -225,7 +188,6 @@ class DashBoardScreen extends StatelessWidget {
                 );
         }),
       ),
-
     );
   }
 
@@ -327,6 +289,4 @@ class DashBoardScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }

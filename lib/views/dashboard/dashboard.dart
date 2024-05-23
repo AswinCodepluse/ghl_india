@@ -6,6 +6,7 @@ import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
+import 'package:ghl_callrecoding/views/leadSeasonDetails/lead_season_details.dart';
 import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
@@ -21,19 +22,19 @@ class DashBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    print("screenWidth $screenWidth");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         actions: [
           GestureDetector(
-              onTap: () {
-                Get.to(() => FileScreen());
-              },
-              child: const Padding(
-                padding: EdgeInsets.only(right: 15.0),
-                child: Icon(Icons.file_copy),
-              )),
+            onTap: () {
+              Get.to(() => FileScreen());
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15.0),
+              child: Icon(Icons.file_copy),
+            ),
+          ),
         ],
       ),
       body: RefreshIndicator(
@@ -135,6 +136,39 @@ class DashBoard extends StatelessWidget {
                               );
                             })),
                           ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        InkWell(
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth / 36),
+                              color: Colors.grey,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text: "Todays Leads",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: screenWidth / 20,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LeadSeasonDetails(),
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: screenWidth / 24,

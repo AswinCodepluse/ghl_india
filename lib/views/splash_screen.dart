@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ghl_callrecoding/app_config.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/on_board/on_board_screen.dart';
 import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:package_info/package_info.dart';
@@ -38,8 +39,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(seconds: 3)).then((value) async {
         final isLogged = await SharedPreference().getLogin();
         if (isLogged) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => DashBoard()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => OnBoardScreen()));
         } else {
           Navigator.pushAndRemoveUntil(
             context,

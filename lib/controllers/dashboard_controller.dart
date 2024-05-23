@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
@@ -15,6 +21,9 @@ class DashboardController extends GetxController {
   var facebookLead = 0.obs;
   var totalLead = 0.obs;
   TextEditingController searchCon = TextEditingController();
+  TextEditingController callRecordingFileCon = TextEditingController();
+  RxList<FileSystemEntity> recordedFiles = <FileSystemEntity>[].obs;
+  String? callRecordingDirPath;
   var colors = [
     'blue',
     'orange',
@@ -71,6 +80,60 @@ class DashboardController extends GetxController {
   Future<void> refreshData() async {
     dashboardCountList.clear();
     await fetchDashboardData();
+  }
+
+  Future<void> pickFile() async {
+    String? result = await FilePicker.platform.getDirectoryPath();
+
+    if (result != null) {
+      callRecordingDirPath = result;
+      print('+++++++====================');
+      print("callFiles  $callRecordingDirPath");
+      print('+++++++====================');
+      await storeRecordedFiles(callRecordingDirPath!);
+      // callFileName.value = callFiles.path.split('/').last;
+      // callRecordingFileCon.text = callFiles.path.split('/').last;
+      callRecordingFileCon.text = callRecordingDirPath!;
+      update();
+    }
+  }
+
+  Future<String> getFilePath() async {
+    String? filePath;
+    try {
+      filePath = await StoragePath.audioPath;
+      var response = jsonDecode(filePath!);
+      List res = response;
+      res.forEach((e) => print("file path $e"));
+      print('-------------------------');
+      print("response $res");
+
+      print('-------------------------');
+      print(response);
+    } on PlatformException {
+      filePath = 'Failed to get path';
+    }
+    return filePath;
+  }
+
+  Future<void> storeRecordedFiles(String callRecordingDirPath) async {
+    try {
+      Directory? directoryPath = Directory(callRecordingDirPath);
+      List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
+      print('files  $files');
+      recordedFiles.value = files.where((file) {
+        return file is File &&
+            (file.path.endsWith(".amr") ||
+                file.path.endsWith(".wav") ||
+                file.path.endsWith(".mp3") ||
+                file.path.endsWith(".m4a"));
+      }).toList();
+
+      print("recordedFiles  $recordedFiles");
+      update();
+    } catch (e) {
+      print('Error finding recorded files: $e');
+    }
   }
 
   Color getColor(String colorName) {

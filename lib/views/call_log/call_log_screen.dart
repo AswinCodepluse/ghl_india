@@ -42,12 +42,16 @@ class _CallLogScreenState extends State<CallLogScreen> {
           children: [
             Obx(() {
               return Expanded(
-                child: ListView.builder(
-                    itemCount: callLogController.callLogsList.length,
-                    itemBuilder: (context, index) {
-                      final data = callLogController.callLogsList[index];
-                      return callLogContainer(data);
-                    }),
+                child: callLogController.callLogsList.isEmpty
+                    ? Center(
+                        child: CustomText(
+                            text: "No Call Log History For This Lead"))
+                    : ListView.builder(
+                        itemCount: callLogController.callLogsList.length,
+                        itemBuilder: (context, index) {
+                          final data = callLogController.callLogsList[index];
+                          return callLogContainer(data);
+                        }),
               );
             })
           ],
@@ -61,11 +65,6 @@ class _CallLogScreenState extends State<CallLogScreen> {
     String duration = callLogController.formatDuration(data.duration!);
     String callTypes = callLogController.callTypeToString(data.callType!);
     String icon = callLogController.callTypeIcon(data.callType!);
-
-    // String switch(callType){
-    //    case  CallType.outgoing:
-    //      return "outgoing";
-    //  }
 
     return Container(
       child: Row(

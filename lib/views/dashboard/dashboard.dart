@@ -9,13 +9,15 @@ import 'package:ghl_callrecoding/views/auth/login_page.dart';
 import 'package:ghl_callrecoding/views/leadSeasonDetails/lead_season_details.dart';
 import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-class DashBoard extends StatelessWidget {
-  DashBoard({super.key});
+class DashBoardScreen extends StatelessWidget {
+  DashBoardScreen({super.key});
 
   final DashboardController dashboardController = Get.find();
+
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -223,31 +225,7 @@ class DashBoard extends StatelessWidget {
                 );
         }),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
-              child: Text(
-                'GHL India Pvt Ltd',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Logout'),
-              onTap: () {
-                onTapLogout(context);
-              },
-            ),
-          ],
-        ),
-      ),
+
     );
   }
 
@@ -350,10 +328,5 @@ class DashBoard extends StatelessWidget {
     );
   }
 
-  onTapLogout(context) async {
-    AuthHelper().clearUserData();
-    await SharedPreference().clearUserData();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
-  }
+
 }

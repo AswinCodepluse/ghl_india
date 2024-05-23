@@ -101,7 +101,7 @@ class _LeadSeasonDetailsState extends State<LeadSeasonDetails> {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                  // color: Colors.red,
+                  color: Colors.red,
                   // color: leadStatusFilterController.getColor(randomColor),
                   shape: BoxShape.circle),
               child: Row(

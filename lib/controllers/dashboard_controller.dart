@@ -20,6 +20,7 @@ class DashboardController extends GetxController {
   var websiteLead = 0.obs;
   var facebookLead = 0.obs;
   var totalLead = 0.obs;
+  var leadSeasons = '';
   TextEditingController searchCon = TextEditingController();
   TextEditingController callRecordingFileCon = TextEditingController();
   RxList<FileSystemEntity> recordedFiles = <FileSystemEntity>[].obs;
@@ -47,10 +48,9 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    fetchDashboardData();
-    Future.delayed(Duration(seconds: 1), () {
-      checkPermission();
-    });
+    // fetchDashboardData(leadSeasons);
+
+
 
     super.onInit();
   }
@@ -61,17 +61,19 @@ class DashboardController extends GetxController {
     super.onClose();
   }
 
-  fetchDashboardData() async {
+  fetchDashboardData(String season) async {
     isLeads.value = true;
     dashboardCountList.clear();
-    var response = await DashboardRepository().fetchDashboardCount();
+    var response = await DashboardRepository().fetchDashboardCount(season);
     DashboardModel dashboardData = DashboardModel.fromJson(response);
     googleLead.value = dashboardData.google!;
     websiteLead.value = dashboardData.website!;
     facebookLead.value = dashboardData.facebook!;
     totalLead.value = dashboardData.total!;
-    dashboardData.leadStatus?.data?.forEach((element) {
-      dashboardCountList.add(element);
+    dashboardData.leadStatus?.forEach((element) {
+      element.data?.forEach((element) {
+        dashboardCountList.add(element);
+      });
     });
     isLeads.value = false;
     update();
@@ -79,7 +81,7 @@ class DashboardController extends GetxController {
 
   Future<void> refreshData() async {
     dashboardCountList.clear();
-    await fetchDashboardData();
+    await fetchDashboardData(leadSeasons);
   }
 
   Future<void> pickFile() async {

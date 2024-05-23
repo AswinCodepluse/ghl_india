@@ -93,28 +93,31 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
                                 child: CustomText(
                                 text: "No Search Lead Found",
                               ))
-                            : ListView.builder(
-                                keyboardDismissBehavior:
-                                    ScrollViewKeyboardDismissBehavior.onDrag,
-                                itemCount: leadStatusFilterController
-                                        .searchCon.text.isNotEmpty
-                                    ? leadStatusFilterController
-                                        .searchLeadsList.length
-                                    : leadStatusFilterController
-                                        .filterLeadStatusList.length,
-                                itemBuilder: (context, index) {
-                                  final data = leadStatusFilterController
-                                          .searchCon.text.isNotEmpty
-                                      ? leadStatusFilterController
-                                          .searchLeadsList[index]
-                                      : leadStatusFilterController
-                                          .filterLeadStatusList[index];
-                                  final randomColor = leadsDataController
-                                          .colors[
-                                      Random().nextInt(
-                                          leadsDataController.colors.length)];
-                                  return leadsContainer(data, randomColor);
-                                }),
+                            : Obx(
+                                () => ListView.builder(
+                                    keyboardDismissBehavior:
+                                        ScrollViewKeyboardDismissBehavior
+                                            .onDrag,
+                                    itemCount: leadStatusFilterController
+                                            .searchCon.text.isNotEmpty
+                                        ? leadStatusFilterController
+                                            .searchLeadsList.length
+                                        : leadStatusFilterController
+                                            .filterLeadStatusList.length,
+                                    itemBuilder: (context, index) {
+                                      final data = leadStatusFilterController
+                                              .searchCon.text.isNotEmpty
+                                          ? leadStatusFilterController
+                                              .searchLeadsList[index]
+                                          : leadStatusFilterController
+                                              .filterLeadStatusList[index];
+                                      final randomColor =
+                                          leadsDataController.colors[Random()
+                                              .nextInt(leadsDataController
+                                                  .colors.length)];
+                                      return leadsContainer(data, randomColor);
+                                    }),
+                              ),
                   )
                 ],
               );

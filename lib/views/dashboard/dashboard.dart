@@ -9,13 +9,30 @@ import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-class DashBoardScreen extends StatelessWidget {
-  DashBoardScreen({super.key});
+class DashBoardScreen extends StatefulWidget {
+  DashBoardScreen({super.key, required this.seasons});
 
+  final String seasons;
+
+  @override
+  State<DashBoardScreen> createState() => _DashBoardScreenState();
+}
+
+class _DashBoardScreenState extends State<DashBoardScreen> {
   final DashboardController dashboardController = Get.find();
 
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    dashboardController.fetchDashboardData(widget.seasons);
+    Future.delayed(Duration(seconds: 1), () {
+      dashboardController.checkPermission();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

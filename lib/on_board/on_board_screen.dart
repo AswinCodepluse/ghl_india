@@ -14,16 +14,9 @@ import 'package:toast/toast.dart';
 
 class OnBoardScreen extends StatelessWidget {
   OnBoardScreen({super.key});
-
-  final DashboardController dashboardController =
-  Get.put(DashboardController());
-
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: CustomText(
@@ -36,7 +29,14 @@ class OnBoardScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DashBoardScreen(seasons: 'today'),
+                  ),
+                );
+              },
               child: Stack(
                 children: [
                   Image(image: AssetImage("assets/image/bg_red_img.png")),
@@ -60,8 +60,12 @@ class OnBoardScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DashBoardScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DashBoardScreen(seasons: ''),
+                  ),
+                );
               },
               child: Stack(
                 children: [

@@ -562,7 +562,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       leadsController.files = File("");
                       leadsController.clearAll();
                       FirebaseRepository().setNotification();
-                      await dashboardController.fetchDashboardData();
+
+                      await dashboardController.fetchDashboardData(dashboardController.leadSeasons);
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});

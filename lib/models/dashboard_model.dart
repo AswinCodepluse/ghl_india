@@ -1,31 +1,34 @@
 class DashboardModel {
+  int? total;
   int? facebook;
   int? google;
   int? website;
-  int? total;
-  LeadStatus? leadStatus;
+  List<LeadStatus>? leadStatus;
 
   DashboardModel(
-      {this.facebook, this.google, this.website, this.total, this.leadStatus});
+      {this.total, this.facebook, this.google, this.website, this.leadStatus});
 
   DashboardModel.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
     facebook = json['facebook'];
     google = json['google'];
     website = json['website'];
-    total = json['total'];
-    leadStatus = json['lead_status'] != null
-        ? new LeadStatus.fromJson(json['lead_status'])
-        : null;
+    if (json['lead_status'] != null) {
+      leadStatus = <LeadStatus>[];
+      json['lead_status'].forEach((v) {
+        leadStatus!.add(new LeadStatus.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = this.total;
     data['facebook'] = this.facebook;
     data['google'] = this.google;
     data['website'] = this.website;
-    data['total'] = this.total;
     if (this.leadStatus != null) {
-      data['lead_status'] = this.leadStatus!.toJson();
+      data['lead_status'] = this.leadStatus!.map((v) => v.toJson()).toList();
     }
     return data;
   }

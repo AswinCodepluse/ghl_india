@@ -20,7 +20,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    callLogController.fetchCallLogs(widget.leadPhoneNumber);
+    callLogController.fetchCallLogs("9025075398");
   }
 
   @override
@@ -69,7 +69,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 5,
@@ -87,6 +87,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomText(
                 text: data.number ?? '',
@@ -106,17 +107,22 @@ class _CallLogScreenState extends State<CallLogScreen> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomText(
-                text: duration,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+              callTypes != "Rejected" && callTypes != "Missed"
+                  ? CustomText(
+                      text: duration,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    )
+                  : Container(),
               CustomText(
                 text: callTypes,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: Colors.grey,
+                color: callTypes == "Rejected" || callTypes == "Missed"
+                    ? Colors.red
+                    : Colors.grey,
               ),
             ],
           )

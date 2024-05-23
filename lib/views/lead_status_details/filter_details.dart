@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/lead_status_filter_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/views/lead_status_details/widget/search_bar.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 import '../../models/leads_filter_models.dart';
@@ -66,23 +67,53 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
               )
             : Column(
                 children: [
+                  Obx(() {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: leadStatusFilterController
+                              .filterLeadStatusList.isEmpty
+                          ? Container()
+                          : searchBar(leadStatusFilterController.searchCon,
+                              leadStatusFilterController),
+                    );
+                  }),
                   Expanded(
-                    child:
-                        leadStatusFilterController.filterLeadStatusList.isEmpty
+                    child: leadStatusFilterController
+                            .filterLeadStatusList.isEmpty
+                        ? Center(
+                            child: CustomText(
+                              text: "No Leads Available For This Status",
+                            ),
+                          )
+                        : leadStatusFilterController
+                                    .searchCon.text.isNotEmpty &&
+                                leadStatusFilterController
+                                    .searchLeadsList.isEmpty
                             ? Center(
                                 child: CustomText(
-                                  text: "No Leads Available For This Status",
-                                ),
-                              )
+                                text: "No Search Lead Found",
+                              ))
                             : ListView.builder(
                                 keyboardDismissBehavior:
                                     ScrollViewKeyboardDismissBehavior.onDrag,
                                 itemCount: leadStatusFilterController
-                                    .filterLeadStatusList.length,
+                                        .searchCon.text.isNotEmpty
+                                    ? leadStatusFilterController
+                                        .searchLeadsList.length
+                                    : leadStatusFilterController
+                                        .filterLeadStatusList.length,
                                 itemBuilder: (context, index) {
                                   final data = leadStatusFilterController
-                                      .filterLeadStatusList[index];
-                                  return leadsContainer(data);
+                                          .searchCon.text.isNotEmpty
+                                      ? leadStatusFilterController
+                                          .searchLeadsList[index]
+                                      : leadStatusFilterController
+                                          .filterLeadStatusList[index];
+                                  final randomColor = leadsDataController
+                                          .colors[
+                                      Random().nextInt(
+                                          leadsDataController.colors.length)];
+                                  return leadsContainer(data, randomColor);
                                 }),
                   )
                 ],
@@ -91,7 +122,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
     );
   }
 
-  Widget leadsContainer(UserLeadsDetails data) {
+  Widget leadsContainer(UserLeadsDetails data, String randomColor) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();
@@ -121,8 +152,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                  color: Colors.red,
-                  // color: leadStatusFilterController.getColor(randomColor),
+                  color: leadsDataController.getColor(randomColor),
                   shape: BoxShape.circle),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

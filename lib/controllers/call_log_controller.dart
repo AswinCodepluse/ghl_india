@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class CallLogController extends GetxController {
   String leadPhoneNumber = "";
   RxList<CallLogEntry> callLogsList = <CallLogEntry>[].obs;
@@ -67,13 +66,17 @@ class CallLogController extends GetxController {
   String callTypeToString(CallType callType) {
     switch (callType) {
       case CallType.incoming:
-        return "incoming";
+        return "Incoming";
+      case CallType.wifiIncoming:
+        return "Incoming";
       case CallType.outgoing:
-        return "outgoing";
+        return "Outgoing";
+      case CallType.wifiOutgoing:
+        return "Outgoing";
       case CallType.missed:
-        return "missed";
+        return "Missed";
       case CallType.rejected:
-        return "rejected";
+        return "Rejected";
       default:
         return "unknown";
     }
@@ -83,7 +86,11 @@ class CallLogController extends GetxController {
     switch (callType) {
       case CallType.incoming:
         return "assets/image/call_incoming_icon.png";
+      case CallType.wifiIncoming:
+        return "assets/image/call_incoming_icon.png";
       case CallType.outgoing:
+        return "assets/image/call_outgoing_icon.png";
+      case CallType.wifiOutgoing:
         return "assets/image/call_outgoing_icon.png";
       case CallType.missed:
         return "assets/image/call_missed_icon.png";

@@ -109,21 +109,21 @@ class OnBoardScreen extends StatelessWidget {
                 onTapLogout(context);
               },
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomText(text: "Call Recording Path Storing"),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: CustomTextField(
-                readOnly: true,
-                controller: dashboardController.callRecordingFileCon,
-                hintText: "Choose File Path",
-                onTap: () {
-                  dashboardController.pickFile();
-                },
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: CustomText(text: "Call Recording Path Storing"),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            //   child: CustomTextField(
+            //     readOnly: true,
+            //     controller: dashboardController.callRecordingFileCon,
+            //     hintText: "Choose File Path",
+            //     onTap: () {
+            //       dashboardController.pickFile();
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -148,3 +148,4 @@ class OnBoardScreen extends StatelessWidget {
           gravity: Toast.center, duration: Toast.lengthLong);
     }
   }
+}

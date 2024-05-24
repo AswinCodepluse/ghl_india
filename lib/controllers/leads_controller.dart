@@ -11,8 +11,6 @@ class LeadsDataController extends GetxController {
   var websiteLeads = <AllLeads>[].obs;
   var googleLeads = <AllLeads>[].obs;
   var leadPhoneNumbers = <String>[].obs;
-
-  // var searchLeadsList = <AllLeads>[].obs;
   var searchLeadsList = <FilterLeadsData>[].obs;
   String leadType = "";
   TextEditingController searchCon = TextEditingController();
@@ -94,27 +92,6 @@ class LeadsDataController extends GetxController {
   }
 
   searchLead(String str) {
-    // if (leadType == "website") {
-    //   searchLeadsList.value = websiteLeads
-    //       .where(
-    //           (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-    //       .toList();
-    // } else if (leadType == "facebook") {
-    //   searchLeadsList.value = facebookLeads
-    //       .where(
-    //           (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-    //       .toList();
-    // } else if (leadType == "google") {
-    //   searchLeadsList.value = googleLeads
-    //       .where(
-    //           (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-    //       .toList();
-    // } else {
-    //   searchLeadsList.value = leadsList
-    //       .where(
-    //           (lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
-    //       .toList();
-    // }
     searchLeadsList.value = filterLeadsList
         .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
         .toList();

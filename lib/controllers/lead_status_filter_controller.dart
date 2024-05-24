@@ -22,8 +22,6 @@ class LeadStatusFilterController extends GetxController {
         .fetchFilterLeadStatus(id: statusIds, filterBy: filterBy);
     filterLeadStatusList.addAll(response.data!);
     loadingState.value = false;
-    print('33333333333333333333333333333');
-    print(filterLeadStatusList.length);
   }
 
   searchLead(String str) {

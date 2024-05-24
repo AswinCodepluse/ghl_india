@@ -8,9 +8,10 @@ class TimeLineController extends GetxController {
   var activeTimeLineList = [].obs;
   var firstFollowupDate = "".obs;
   var firstOldStatus = "".obs;
+  RxBool loadingState = false.obs;
   var leadId = 0.obs;
   late AudioPlayer player = AudioPlayer();
-  PlayerState? playerState;
+  Rx<PlayerState> playerState = PlayerState.paused.obs;
   Duration? duration;
   Duration? position;
 
@@ -48,9 +49,11 @@ class TimeLineController extends GetxController {
   }
 
   fetchTimeLine(int leadId) async {
+    loadingState.value = true;
     activeTimeLineList.clear();
     var response = await TimeLineRepository().fetchTimeLine(leadId);
     activeTimeLineList.addAll(response);
+    loadingState.value = false;
     if (activeTimeLineList.isNotEmpty) {
       firstOldStatus.value = activeTimeLineList.first.oldStatus ?? '';
       firstFollowupDate.value = activeTimeLineList.first.nextFollowUpDate ?? '';
@@ -59,47 +62,48 @@ class TimeLineController extends GetxController {
 
   void initStreams() {
     _durationSubscription = player.onDurationChanged.listen((duration) {
-       duration = duration;
-       update();
+      duration = duration;
+      update();
     });
 
     _positionSubscription = player.onPositionChanged.listen(
-          (p) {
-            position = p;
-            update();
-          },
+      (p) {
+        position = p;
+        update();
+      },
     );
 
     _playerCompleteSubscription = player.onPlayerComplete.listen((event) {
-
-        playerState = PlayerState.stopped;
-        position = Duration.zero;
-       update();
+      playerState.value = PlayerState.stopped;
+      position = Duration.zero;
+      update();
     });
 
     _playerStateChangeSubscription =
         player.onPlayerStateChanged.listen((state) {
-            playerState = state;
-            update();
-        });
+      playerState.value = state;
+      update();
+    });
   }
 
-  Future<void> play() async {
-    await player.resume();
-    playerState = PlayerState.playing;
+  Future<void> play(String url) async {
+    await player.play(UrlSource(url));
+    playerState.value = PlayerState.playing;
+    print(playerState.value);
     update();
   }
 
   Future<void> pause() async {
     await player.pause();
-    playerState = PlayerState.paused;
+    playerState.value = PlayerState.paused;
+    print(playerState.value);
     update();
   }
 
   Future<void> stop() async {
     await player.stop();
-      playerState = PlayerState.stopped;
-      position = Duration.zero;
-      update();
+    playerState.value = PlayerState.stopped;
+    position = Duration.zero;
+    update();
   }
 }

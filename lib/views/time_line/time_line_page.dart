@@ -13,12 +13,10 @@ class TimeLinePage extends StatefulWidget {
 }
 
 class _TimeLinePageState extends State<TimeLinePage> {
-
   final timeLineController = Get.put(TimeLineController());
 
   @override
   void initState() {
-
     timeLineController.fetchTimeLine(timeLineController.leadId.value);
     super.initState();
   }
@@ -42,21 +40,34 @@ class _TimeLinePageState extends State<TimeLinePage> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              timeLineController.activeTimeLineList.isEmpty
+              timeLineController.loadingState.value
                   ? Center(
-                      child: CustomText(text: "No Activity TimeLine Found"))
-                  : Expanded(
-                      child: ListView.builder(
-                          itemCount:
-                              timeLineController.activeTimeLineList.length,
-                          itemBuilder: (context, index) {
-                            final data =
-                                timeLineController.activeTimeLineList[index];
-                            return timeLineContainer(data,onTap: (){
-                              print('ontap called');
-                            });
-                          }), // FutureBuilder(
-                    ),
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
+                    )
+                  : timeLineController.activeTimeLineList.isEmpty
+                      ? Center(
+                          child: CustomText(text: "No Activity TimeLine Found"))
+                      : Expanded(
+                          child: ListView.builder(
+                              itemCount:
+                                  timeLineController.activeTimeLineList.length,
+                              itemBuilder: (context, index) {
+                                final data = timeLineController
+                                    .activeTimeLineList[index];
+                                return timeLineContainer(
+                                  data: data,
+                                  onTap: () {
+                                    timeLineController.playerState.value ==
+                                            PlayerState.playing
+                                        ? timeLineController.pause()
+                                        : timeLineController
+                                            .play(data.callRecord!);
+                                  },
+                                );
+                              }), // FutureBuilder(
+                        ),
             ],
           );
         }),

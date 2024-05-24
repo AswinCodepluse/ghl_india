@@ -217,7 +217,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
           controller: _tabController,
           tabs: [
             Tab(text: 'Today Leads'),
-            Tab(text: 'ToTal Leads'),
+            Tab(text: 'Total Leads'),
           ],
           indicator: BoxDecoration(
             borderRadius: BorderRadius.circular(50),

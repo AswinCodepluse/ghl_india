@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
 import 'package:ghl_callrecoding/views/time_line/widget/time_line_container.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class TimeLinePage extends StatefulWidget {
   TimeLinePage({super.key});
@@ -12,10 +13,12 @@ class TimeLinePage extends StatefulWidget {
 }
 
 class _TimeLinePageState extends State<TimeLinePage> {
+
   final timeLineController = Get.put(TimeLineController());
 
   @override
   void initState() {
+
     timeLineController.fetchTimeLine(timeLineController.leadId.value);
     super.initState();
   }
@@ -49,7 +52,9 @@ class _TimeLinePageState extends State<TimeLinePage> {
                           itemBuilder: (context, index) {
                             final data =
                                 timeLineController.activeTimeLineList[index];
-                            return timeLineContainer(data);
+                            return timeLineContainer(data,onTap: (){
+                              print('ontap called');
+                            });
                           }), // FutureBuilder(
                     ),
             ],

@@ -156,15 +156,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
-import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
-import 'package:ghl_callrecoding/local_db/shared_preference.dart';
-import 'package:ghl_callrecoding/repositories/auth_repositories.dart';
-import 'package:ghl_callrecoding/utils/toast_component.dart';
-import 'package:ghl_callrecoding/views/auth/login_page.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/bottom_sheet.dart';
 import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
-import 'package:toast/toast.dart';
 
 class DashBoardTabBar extends StatefulWidget {
   @override
@@ -196,11 +191,11 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
     return Scaffold(
       appBar: AppBar(
         title: CustomText(text: 'Dashboard'),
-        // leading: GestureDetector(
-        //     onTap: () {
-        //       bottomSheet();
-        //     },
-        //     child: Icon(Icons.menu)),
+        leading: GestureDetector(
+            onTap: () {
+              bottomSheet(context);
+            },
+            child: Icon(Icons.menu)),
         actions: [
           GestureDetector(
             onTap: () {
@@ -233,7 +228,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
           labelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
           unselectedLabelStyle: TextStyle(fontSize: 14.0),
           indicatorSize: TabBarIndicatorSize.tab,
-          indicatorPadding: EdgeInsets.all(5.0),
+          indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
           splashFactory: NoSplash.splashFactory,
         ),
       ),
@@ -244,76 +239,46 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
           DashBoardScreen(seasons: 'total')
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
-              child: Text(
-                'GHL India Pvt Ltd',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Logout'),
-              onTap: () {
-                onTapLogout(context);
-              },
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: CustomText(text: "Call Recording Path Storing"),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            //   child: CustomTextField(
-            //     readOnly: true,
-            //     controller: dashboardController.callRecordingFileCon,
-            //     hintText: "Choose File Path",
-            //     onTap: () {
-            //       dashboardController.pickFile();
-            //     },
-            //   ),
-            // ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //       const DrawerHeader(
+      //         decoration: BoxDecoration(
+      //           color: Colors.red,
+      //         ),
+      //         child: Text(
+      //           'GHL India Pvt Ltd',
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 24,
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         title: const Text('Logout'),
+      //         onTap: () {
+      //           onTapLogout(context);
+      //         },
+      //       ),
+      //       // Padding(
+      //       //   padding: const EdgeInsets.all(8.0),
+      //       //   child: CustomText(text: "Call Recording Path Storing"),
+      //       // ),
+      //       // Padding(
+      //       //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      //       //   child: CustomTextField(
+      //       //     readOnly: true,
+      //       //     controller: dashboardController.callRecordingFileCon,
+      //       //     hintText: "Choose File Path",
+      //       //     onTap: () {
+      //       //       dashboardController.pickFile();
+      //       //     },
+      //       //   ),
+      //       // ),
+      //     ],
+      //   ),
+      // ),
     );
   }
-
-  onTapLogout(context) async {
-    var logoutResponse = await AuthRepository().getLogoutResponse();
-    if (logoutResponse.result == true) {
-      AuthHelper().clearUserData();
-      await SharedPreference().clearUserData();
-      ToastComponent.showDialog(logoutResponse.message!.toString(),
-          gravity: Toast.center, duration: Toast.lengthLong);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
-    } else {
-      ToastComponent.showDialog(logoutResponse.message!.toString(),
-          gravity: Toast.center, duration: Toast.lengthLong);
-    }
-  }
-
-// Future<void> bottomSheet() {
-//   return showModalBottomSheet(
-//       context: context,
-//       builder: (context) {
-//         return Container(
-//           child: CustomText(text: "Log Out"),
-//           color: Colors.red,
-//         );
-//       });
-// }
 }

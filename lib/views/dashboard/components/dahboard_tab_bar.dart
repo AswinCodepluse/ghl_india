@@ -156,6 +156,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/bottom_sheet.dart';
 import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
@@ -170,6 +172,8 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
     with SingleTickerProviderStateMixin {
   final DashboardController dashboardController = Get.find();
   late TabController _tabController;
+  String userName = '';
+  SharedPreference sharedPreference = SharedPreference();
 
   @override
   void initState() {
@@ -179,6 +183,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
       dashboardController.checkPermission();
     });
   }
+
 
   @override
   void dispose() {
@@ -190,7 +195,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: CustomText(text: 'Dashboard'),
+        title: CustomText(text: "hello, ${user_name.$}"),
         leading: GestureDetector(
             onTap: () {
               bottomSheet(context);

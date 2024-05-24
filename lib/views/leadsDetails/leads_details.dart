@@ -64,6 +64,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   String? dates;
   TimeLineController timeLineController = Get.put(TimeLineController());
   AttachmentController attachmentController = Get.put(AttachmentController());
+
   // CallLogController callLogController = Get.put(CallLogController());
   FileController fileController = Get.find<FileController>();
   DashboardController dashboardController = Get.find<DashboardController>();
@@ -561,9 +562,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       callRecordingFile = File("");
                       leadsController.files = File("");
                       leadsController.clearAll();
-                      FirebaseRepository().setNotification();
-
-                      await dashboardController.fetchDashboardData(dashboardController.leadSeasons);
+                      // FirebaseRepository().setNotification();
+                      await dashboardController
+                          .fetchDashboardData(dashboardController.leadSeasons);
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});

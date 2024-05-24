@@ -3,14 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
-import 'package:ghl_callrecoding/views/leadSeasonDetails/lead_season_details.dart';
 import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
-import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class DashBoardScreen extends StatefulWidget {
-  DashBoardScreen({super.key, required this.seasons});
+  DashBoardScreen({
+    super.key,
+    required this.seasons,
+  });
 
   final String seasons;
 
@@ -27,9 +28,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    dashboardController.fetchDashboardData(widget.seasons);
-    Future.delayed(Duration(seconds: 1), () {
-      dashboardController.checkPermission();
+    print('session  ${widget.seasons}');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      dashboardController.leadSeasons = widget.seasons;
+      dashboardController.fetchDashboardData(widget.seasons);
     });
     super.initState();
   }
@@ -38,20 +40,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.to(() => FileScreen());
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15.0),
-              child: Icon(Icons.file_copy),
-            ),
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         color: Colors.red,
         backgroundColor: Colors.white,
@@ -69,7 +57,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 8),
                     child: Column(
                       children: [
                         Row(
@@ -85,6 +74,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 onTap: () {
                                   Get.to(() => LeadScreen(
                                         platforms: "allLeads",
+                                        session: widget.seasons,
+                                        filterBy: "total",
                                       ));
                                 },
                               );
@@ -95,7 +86,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    color: Colors.red,
+                                    color: Colors.pink,
                                     screenWidth: screenWidth,
                                     text: "Website Lead",
                                     icon: "assets/image/dashboard_icon_2.png",
@@ -104,6 +95,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 onTap: () {
                                   Get.to(() => LeadScreen(
                                         platforms: "website",
+                                        session: widget.seasons,
+                                        filterBy: "website",
                                       ));
                                 },
                               );
@@ -127,6 +120,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 onTap: () {
                                   Get.to(() => LeadScreen(
                                         platforms: "facebook",
+                                        session: widget.seasons,
+                                        filterBy: "facebook",
                                       ));
                                 },
                               );
@@ -146,6 +141,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 onTap: () {
                                   Get.to(() => LeadScreen(
                                         platforms: "google",
+                                        session: widget.seasons,
+                                        filterBy: "google",
                                       ));
                                 },
                               );
@@ -187,8 +184,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             LeadDatasFilterStatus(
-                                                status: status,
-                                                statusId: statusId),
+                                          status: status,
+                                          statusId: statusId,
+                                          filterBy: widget.seasons,
+                                        ),
                                       ),
                                     );
                                   },

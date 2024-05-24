@@ -6,14 +6,21 @@ import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
+import 'package:ghl_callrecoding/models/filter_leads_model.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class LeadScreen extends StatefulWidget {
-  const LeadScreen({super.key, required this.platforms});
+  const LeadScreen(
+      {super.key,
+      required this.platforms,
+      required this.session,
+      required this.filterBy});
 
   final String platforms;
+  final String session;
+  final String filterBy;
 
   @override
   State<LeadScreen> createState() => _LeadScreenState();
@@ -26,7 +33,12 @@ class _LeadScreenState extends State<LeadScreen> {
   void initState() {
     super.initState();
     leadsDataController.leadType = widget.platforms;
-    leadsDataController.fetchAllLeadsData();
+    print('+============================');
+    print(widget.session);
+    print(widget.platforms);
+    print('+============================');
+    leadsDataController.fetchAllLeadsData(
+        filterBy: widget.platforms, session: widget.session);
   }
 
   @override
@@ -51,79 +63,103 @@ class _LeadScreenState extends State<LeadScreen> {
           child: Icon(Icons.arrow_back),
         ),
       ),
-      body: Column(
-        children: [
-          Obx(() {
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-              child: widget.platforms == "allLeads"
-                  ? leadsDataController.leadsList.isEmpty
-                      ? Container()
-                      : searchBar(
-                          leadsDataController.searchCon, leadsDataController)
-                  : widget.platforms == "website"
-                      ? leadsDataController.websiteLeads.isEmpty
-                          ? Container()
-                          : searchBar(leadsDataController.searchCon,
-                              leadsDataController)
-                      : widget.platforms == "facebook"
-                          ? leadsDataController.facebookLeads.isEmpty
-                              ? Container()
-                              : searchBar(leadsDataController.searchCon,
-                                  leadsDataController)
-                          : leadsDataController.googleLeads.isEmpty
-                              ? Container()
-                              : searchBar(leadsDataController.searchCon,
-                                  leadsDataController),
-            );
-          }),
-          Expanded(
-            child: GetBuilder<LeadsDataController>(
-              builder: (leadsDataController) {
-                return leadsDataController.isLeads.value
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ),
-                      )
-                    : leadsDataController.searchCon.text.isNotEmpty &&
-                            leadsDataController.searchLeadsList.isEmpty
+      body: Obx(() {
+        return Column(
+          children: [
+            // Obx(() {
+            //   return
+            Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                child: leadsDataController.filterLeadsList.isEmpty
+                    ? Container()
+                    : searchBar(
+                        leadsDataController.searchCon, leadsDataController)
+                // widget.platforms == "allLeads"
+                //     ? leadsDataController.leadsList.isEmpty
+                //         ? Container()
+                //         : searchBar(
+                //             leadsDataController.searchCon, leadsDataController)
+                //     : widget.platforms == "website"
+                //         ? leadsDataController.websiteLeads.isEmpty
+                //             ? Container()
+                //             : searchBar(leadsDataController.searchCon,
+                //                 leadsDataController)
+                //         : widget.platforms == "facebook"
+                //             ? leadsDataController.facebookLeads.isEmpty
+                //                 ? Container()
+                //                 : searchBar(leadsDataController.searchCon,
+                //                     leadsDataController)
+                //             : leadsDataController.googleLeads.isEmpty
+                //                 ? Container()
+                //                 : searchBar(leadsDataController.searchCon,
+                //                     leadsDataController),
+                ),
+            // }),
+            Expanded(
+                child:
+                    // GetBuilder<LeadsDataController>(
+                    //     builder: (leadsDataController) {
+                    //       return
+                    leadsDataController.isLeads.value
                         ? Center(
-                            child: CustomText(
-                            text: "No Search Lead Found",
-                          ))
-                        : widget.platforms == "allLeads"
-                            ? leadsDataController.leadsList.isEmpty
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          )
+                        : leadsDataController.searchCon.text.isNotEmpty &&
+                                leadsDataController.searchLeadsList.isEmpty
+                            ? Center(
+                                child: CustomText(
+                                text: "No Search Lead Found",
+                              ))
+                            : leadsDataController.filterLeadsList.isEmpty
                                 ? Center(
                                     child: CustomText(
-                                    text: "No Leads Found",
+                                    text: "No Leads ${widget.filterBy} Leads Found",
                                   ))
                                 : leadListViewBuilder()
-                            : widget.platforms == "website"
-                                ? leadsDataController.websiteLeads.isEmpty
-                                    ? Center(
-                                        child: CustomText(
-                                        text: "No WebsiteLeads Found",
-                                      ))
-                                    : leadListViewBuilder()
-                                : widget.platforms == "facebook"
-                                    ? leadsDataController.facebookLeads.isEmpty
-                                        ? Center(
-                                            child: CustomText(
-                                            text: "No FaceBookLeads Found",
-                                          ))
-                                        : leadListViewBuilder()
-                                    : leadsDataController.googleLeads.isEmpty
-                                        ? CustomText(
-                                            text: "No GoogleLeads Found",
-                                          )
-                                        : leadListViewBuilder();
-              },
-            ),
-          )
-        ],
-      ),
+                // leadListViewBuilder(),
+                // leadsDataController.searchCon.text.isNotEmpty &&
+                //             leadsDataController.searchLeadsList.isEmpty
+                //         ? Center(
+                //             child: CustomText(
+                //             text: "No Search Lead Found",
+                //           ))
+                //         : widget.platforms == "allLeads"
+                //             ? leadsDataController.leadsList.isEmpty
+                //                 ? Center(
+                //                     child: CustomText(
+                //                     text: "No Leads Found",
+                //                   ))
+                //                 : leadListViewBuilder()
+                //             : widget.platforms == "website"
+                //                 ? leadsDataController.websiteLeads.isEmpty
+                //                     ? Center(
+                //                         child: CustomText(
+                //                         text: "No WebsiteLeads Found",
+                //                       ))
+                //                     : leadListViewBuilder()
+                //                 : widget.platforms == "facebook"
+                //                     ? leadsDataController.facebookLeads.isEmpty
+                //                         ? Center(
+                //                             child: CustomText(
+                //                             text: "No FaceBookLeads Found",
+                //                           ))
+                //                         : leadListViewBuilder()
+                //                     : leadsDataController.googleLeads.isEmpty
+                //                         ? Center(
+                //                             child: CustomText(
+                //                               text: "No GoogleLeads Found",
+                //                             ),
+                //                           )
+                //                         : leadListViewBuilder();
+                // },
+                // ),
+                )
+          ],
+        );
+      }),
     );
   }
 
@@ -132,30 +168,36 @@ class _LeadScreenState extends State<LeadScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: leadsDataController.searchCon.text.isNotEmpty
             ? leadsDataController.searchLeadsList.length
-            : widget.platforms == "allLeads"
-                ? leadsDataController.leadsList.length
-                : widget.platforms == "website"
-                    ? leadsDataController.websiteLeads.length
-                    : widget.platforms == "facebook"
-                        ? leadsDataController.facebookLeads.length
-                        : leadsDataController.googleLeads.length,
+            : leadsDataController.filterLeadsList.length,
+        // leadsDataController.searchCon.text.isNotEmpty
+        //     ? leadsDataController.searchLeadsList.length
+        //     : widget.platforms == "allLeads"
+        //         ? leadsDataController.leadsList.length
+        //         : widget.platforms == "website"
+        //             ? leadsDataController.websiteLeads.length
+        //             : widget.platforms == "facebook"
+        //                 ? leadsDataController.facebookLeads.length
+        //                 : leadsDataController.googleLeads.length,
         itemBuilder: (context, index) {
           final data = leadsDataController.searchCon.text.isNotEmpty
               ? leadsDataController.searchLeadsList[index]
-              : widget.platforms == "allLeads"
-                  ? leadsDataController.leadsList[index]
-                  : widget.platforms == "website"
-                      ? leadsDataController.websiteLeads[index]
-                      : widget.platforms == "facebook"
-                          ? leadsDataController.facebookLeads[index]
-                          : leadsDataController.googleLeads[index];
+              : leadsDataController.filterLeadsList[index];
+          // leadsDataController.searchCon.text.isNotEmpty
+          //     ? leadsDataController.searchLeadsList[index]
+          //     : widget.platforms == "allLeads"
+          //         ? leadsDataController.leadsList[index]
+          //         : widget.platforms == "website"
+          //             ? leadsDataController.websiteLeads[index]
+          //             : widget.platforms == "facebook"
+          //                 ? leadsDataController.facebookLeads[index]
+          //                 : leadsDataController.googleLeads[index];
           final randomColor = leadsDataController
               .colors[Random().nextInt(leadsDataController.colors.length)];
           return leadsContainer(data, randomColor, leadsDataController);
         });
   }
 
-  Widget leadsContainer(AllLeads data, String randomColor,
+  Widget leadsContainer(FilterLeadsData data, String randomColor,
       LeadsDataController leadsDataController) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =

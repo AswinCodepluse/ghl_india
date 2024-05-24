@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
 import 'package:ghl_callrecoding/views/time_line/widget/time_line_container.dart';
+import 'package:ghl_callrecoding/views/time_line/widget/timeline_bottom_sheet.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -59,11 +60,12 @@ class _TimeLinePageState extends State<TimeLinePage> {
                                 return timeLineContainer(
                                   data: data,
                                   onTap: () {
-                                    timeLineController.playerState.value ==
-                                            PlayerState.playing
-                                        ? timeLineController.pause()
-                                        : timeLineController
-                                            .play(data.callRecord!);
+                                    timelineBottomSheet(context, data);
+                                    // timeLineController.playerState.value ==
+                                    //         PlayerState.playing
+                                    //     ? timeLineController.pause()
+                                    //     : timeLineController
+                                    //         .play(data.callRecord!);
                                   },
                                 );
                               }), // FutureBuilder(

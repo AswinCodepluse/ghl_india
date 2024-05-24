@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
@@ -29,68 +28,21 @@ Widget timeLineContainer({required Data data, required void Function() onTap}) {
                         )
                       : Container(
                           height: 208,
+                          width: double.infinity,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.grey),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 40.0),
-                                child: InkWell(
-                                  onTap: onTap,
-                                  child: timeLineController.playerState.value ==
-                                          PlayerState.playing
-                                      ? Icon(
-                                          Icons.pause_circle_filled_rounded,
-                                          color: Colors.purple,
-                                          size: 90,
-                                        )
-                                      : Icon(
-                                          Icons.play_circle_filled_rounded,
-                                          color: Colors.purple,
-                                          size: 90,
-                                        ),
+                              GestureDetector(
+                                onTap: onTap,
+                                child: Icon(
+                                  Icons.play_circle_filled_rounded,
+                                  color: Colors.purple,
+                                  size: 90,
                                 ),
                               ),
-                              Slider(
-                                onChanged: (value) {
-                                  final duration = timeLineController.duration;
-                                  if (duration == null) {
-                                    return;
-                                  }
-                                  final position =
-                                      value * duration.inMilliseconds;
-                                  timeLineController.player.seek(
-                                      Duration(milliseconds: position.round()));
-                                },
-                                value: 0.9,
-                                // value: (timeLineController.position != null &&
-                                //         timeLineController.duration != null &&
-                                //         timeLineController
-                                //                 .position!.inMilliseconds >
-                                //             0 &&
-                                //         timeLineController
-                                //                 .position!.inMilliseconds <
-                                //             timeLineController
-                                //                 .duration!.inMilliseconds)
-                                //     ? timeLineController
-                                //             .position!.inMilliseconds /
-                                //         timeLineController
-                                //             .duration!.inMilliseconds
-                                //     : 0.0,
-                                activeColor: Colors.purple,
-                              ),
-                              timeLineController.position != null
-                                  ? Text(
-                                      timeLineController.position != null
-                                          ? '${timeLineController.positionText} / ${timeLineController.durationText}'
-                                          : timeLineController.duration != null
-                                              ? timeLineController.durationText
-                                              : '',
-                                      style: const TextStyle(fontSize: 16.0),
-                                    )
-                                  : SizedBox(),
                             ],
                           ),
                         );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ghl_callrecoding/helpers/auth_helpers.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
-import 'package:ghl_callrecoding/on_board/on_board_screen.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/dahboard_tab_bar.dart';
 import 'package:ghl_callrecoding/repositories/auth_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/utils/toast_component.dart';
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
       SharedPreference().setUserData(loginResponse: loginResponse);
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) {
-        return OnBoardScreen();
+        return DashBoardTabBar();
       }), (newRoute) => false);
     }
   }

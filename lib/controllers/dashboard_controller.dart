@@ -20,7 +20,7 @@ class DashboardController extends GetxController {
   var websiteLead = 0.obs;
   var facebookLead = 0.obs;
   var totalLead = 0.obs;
-  var leadSeasons = '';
+  String leadSeasons = '';
   TextEditingController searchCon = TextEditingController();
   TextEditingController callRecordingFileCon = TextEditingController();
   RxList<FileSystemEntity> recordedFiles = <FileSystemEntity>[].obs;
@@ -49,8 +49,6 @@ class DashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     // fetchDashboardData(leadSeasons);
-
-
 
     super.onInit();
   }
@@ -89,12 +87,7 @@ class DashboardController extends GetxController {
 
     if (result != null) {
       callRecordingDirPath = result;
-      print('+++++++====================');
-      print("callFiles  $callRecordingDirPath");
-      print('+++++++====================');
       await storeRecordedFiles(callRecordingDirPath!);
-      // callFileName.value = callFiles.path.split('/').last;
-      // callRecordingFileCon.text = callFiles.path.split('/').last;
       callRecordingFileCon.text = callRecordingDirPath!;
       update();
     }

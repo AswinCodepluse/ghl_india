@@ -7,10 +7,9 @@ import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:http/http.dart' as http;
 
 class LeadStatusRepository {
-  Future<LeadsFilterResponse> fetchFilterLeadStatus({int? id}) async {
-    var post_body = jsonEncode({"status": '$id'});
-    print("post_body leads Filter------>$post_body");
-
+  Future<LeadsFilterResponse> fetchFilterLeadStatus(
+      {int? id, required String filterBy}) async {
+    var post_body = jsonEncode({"status": '$id', "filter": filterBy});
     var url =
         Uri.parse("${AppConfig.BASE_URL}/sales-person/leads/status/filter");
     try {
@@ -39,13 +38,12 @@ class LeadStatusRepository {
     }
   }
 
-
   Future<LeadsFilterResponse> fetchFilterLeadsSeasons() async {
     var post_body = jsonEncode({"filter": 'today'});
     print("post_body leads Seasons------>$post_body");
 
-    var url =
-    Uri.parse("${AppConfig.BASE_URL}/sales-person/leads/status/filter/today");
+    var url = Uri.parse(
+        "${AppConfig.BASE_URL}/sales-person/leads/status/filter/today");
     try {
       var response = await http.post(
         url,

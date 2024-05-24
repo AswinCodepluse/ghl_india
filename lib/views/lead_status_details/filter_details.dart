@@ -13,10 +13,14 @@ import '../leadsDetails/leads_details.dart';
 
 class LeadDatasFilterStatus extends StatefulWidget {
   LeadDatasFilterStatus(
-      {super.key, required this.statusId, required this.status});
+      {super.key,
+      required this.statusId,
+      required this.status,
+      required this.filterBy});
 
   final int statusId;
   final String status;
+  final String filterBy;
 
   @override
   State<LeadDatasFilterStatus> createState() => _LeadDatasFilterStatusState();
@@ -32,7 +36,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
   @override
   void initState() {
     // TODO: implement initState
-    leadStatusFilterController.fetchFilterLeadStatus(widget.statusId);
+    leadStatusFilterController.fetchFilterLeadStatus(widget.statusId,widget.filterBy);
     super.initState();
   }
 

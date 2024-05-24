@@ -20,7 +20,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    callLogController.fetchCallLogs("9025075398");
+    callLogController.fetchCallLogs(widget.leadPhoneNumber);
   }
 
   @override

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
-import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
-import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_details_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
@@ -24,16 +24,19 @@ class LeadsController extends GetxController {
   TextEditingController statusCon = TextEditingController();
   TextEditingController followupNotesCon = TextEditingController();
   TextEditingController datePickedCon = TextEditingController();
+  TextEditingController dateTimeCon = TextEditingController();
   TextEditingController timeCon = TextEditingController();
   var leadStatusList = <Data>[].obs;
   RxList<String> leadStatusNameList = <String>[].obs;
   RxString selectedLeadStatus = ''.obs;
+  RxString message = ''.obs;
   File lastCallRecording = File("");
   RxString selectedLeadPhoneNumber = ''.obs;
   File? files;
   bool isSubmitted = false;
   String hours = '';
   String minutes = '';
+  RxBool loadingState = false.obs;
 
   // var leadDetailsData = Rx<LeadDetails?>(LeadDetails);
   Rx<LeadDetails> leadDetailsData = LeadDetails().obs;
@@ -133,6 +136,17 @@ class LeadsController extends GetxController {
     }
   }
 
+  Future dateTimePicker(BuildContext context) async {
+    return DatePicker.showDateTimePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(2000, 1, 1),
+        maxTime: DateTime(4000, 12, 31), onConfirm: (date) {
+      String desiredFormat = "yyyy-MM-dd HH:mm";
+      dateTimeCon.text = DateFormat(desiredFormat).format(date);
+      update();
+    }, currentTime: DateTime.now(), locale: LocaleType.en);
+  }
+
   // setNotification() async {
   //   String dateString = datePickedCon.text;
   //   List<String> dateParts = dateString.split('-');
@@ -165,6 +179,7 @@ class LeadsController extends GetxController {
     followupNotesCon.clear();
     callRecordingFileCon.clear();
     datePickedCon.clear();
+    dateTimeCon.clear();
     timeCon.clear();
   }
 
@@ -206,8 +221,44 @@ class LeadsController extends GetxController {
     }
   }
 
+  Future<LeadDatasCreate> createLead(
+    int? leadId,
+    int? userId,
+    int? oldStatus,
+    int status,
+    String testNotes,
+    String date,
+    String time,
+    File files,
+    File callRecord,
+    File voiceRecord,
+  ) async {
+    try {
+      loadingState.value = true;
+      LeadDatasCreate response = await Dashboard().postLeadData(
+          leadId,
+          userId,
+          oldStatus,
+          status,
+          testNotes,
+          date,
+          time,
+          files,
+          callRecord,
+          voiceRecord);
+      message.value = response.message!;
+      return response;
+    } catch (e) {
+      message.value = "Something Went Wrong";
+      throw "$e";
+    } finally {
+      loadingState.value = false;
+    }
+  }
+
   fetchIndividualLeads(int id) async {
     leadDetailsData.value = await Dashboard().fetchOIndividualLeads(id);
+
     selectedLeadIds.value = leadDetailsData.value.statusInt!;
   }
 
@@ -312,25 +363,52 @@ class LeadsController extends GetxController {
   //   }
   // }
 
+  // Future<void> shareDocument(String url, String phoneNumber) async {
+  //   if (url.isNotEmpty && phoneNumber.isNotEmpty) {
+  //     try {
+  //       final filePath = await downloadFile(url: url);
+  //       await WhatsappShare.shareFile(
+  //         phone: "91$phoneNumber",
+  //         filePath: [filePath!],
+  //       );
+  //       Uri(
+  //         scheme: 'https',
+  //         host: 'api.whatsapp.com',
+  //         path: 'send',
+  //         queryParameters: {
+  //           'phone': '91$phoneNumber',
+  //         },
+  //       );
+  //       var whatsappUrl = "whatsapp://phone=$phoneNumber";
+  //       if (await canLaunch(whatsappUrl.toString())) {
+  //         await launch(whatsappUrl.toString());
+  //       } else {
+  //         throw 'Could not launch WhatsApp';
+  //       }
+  //     } catch (e) {
+  //       print('Error sharing document: $e');
+  //     }
+  //   } else {
+  //     print('Error: File path or phone number is empty');
+  //   }
+  // }
+
   Future<void> shareDocument(String url, String phoneNumber) async {
     if (url.isNotEmpty && phoneNumber.isNotEmpty) {
       try {
+        // Download the file if necessary
         final filePath = await downloadFile(url: url);
-        await WhatsappShare.shareFile(
-          phone: "91$phoneNumber",
-          filePath: [filePath!],
-        );
-        Uri(
-          scheme: 'https',
-          host: 'api.whatsapp.com',
-          path: 'send',
-          queryParameters: {
-            'phone': '91$phoneNumber',
-          },
-        );
-        var whatsappUrl = "whatsapp://phone=$phoneNumber";
-        if (await canLaunch(whatsappUrl.toString())) {
-          await launch(whatsappUrl.toString());
+
+        // Construct the WhatsApp message
+        String message = "Here's the document: $url";
+
+        // Construct the WhatsApp URL
+        String whatsappUrl =
+            "whatsapp://send?phone=91$phoneNumber&text=${Uri.encodeFull(message)}";
+
+        // Launch WhatsApp
+        if (await canLaunch(whatsappUrl)) {
+          await launch(whatsappUrl);
         } else {
           throw 'Could not launch WhatsApp';
         }

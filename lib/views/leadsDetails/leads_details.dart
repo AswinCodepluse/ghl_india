@@ -5,28 +5,23 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/common/custom_button.dart';
 import 'package:ghl_callrecoding/controllers/attachment_controller.dart';
-import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
-import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/helpers/file_helper.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
-import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/conformation_dialog.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/header_icon_container.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/sub_title_row.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/title_row.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
-import 'package:one_context/one_context.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:toast/toast.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
   const LeadDetailsScreen({
@@ -66,14 +61,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   AttachmentController attachmentController = Get.put(AttachmentController());
 
   // CallLogController callLogController = Get.put(CallLogController());
-  FileController fileController = Get.find<FileController>();
+  FileController fileController = Get.put(FileController());
   DashboardController dashboardController = Get.find<DashboardController>();
   int? user_Id;
 
   @override
   void initState() {
     initRecorder();
-    Dashboard().fetchOIndividualLeads(widget.leadId);
+    // Dashboard().fetchOIndividualLeads(widget.leadId);
     timeLineController.leadId.value = widget.leadId;
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
@@ -291,6 +286,42 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         firstIcon: Icons.interests,
                         secondIcon: Icons.work),
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  titleRow(firstTitle: "City", secondTitle: "Created At"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle:
+                            leadsController.leadDetailsData.value.city ?? "",
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.createdAt ??
+                                '',
+                        firstIcon: Icons.location_city,
+                        secondIcon: Icons.alarm_on_outlined),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  titleRow(
+                      firstTitle: "Information", secondTitle: "Description"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => subTitleRow(
+                        firstSubTitle:
+                            leadsController.leadDetailsData.value.information ??
+                                "",
+                        secondSubTitle:
+                            leadsController.leadDetailsData.value.description ??
+                                "",
+                        firstIcon: Icons.info_rounded,
+                        secondIcon: Icons.description),
+                  ),
                 ],
               ),
             ),
@@ -410,46 +441,47 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Obx(() {
-                    return leadsController.selectedLeadIds.value == 4
-                        ? Wrap(
-                            children: [
-                              CustomText(text: "Select Time"),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: CustomTextField(
-                                  controller: leadsController.timeCon,
-                                  readOnly: true,
-                                  hintText: "Select Time",
-                                  onTap: () async {
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    await leadsController.displayTimePicker(
-                                        context, leadsController.timeCon);
-                                  },
-                                  suffixIcon: Icon(
-                                    Icons.access_time,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container();
-                  }),
-                  CustomText(text: "Followup Dates"),
+                  // Obx(() {
+                  //   return leadsController.selectedLeadIds.value == 4
+                  //       ? Wrap(
+                  //           children: [
+                  //             CustomText(text: "Select Time"),
+                  //             Padding(
+                  //               padding:
+                  //                   const EdgeInsets.symmetric(vertical: 10.0),
+                  //               child: CustomTextField(
+                  //                 controller: leadsController.timeCon,
+                  //                 readOnly: true,
+                  //                 hintText: "Select Time",
+                  //                 onTap: () async {
+                  //                   FocusScope.of(context)
+                  //                       .requestFocus(FocusNode());
+                  //                   await leadsController.displayTimePicker(
+                  //                       context, leadsController.timeCon);
+                  //                 },
+                  //                 suffixIcon: Icon(
+                  //                   Icons.access_time,
+                  //                   color: Colors.red,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         )
+                  //       : Container();
+                  // }),
+                  CustomText(text: "Followup DateTime"),
                   SizedBox(
                     height: 10,
                   ),
                   CustomTextField(
-                    controller: leadsController.datePickedCon,
+                    controller: leadsController.dateTimeCon,
                     readOnly: true,
-                    hintText: "Select Date",
+                    hintText: "Select DateTime",
                     onTap: () async {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      await leadsController.displayDatePicker(
-                          context, leadsController.datePickedCon);
+                      await leadsController.dateTimePicker(context);
+                      // displayDatePicker(
+                      //     context, leadsController.datePickedCon);
                     },
                     suffixIcon: Icon(
                       Icons.date_range,
@@ -524,28 +556,33 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   buttonText: "Submit",
                   disable: leadsController.setDisable.value,
                   onTap: () async {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return conformationDialog(context);
+                      },
+                    );
                     SharedPreference sharedPreference = SharedPreference();
-                    if (leadsController.selectedLeadIds.value == 4 &&
-                        leadsController.timeCon.text.isEmpty) {
-                      ToastComponent.showDialog("Select Time",
-                          gravity: Toast.center, duration: Toast.lengthLong);
-                      return;
-                    }
+                    // if (leadsController.selectedLeadIds.value == 4 &&
+                    //     leadsController.timeCon.text.isEmpty) {
+                    //   ToastComponent.showDialog("Select Time",
+                    //       gravity: Toast.center, duration: Toast.lengthLong);
+                    //   return;
+                    // }
                     String user_Id = await sharedPreference.getUserId();
                     File callRecordingFile =
                         fileController.filePathsWithPhoneNumber.isEmpty
                             ? leadsController.callFiles
                             : leadsController.lastCallRecording;
-                    print(
-                        'leadsController.callFiles ${leadsController.callFiles}');
-                    LeadDatasCreate response = await Dashboard().postLeadDatas(
+                    LeadDatasCreate response = await leadsController.createLead(
                       leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
                       leadsController.leadDetailsData.value.statusInt,
                       leadsController.selectedLeadIds.value,
                       leadsController.followupNotesCon.text,
-                      leadsController.datePickedCon.text,
-                      leadsController.postTime,
+                      leadsController.dateTimeCon.text,
+                      "",
                       leadsController.files ?? File(""),
                       callRecordingFile,
                       audioFilesData ?? File(""),
@@ -568,11 +605,11 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});
-                      final shouldPop = (await OneContext().showDialog<bool>(
-                        builder: (BuildContext context) {
-                          return conformationDialog(context);
-                        },
-                      ));
+                      // final shouldPop = (await OneContext().showDialog<bool>(
+                      //   builder: (BuildContext context) {
+                      //     return conformationDialog(context);
+                      //   },
+                      // ));
                     }
                   });
             }),

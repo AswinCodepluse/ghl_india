@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 
-AlertDialog conformationDialog(BuildContext context){
+AlertDialog conformationDialog(BuildContext context) {
+  LeadsController leadsController = Get.find<LeadsController>();
   return AlertDialog(
     backgroundColor: Colors.grey,
     contentPadding: const EdgeInsets.only(
@@ -11,21 +14,19 @@ AlertDialog conformationDialog(BuildContext context){
     content: SizedBox(
       height: 57,
       width: 250,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Record Submitted Successfully",
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
+      child: Obx(
+        () => leadsController.loadingState.value
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Colors.red,
+                ),
+              )
+            : Center(
+                child: Text(
+                  leadsController.message.value,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
               ),
-            ],
-          ),
-        ],
       ),
     ),
     actions: [
@@ -33,12 +34,16 @@ AlertDialog conformationDialog(BuildContext context){
         onPressed: () {
           Navigator.pop(context);
         },
-        child: Text(
-          "OK",
-          style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.red),
+        child: Obx(
+          () => !leadsController.loadingState.value
+              ? Text(
+                  "OK",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red),
+                )
+              : Container(),
         ),
       ),
     ],

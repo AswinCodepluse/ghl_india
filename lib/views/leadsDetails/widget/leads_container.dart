@@ -71,11 +71,30 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
                 width: 220,
                 child: CustomText(
                     text: data.name ?? '',
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700),
               ),
-              SizedBox(width: 220, child: CustomText(text: data.phoneNo ?? '')),
-              SizedBox(width: 220, child: CustomText(text: data.email ?? '')),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                      width: 100, child: CustomText(text: data.phoneNo ?? '')),
+
+                  SizedBox(
+                      width: 130,
+                      child: CustomText(
+                        text: data.createAt ?? '',
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      )),
+                ],
+              ),
+              SizedBox(
+                  width: 220,
+                  child: CustomText(
+                    text: data.email ?? '',
+                    fontSize: 12,
+                  )),
             ],
           ),
         ],

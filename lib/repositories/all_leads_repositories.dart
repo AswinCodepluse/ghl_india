@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:ghl_callrecoding/app_config.dart';
 import 'package:ghl_callrecoding/models/filter_leads_model.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
@@ -107,7 +106,7 @@ class Dashboard {
     }
   }
 
-  Future<LeadDatasCreate> postLeadDatas(
+  Future<LeadDatasCreate> postLeadData(
     int? leadId,
     int? userId,
     int? oldStatus,
@@ -126,7 +125,6 @@ class Dashboard {
       "App-Language": app_language.$!,
       "Authorization": "Bearer ${access_token.$}",
     };
-
     var request = http.MultipartRequest('POST', url);
 
     request.fields.addAll({
@@ -138,33 +136,13 @@ class Dashboard {
       'next_follow_up_date': '$date',
       'next_follow_up_time': time
     });
-
     if (files.existsSync()) {
-      print('+++++++++++++++++++++');
       request.files.add(http.MultipartFile(
           'file', files.readAsBytes().asStream(), files.lengthSync(),
           filename: files.path.split('/').last));
     }
-    print('callRecord   ${callRecord.path}');
-    if (callRecord.existsSync()) {
-      // if (!callRecord.path.contains(".mp3") &&
-      //     !callRecord.path.contains(".amr") &&
-      //     !callRecord.path.contains(".jpg") &&
-      //     !callRecord.path.contains(".jpeg") &&
-      //     !callRecord.path.contains(".m4a")) {
-      //   String reNameFilePath = '';
-      //   reNameFilePath += "${callRecord.path}.mp3";
-      //   callRecord = File(reNameFilePath);
-      //   print("reNameFilePath  $reNameFilePath");
-      // }
-      print('+++++++++++++++++++++');
-      print(callRecord.readAsBytes().asStream());
-      print(
-        callRecord.lengthSync(),
-      );
-      print(callRecord.path.split('/').last);
-      print('+++++++++++++++++++++');
 
+    if (callRecord.existsSync()) {
       request.files.add(http.MultipartFile('call_record',
           callRecord.readAsBytes().asStream(), callRecord.lengthSync(),
           filename: callRecord.path.split('/').last));
@@ -181,7 +159,6 @@ class Dashboard {
       var streamedResponse = await request.send();
       if (streamedResponse.statusCode == 200) {
         var response = await http.Response.fromStream(streamedResponse);
-        print('Response body: ${response.body}');
         return leadDatasCreateResponseFromJson(response.body);
       } else {
         print(

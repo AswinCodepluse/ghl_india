@@ -183,7 +183,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            LeadDatasFilterStatus(
+                                            LeadDataFilterStatus(
                                           status: status,
                                           statusId: statusId,
                                           filterBy: widget.seasons,

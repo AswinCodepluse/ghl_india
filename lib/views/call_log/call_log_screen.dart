@@ -14,14 +14,15 @@ class CallLogScreen extends StatefulWidget {
 }
 
 class _CallLogScreenState extends State<CallLogScreen> {
-  final CallLogController callLogController = Get.put(CallLogController());
+  final CallLogController callLogController =
+      Get.put(CallLogController(phoneNumber: "9025075398"));
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    callLogController.fetchCallLogs(widget.leadPhoneNumber);
-  }
+// @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   callLogController.fetchCallLogs("9025075398");
+  // }
 
   @override
   Widget build(BuildContext context) {

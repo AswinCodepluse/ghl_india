@@ -11,8 +11,8 @@ import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import '../../models/leads_filter_models.dart';
 import '../leadsDetails/leads_details.dart';
 
-class LeadDatasFilterStatus extends StatefulWidget {
-  LeadDatasFilterStatus(
+class LeadDataFilterStatus extends StatefulWidget {
+  LeadDataFilterStatus(
       {super.key,
       required this.statusId,
       required this.status,
@@ -23,10 +23,10 @@ class LeadDatasFilterStatus extends StatefulWidget {
   final String filterBy;
 
   @override
-  State<LeadDatasFilterStatus> createState() => _LeadDatasFilterStatusState();
+  State<LeadDataFilterStatus> createState() => _LeadDataFilterStatusState();
 }
 
-class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
+class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
   final LeadStatusFilterController leadStatusFilterController =
       Get.put(LeadStatusFilterController());
 
@@ -36,7 +36,8 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
   @override
   void initState() {
     // TODO: implement initState
-    leadStatusFilterController.fetchFilterLeadStatus(widget.statusId,widget.filterBy);
+    leadStatusFilterController.fetchFilterLeadStatus(
+        widget.statusId, widget.filterBy);
     super.initState();
   }
 
@@ -194,7 +195,7 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
                   width: 220,
                   child: CustomText(
                       text: data.name ?? '',
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700),
                 ),
                 SizedBox(
@@ -203,7 +204,10 @@ class _LeadDatasFilterStatusState extends State<LeadDatasFilterStatus> {
                 ),
                 SizedBox(
                   width: 220,
-                  child: CustomText(text: data.email ?? ''),
+                  child: CustomText(
+                    text: data.email ?? '',
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),

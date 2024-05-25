@@ -1,52 +1,66 @@
+import 'dart:async';
+
 import 'package:call_log/call_log.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class CallLogController extends GetxController {
+  CallLogController({required this.phoneNumber});
+
   String leadPhoneNumber = "";
   RxList<CallLogEntry> callLogsList = <CallLogEntry>[].obs;
+  final String phoneNumber;
+  Timer? _timer;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    startListening();
     // fetchCallLogs();
+  }
+
+  void startListening({Duration interval = const Duration(seconds: 5)}) {
+    _timer = Timer.periodic(interval, (timer) async {
+      Iterable<CallLogEntry> entries = await CallLog.query(number: phoneNumber);
+      callLogsList.assignAll(entries);
+    });
   }
 
   @override
   void onClose() {
     // TODO: implement onClose
 
+    _timer?.cancel();
     super.onClose();
   }
 
-  Future<void> fetchCallLogs(String phoneNumber) async {
-    var status = await Permission.phone.status;
+  // Future<void> fetchCallLogs(String phoneNumber) async {
+  //   var status = await Permission.phone.status;
+  //
+  //   if (!status.isGranted) {
+  //     if (await Permission.phone.request().isGranted) {
+  //       retrieveCallLogs(phoneNumber);
+  //     }
+  //   } else {
+  //     retrieveCallLogs(phoneNumber);
+  //   }
+  // }
 
-    if (!status.isGranted) {
-      if (await Permission.phone.request().isGranted) {
-        retrieveCallLogs(phoneNumber);
-      }
-    } else {
-      retrieveCallLogs(phoneNumber);
-    }
-  }
+  // Future<void> retrieveCallLogs(String phoneNumber) async {
+  //   Iterable<CallLogEntry> queryEntries = await CallLog.query(
+  //     number: phoneNumber,
+  //   );
 
-  Future<void> retrieveCallLogs(String phoneNumber) async {
-    Iterable<CallLogEntry> queryEntries = await CallLog.query(
-      number: phoneNumber,
-    );
-
-    callLogsList.addAll(queryEntries);
-
-    int? timestamp = queryEntries.first.timestamp;
-    int? duration = queryEntries.first.duration;
-    formatTimestamp(timestamp!);
-    formatDuration(duration!);
-
-    update();
-  }
+  //   callLogsList.addAll(queryEntries);
+  //
+  //   int? timestamp = queryEntries.first.timestamp;
+  //   int? duration = queryEntries.first.duration;
+  //   formatTimestamp(timestamp!);
+  //   formatDuration(duration!);
+  //
+  //   update();
+  // }
 
   String formatDuration(int seconds) {
     Duration duration = Duration(seconds: seconds);

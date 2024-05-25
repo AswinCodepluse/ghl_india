@@ -143,39 +143,39 @@ class HeaderIconContainer extends StatelessWidget {
             SizedBox(
               width: 8,
             ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AttachmentScreen()));
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                      height: 40,
-                      width: 40,
-                      child: Image(
-                        image: AssetImage(
-                          "assets/image/record_img.png",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                CustomText(
-                  text: "Record",
-                  // color: Colors.red,
-                )
-              ],
-            ),
-            SizedBox(
-              width: 8,
-            ),
+            // Column(
+            //   children: [
+            //     GestureDetector(
+            //       onTap: () {
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (context) => AttachmentScreen()));
+            //       },
+            //       child: Container(
+            //         decoration: const BoxDecoration(
+            //           shape: BoxShape.circle,
+            //         ),
+            //         child: const SizedBox(
+            //           height: 40,
+            //           width: 40,
+            //           child: Image(
+            //             image: AssetImage(
+            //               "assets/image/record_img.png",
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     CustomText(
+            //       text: "Record",
+            //       // color: Colors.red,
+            //     )
+            //   ],
+            // ),
+            // SizedBox(
+            //   width: 8,
+            // ),
             Column(
               children: [
                 GestureDetector(

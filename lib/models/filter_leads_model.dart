@@ -55,6 +55,7 @@ class FilterLeadsData {
   String? designation;
   String? createdDate;
   String? lastUpdatedDate;
+  String? createAt;
 
   FilterLeadsData(
       {this.id,
@@ -83,7 +84,8 @@ class FilterLeadsData {
       this.website,
       this.designation,
       this.createdDate,
-      this.lastUpdatedDate});
+      this.lastUpdatedDate,
+      this.createAt});
 
   FilterLeadsData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -113,6 +115,7 @@ class FilterLeadsData {
     designation = json['designation'];
     createdDate = json['created_date'];
     lastUpdatedDate = json['last_updated_date'];
+    createAt = json['created_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -144,6 +147,7 @@ class FilterLeadsData {
     data['designation'] = this.designation;
     data['created_date'] = this.createdDate;
     data['last_updated_date'] = this.lastUpdatedDate;
+    data['created_at'] = this.createAt;
     return data;
   }
 }

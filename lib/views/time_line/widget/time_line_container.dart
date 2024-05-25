@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
 import 'package:ghl_callrecoding/models/time_line_model.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
+import 'package:photo_view/photo_view.dart';
 
-Widget timeLineContainer({required Data data, required void Function() onTap}) {
+Widget timeLineContainer(
+    {required Data data,
+    required void Function() onTap,
+    required BuildContext context}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 5),
     child: Card(
@@ -17,14 +22,19 @@ Widget timeLineContainer({required Data data, required void Function() onTap}) {
                 init: TimeLineController(),
                 builder: (timeLineController) {
                   return data.callRecord == null
-                      ? Container(
-                          height: 208,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                                image: NetworkImage(data.file!),
-                                fit: BoxFit.fill),
+                      ? GestureDetector(
+                          child: Container(
+                            height: 208,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  image: NetworkImage(data.file!),
+                                  fit: BoxFit.fill),
+                            ),
                           ),
+                          onTap: () {
+                            openPhotoDialog(context, data.file!);
+                          },
                         )
                       : Container(
                           height: 208,
@@ -160,3 +170,45 @@ Widget timeLineContainer({required Data data, required void Function() onTap}) {
     ),
   );
 }
+
+openPhotoDialog(BuildContext context, path) => showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+              child: Stack(
+            children: [
+              PhotoView(
+                enableRotation: true,
+                heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),
+                imageProvider: NetworkImage(path),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: MyTheme.medium_grey_50,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                        topLeft: Radius.circular(25),
+                      ),
+                    ),
+                  ),
+                  width: 40,
+                  height: 40,
+                  child: IconButton(
+                    icon: const Icon(Icons.clear, color: MyTheme.white),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )),
+        );
+      },
+    );

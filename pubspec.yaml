@@ -60,6 +60,9 @@ dependencies:
   call_log: ^4.0.0
   flutter_storage_path: ^1.0.4
   audioplayers:
+  syncfusion_flutter_charts:
+  photo_view:
+  flutter_datetime_picker_plus: ^2.2.0
 
 
 

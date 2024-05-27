@@ -4,6 +4,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/common/custom_button.dart';
 import 'package:ghl_callrecoding/controllers/attachment_controller.dart';
+import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
@@ -73,11 +74,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
     leadsController.fetchIndividualLeads(widget.leadId);
-    // CallLogController callLogController = Get.put(CallLogController(
-    //     phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
-    // callLogController.getCallLog();
-    // callLogController = Get.put(CallLogController(
-    //     phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
+    CallLogController callLogController = Get.put(CallLogController(
+        phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
+    callLogController.getCallLog();
   }
 
   @override

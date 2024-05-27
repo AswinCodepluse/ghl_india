@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
@@ -67,13 +66,18 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
   @override
   void initState() {
+    super.initState();
     initRecorder();
     // Dashboard().fetchOIndividualLeads(widget.leadId);
     timeLineController.leadId.value = widget.leadId;
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
     leadsController.fetchIndividualLeads(widget.leadId);
-    super.initState();
+    // CallLogController callLogController = Get.put(CallLogController(
+    //     phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
+    // callLogController.getCallLog();
+    // callLogController = Get.put(CallLogController(
+    //     phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
   }
 
   @override
@@ -207,11 +211,11 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle:
-                            leadsController.leadDetailsData.value.source ?? "",
+                        leadsController.leadDetailsData.value.source ?? "",
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.medium ?? "",
+                        leadsController.leadDetailsData.value.medium ?? "",
                         firstIcon: Icons.location_on_sharp,
                         secondIcon: Icons.account_tree_rounded),
                   ),
@@ -223,12 +227,12 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle:
-                            leadsController.leadDetailsData.value.status ?? "",
+                        leadsController.leadDetailsData.value.status ?? "",
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.occupation ??
-                                "",
+                        leadsController.leadDetailsData.value.occupation ??
+                            "",
                         firstIcon: Icons.circle_rounded,
                         secondIcon: Icons.work),
                   ),
@@ -240,13 +244,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle:
-                            leadsController.leadDetailsData.value.designation ??
-                                "",
+                        leadsController.leadDetailsData.value.designation ??
+                            "",
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.planning ??
-                                '',
+                        leadsController.leadDetailsData.value.planning ??
+                            '',
                         firstIcon: Icons.cases_outlined,
                         secondIcon: Icons.alarm),
                   ),
@@ -258,13 +262,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle: leadsController
-                                .leadDetailsData.value.lastUpdatedDate ??
+                            .leadDetailsData.value.lastUpdatedDate ??
                             '',
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.createdDate ??
-                                '',
+                        leadsController.leadDetailsData.value.createdDate ??
+                            '',
                         firstIcon: Icons.calendar_month,
                         secondIcon: Icons.calendar_month),
                   ),
@@ -276,13 +280,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle:
-                            leadsController.leadDetailsData.value.interest ??
-                                "",
+                        leadsController.leadDetailsData.value.interest ??
+                            "",
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.assigned ??
-                                "",
+                        leadsController.leadDetailsData.value.assigned ??
+                            "",
                         firstIcon: Icons.interests,
                         secondIcon: Icons.work),
                   ),
@@ -294,40 +298,77 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     height: 10,
                   ),
                   Obx(
-                    () => subTitleRow(
+                        () => subTitleRow(
                         firstSubTitle:
-                            leadsController.leadDetailsData.value.city ?? "",
+                        leadsController.leadDetailsData.value.city ?? "",
                         secondSubTitle:
-                            leadsController.leadDetailsData.value.createdAt ??
-                                '',
+                        leadsController.leadDetailsData.value.createdAt ??
+                            '',
                         firstIcon: Icons.location_city,
                         secondIcon: Icons.alarm_on_outlined),
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(
-                      firstTitle: "Information", secondTitle: "Description"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.information ??
-                                "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.description ??
-                                "",
-                        firstIcon: Icons.info_rounded,
-                        secondIcon: Icons.description),
-                  ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  // titleRow(
+                  //     firstTitle: "Information", secondTitle: "Description"),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // Obx(
+                  //   () => subTitleRow(
+                  //       firstSubTitle:
+                  //           leadsController.leadDetailsData.value.information ??
+                  //               "",
+                  //       secondSubTitle:
+                  //           leadsController.leadDetailsData.value.description ??
+                  //               "",
+                  //       firstIcon: Icons.info_rounded,
+                  //       secondIcon: Icons.description),
+                  // ),
                 ],
               ),
             ),
             SizedBox(
-              height: 15,
+              height: 10,
             ),
+            leadsController.leadDetailsData.value.description != null
+                ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Wrap(
+                children: [
+                  CustomText(text: "Description"),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: textCard(
+                        text: leadsController
+                            .leadDetailsData.value.description ??
+                            ""),
+                  ),
+                ],
+              ),
+            )
+                : Container(),
+            SizedBox(
+              height: 10,
+            ),
+            leadsController.leadDetailsData.value.information != null
+                ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Wrap(
+                children: [
+                  CustomText(text: "Information"),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: textCard(
+                        text: leadsController
+                            .leadDetailsData.value.information ??
+                            ""),
+                  ),
+                ],
+              ),
+            )
+                : Container(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: Align(
@@ -340,7 +381,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             ),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+              const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -391,7 +432,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         color: Colors.white,
                         boxShadow: leadsController.shadow),
                     child: Obx(
-                      () => DropdownButton<Data>(
+                          () => DropdownButton<Data>(
                         iconSize: 12,
                         underline: SizedBox(),
                         icon: Image(
@@ -399,16 +440,16 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         ),
                         value: leadsController.leadStatusList.isNotEmpty
                             ? leadsController.leadStatusList.firstWhere(
-                                (leads) {
-                                  return leads.id ==
-                                      leadsController.selectedLeadIds.value;
-                                },
-                                orElse: () {
-                                  leadsController.selectedLeadNames.value =
-                                      leadsController.leadStatusList[0].name!;
-                                  return leadsController.leadStatusList[0];
-                                },
-                              )
+                              (leads) {
+                            return leads.id ==
+                                leadsController.selectedLeadIds.value;
+                          },
+                          orElse: () {
+                            leadsController.selectedLeadNames.value =
+                            leadsController.leadStatusList[0].name!;
+                            return leadsController.leadStatusList[0];
+                          },
+                        )
                             : null,
                         borderRadius: BorderRadius.circular(10),
                         items: leadsController.leadStatusList.map((Data item) {
@@ -537,13 +578,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                           Spacer(),
                           recorder.isRecording
                               ? Icon(
-                                  Icons.stop,
-                                  size: 18,
-                                  color: MyTheme.red,
-                                )
+                            Icons.stop,
+                            size: 18,
+                            color: MyTheme.red,
+                          )
                               : Image(
-                                  image:
-                                      AssetImage("assets/image/mic_icon.png"))
+                              image:
+                              AssetImage("assets/image/mic_icon.png"))
                         ],
                       ),
                     ),
@@ -572,9 +613,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     // }
                     String user_Id = await sharedPreference.getUserId();
                     File callRecordingFile =
-                        fileController.filePathsWithPhoneNumber.isEmpty
-                            ? leadsController.callFiles
-                            : leadsController.lastCallRecording;
+                    fileController.filePathsWithPhoneNumber.isEmpty
+                        ? leadsController.callFiles
+                        : leadsController.lastCallRecording;
                     LeadDatasCreate response = await leadsController.createLead(
                       leadsController.leadDetailsData.value.id,
                       int.parse(user_Id),
@@ -619,6 +660,24 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget textCard({required String text}) {
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: CustomText(
+          text: text,
+          color: Colors.grey,
+          maxLines: 10,
+        ),
+      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: leadsController.shadow),
     );
   }
 }

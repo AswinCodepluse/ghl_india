@@ -152,6 +152,74 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         SizedBox(
                           height: screenWidth / 24,
                         ),
+                        Row(
+                          children: [
+                            Expanded(child: Obx(() {
+                              return InkWell(
+                                child: dashboardContainer(
+                                    color: Color(0xFF970652),
+                                    screenWidth: screenWidth,
+                                    text: "AI Chat",
+                                    icon: "assets/image/ai_image.png",
+                                    count: dashboardController.aiLead.value),
+                                onTap: () {
+                                  Get.to(
+                                    () => LeadScreen(
+                                      platforms: "ai_chat",
+                                      session: widget.seasons,
+                                      filterBy: "ai_chat",
+                                    ),
+                                  );
+                                },
+                              );
+                            })),
+                            SizedBox(
+                              width: screenWidth / 24,
+                            ),
+                            Expanded(child: Obx(() {
+                              return InkWell(
+                                child: dashboardContainer(
+                                    color: Color(0xFF2C3E50),
+                                    screenWidth: screenWidth,
+                                    text: "DP",
+                                    icon: "assets/image/dp_images.png",
+                                    count: dashboardController.dpLead.value),
+                                onTap: () {
+                                  Get.to(
+                                    () => LeadScreen(
+                                      platforms: "dp",
+                                      session: widget.seasons,
+                                      filterBy: "dp",
+                                    ),
+                                  );
+                                },
+                              );
+                            })),
+                          ],
+                        ),
+                        SizedBox(
+                          height: screenWidth / 24,
+                        ),
+                        InkWell(
+                          child: whatsappContainer(
+                              screenWidth: screenWidth,
+                              icon: "assets/image/whatsapp_icon.png",
+                              text: "Whatsapp",
+                              count: dashboardController.whatsAppLead.value,
+                              color: Color(0XFFBA4A00)),
+                          onTap: () {
+                            Get.to(
+                              () => LeadScreen(
+                                platforms: "whatsapp",
+                                session: widget.seasons,
+                                filterBy: "whatsapp",
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: screenWidth / 24,
+                        ),
                         Obx(() {
                           return GridView.builder(
                             shrinkWrap: true,
@@ -256,6 +324,59 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
+  Widget whatsappContainer({
+    required double screenWidth,
+    required String icon,
+    required String text,
+    required int count,
+    required Color color,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(screenWidth / 24),
+      height: screenWidth / 7,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(screenWidth / 36),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: screenWidth / 14,
+                width: screenWidth / 14,
+                child: Image(
+                  image: AssetImage(icon),
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: screenWidth / 30,
+              ),
+              FittedBox(
+                child: CustomText(
+                  text: text,
+                  fontWeight: FontWeight.w700,
+                  fontSize: screenWidth / 20,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          FittedBox(
+            child: CustomText(
+              text: count.toString(),
+              fontSize: screenWidth / 14,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget dashboardContainer(
       {required Color color,
       required double screenWidth,
@@ -264,39 +385,44 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       required String icon}) {
     return Container(
       padding: EdgeInsets.all(screenWidth / 24),
-      height: screenWidth / 2.4,
+      height: screenWidth / 3.3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: screenWidth / 12,
-            width: screenWidth / 12,
-            child: Image(
-              image: AssetImage(icon),
-              color: Colors.white,
-            ),
+          Row(
+            children: [
+              Container(
+                height: screenWidth / 14,
+                width: screenWidth / 14,
+                child: Image(
+                  image: AssetImage(icon),
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: screenWidth / 15,
+              ),
+              FittedBox(
+                child: CustomText(
+                  text: count.toString(),
+                  fontSize: screenWidth / 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
           SizedBox(
-            height: screenWidth / 36,
+            height: screenWidth / 44,
           ),
           FittedBox(
             child: CustomText(
               text: text,
               fontWeight: FontWeight.w700,
-              fontSize: screenWidth / 18,
+              fontSize: screenWidth / 20,
               color: Colors.white,
             ),
           ),
-          Spacer(),
-          Center(
-              child: FittedBox(
-            child: CustomText(
-              text: count.toString(),
-              fontSize: screenWidth / 11.25,
-              color: Colors.white,
-              fontWeight: FontWeight.w400,
-            ),
-          ))
         ],
       ),
       decoration: BoxDecoration(

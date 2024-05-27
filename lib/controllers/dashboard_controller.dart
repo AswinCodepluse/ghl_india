@@ -15,7 +15,6 @@ import 'package:permission_handler/permission_handler.dart';
 class DashboardController extends GetxController {
   var dashboardCountList = [].obs;
   var searchLeadsList = <AllLeads>[].obs;
-  var leadPhoneNumbers = <String>[].obs;
   var googleLead = 0.obs;
   var websiteLead = 0.obs;
   var facebookLead = 0.obs;
@@ -41,18 +40,9 @@ class DashboardController extends GetxController {
   ];
   var isLeads = false.obs;
 
-  Future<void> checkPermission() async {
-    FileController fileController = Get.put(FileController());
-    if (await Permission.storage.request().isGranted) {
-      fileController.findRecordedFiles();
-    }
-  }
-
   @override
   void onInit() {
     // TODO: implement onInit
-    // fetchDashboardData(leadSeasons);
-
     super.onInit();
   }
 
@@ -87,55 +77,48 @@ class DashboardController extends GetxController {
     dashboardCountList.clear();
     await fetchDashboardData(leadSeasons);
   }
-
-  Future<void> pickFile() async {
-    String? result = await FilePicker.platform.getDirectoryPath();
-
-    if (result != null) {
-      callRecordingDirPath = result;
-      await storeRecordedFiles(callRecordingDirPath!);
-      callRecordingFileCon.text = callRecordingDirPath!;
-      update();
-    }
-  }
-
-  Future<String> getFilePath() async {
-    String? filePath;
-    try {
-      filePath = await StoragePath.audioPath;
-      var response = jsonDecode(filePath!);
-      List res = response;
-      res.forEach((e) => print("file path $e"));
-      print('-------------------------');
-      print("response $res");
-
-      print('-------------------------');
-      print(response);
-    } on PlatformException {
-      filePath = 'Failed to get path';
-    }
-    return filePath;
-  }
-
-  Future<void> storeRecordedFiles(String callRecordingDirPath) async {
-    try {
-      Directory? directoryPath = Directory(callRecordingDirPath);
-      List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
-      print('files  $files');
-      recordedFiles.value = files.where((file) {
-        return file is File &&
-            (file.path.endsWith(".amr") ||
-                file.path.endsWith(".wav") ||
-                file.path.endsWith(".mp3") ||
-                file.path.endsWith(".m4a"));
-      }).toList();
-
-      print("recordedFiles  $recordedFiles");
-      update();
-    } catch (e) {
-      print('Error finding recorded files: $e');
-    }
-  }
+  //
+  // Future<void> pickFile() async {
+  //   String? result = await FilePicker.platform.getDirectoryPath();
+  //
+  //   if (result != null) {
+  //     callRecordingDirPath = result;
+  //     await storeRecordedFiles(callRecordingDirPath!);
+  //     callRecordingFileCon.text = callRecordingDirPath!;
+  //     update();
+  //   }
+  // }
+  //
+  // Future<String> getFilePath() async {
+  //   String? filePath;
+  //   try {
+  //     filePath = await StoragePath.audioPath;
+  //     var response = jsonDecode(filePath!);
+  //   } on PlatformException {
+  //     filePath = 'Failed to get path';
+  //   }
+  //   return filePath;
+  // }
+  //
+  // Future<void> storeRecordedFiles(String callRecordingDirPath) async {
+  //   try {
+  //     Directory? directoryPath = Directory(callRecordingDirPath);
+  //     List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
+  //     print('files  $files');
+  //     recordedFiles.value = files.where((file) {
+  //       return file is File &&
+  //           (file.path.endsWith(".amr") ||
+  //               file.path.endsWith(".wav") ||
+  //               file.path.endsWith(".mp3") ||
+  //               file.path.endsWith(".m4a"));
+  //     }).toList();
+  //
+  //     print("recordedFiles  $recordedFiles");
+  //     update();
+  //   } catch (e) {
+  //     print('Error finding recorded files: $e');
+  //   }
+  // }
 
   Color getColor(String colorName) {
     switch (colorName) {

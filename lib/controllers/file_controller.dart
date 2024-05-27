@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dashboard_controller.dart';
 
 class FileController extends GetxController {
@@ -10,6 +12,7 @@ class FileController extends GetxController {
   RxList<String> filePathsWithPhoneNumber = <String>[].obs;
   RxBool isLoading = false.obs;
   final dashboardController = Get.find<DashboardController>();
+  final leadsDataController = Get.find<LeadsDataController>();
 
   @override
   void onInit() {
@@ -25,24 +28,32 @@ class FileController extends GetxController {
     OpenFile.open(filePath);
   }
 
+  Future<void> checkPermission() async {
+    FileController fileController = Get.put(FileController());
+    if (await Permission.storage.request().isGranted) {
+      fileController.findRecordedFiles();
+    }
+  }
+
   Future<void> findRecordedFiles() async {
+
     try {
       Directory? externalDir = await getExternalStorageDirectory();
       if (externalDir != null) {
-        print('====================================');
         Directory? directoryPath = Directory('/storage/emulated/0');
         List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
-        print('files $files');
         recordedFiles.value = files.where((file) {
           return (file.path.endsWith(".amr") ||
               file.path.endsWith(".wav") ||
               file.path.endsWith(".mp3") ||
               file.path.endsWith(".m4a"));
         }).toList();
+        filePathsWithPhoneNumber.clear();
         for (FileSystemEntity filePath in recordedFiles) {
-          for (String phoneNumber in dashboardController.leadPhoneNumbers) {
-            print('phoneNumber $phoneNumber');
+          for (String phoneNumber in leadsDataController.leadPhoneNumbers) {
             if ((filePath as File).path.contains(phoneNumber)) {
+              File audioFile = filePath;
+              DateTime lastModified = await audioFile.lastModified();
               filePathsWithPhoneNumber.add(filePath.path);
               break;
             }

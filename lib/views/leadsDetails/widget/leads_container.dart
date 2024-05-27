@@ -89,8 +89,8 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
               SizedBox(
                 height: 2,
               ),
-              SizedBox(
-                width: 240,
+              Container(
+                width: 220,
                 child: Row(
                   children: [
                     Icon(

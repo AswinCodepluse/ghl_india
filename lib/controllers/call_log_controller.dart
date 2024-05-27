@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:call_log/call_log.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/get_call_log_model.dart';
 import 'package:ghl_callrecoding/repositories/call_log_repository.dart';
@@ -21,16 +22,16 @@ class CallLogController extends GetxController {
   StreamSubscription? _subscription;
 
   CallLogRepository callLogRepository = CallLogRepository();
+  FileController fileController = Get.find<FileController>();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    startListening();
-    // fetchCallLogs();
+    fetchCallLogFromPhone();
   }
 
-  void startListening({Duration interval = const Duration(seconds: 5)}) {
+  void fetchCallLogFromPhone({Duration interval = const Duration(seconds: 5)}) {
     _subscription = Stream.periodic(interval).listen((_) async {
       await fetchCallLogs();
     });
@@ -40,14 +41,17 @@ class CallLogController extends GetxController {
     Iterable<CallLogEntry> entries = await CallLog.query(number: phoneNumber);
     callLogsList.assignAll(entries);
     if (callLogsList.isNotEmpty && getCallLogsList.isNotEmpty) {
+      fileController.findRecordedFiles();
       String firstCallStartTime =
           formatTimestamp(callLogsList.first.timestamp!);
       String getFirstCallStartTime = getCallLogsList.first.startTime!;
+      List<String> dateTimeComponents =
+          firstCallStartTime.split(RegExp(r'[: \-]'));
+      String joinedString = dateTimeComponents.join('');
+
       if (firstCallStartTime == getFirstCallStartTime) {
-        print("+============if==============");
         return;
       } else {
-        print("===============else==========");
         String userId = await SharedPreference().getUserId();
         DateTime findCallEndTime =
             DateTime.fromMillisecondsSinceEpoch(callLogsList.first.timestamp!);
@@ -57,6 +61,17 @@ class CallLogController extends GetxController {
             callEndTime(startTime: time, duration: formattedDuration);
         String callType = callTypeToString(callLogsList.first.callType!);
         String duration = "${callLogsList.first.duration}";
+        File callRecordingFile = File("");
+        if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
+          if (fileController.filePathsWithPhoneNumber.last
+                  .contains(phoneNumber) &&
+              fileController.filePathsWithPhoneNumber.last
+                  .contains(joinedString)) {
+            callRecordingFile =
+                File(fileController.filePathsWithPhoneNumber.first);
+          }
+        }
+
         callLogRepository.postCallLog(
             leadId: leadId!,
             userId: userId,
@@ -64,7 +79,7 @@ class CallLogController extends GetxController {
             endTime: endTime,
             duration: duration,
             type: callType,
-            callRecordingFile: File(""));
+            callRecordingFile: callRecordingFile);
         await getCallLog();
       }
     }
@@ -86,33 +101,6 @@ class CallLogController extends GetxController {
     super.onClose();
   }
 
-  // Future<void> fetchCallLogs(String phoneNumber) async {
-  //   var status = await Permission.phone.status;
-  //
-  //   if (!status.isGranted) {
-  //     if (await Permission.phone.request().isGranted) {
-  //       retrieveCallLogs(phoneNumber);
-  //     }
-  //   } else {
-  //     retrieveCallLogs(phoneNumber);
-  //   }
-  // }
-
-  // Future<void> retrieveCallLogs(String phoneNumber) async {
-  //   Iterable<CallLogEntry> queryEntries = await CallLog.query(
-  //     number: phoneNumber,
-  //   );
-
-  //   callLogsList.addAll(queryEntries);
-  //
-  //   int? timestamp = queryEntries.first.timestamp;
-  //   int? duration = queryEntries.first.duration;
-  //   formatTimestamp(timestamp!);
-  //   formatDuration(duration!);
-  //
-  //   update();
-  // }
-
   String formatDuration(int seconds) {
     Duration duration = Duration(seconds: seconds);
     int hours = duration.inHours;
@@ -128,13 +116,6 @@ class CallLogController extends GetxController {
 
     return formattedDate;
   }
-
-  // String callEndTime({required String startTime,required String duration}) {
-  //
-  //   DateTime time1DateTime = DateFormat('HH:mm:ss').parse(startTime);
-  //
-  //   return "aswin";
-  // }
 
   String callEndTime({required String startTime, required String duration}) {
     DateTime time1DateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parse(startTime);
@@ -183,23 +164,4 @@ class CallLogController extends GetxController {
         return "unknown";
     }
   }
-
-// String callTypeIcon(CallType callType) {
-//   switch (callType) {
-//     case CallType.incoming:
-//       return "assets/image/call_incoming_icon.png";
-//     case CallType.wifiIncoming:
-//       return "assets/image/call_incoming_icon.png";
-//     case CallType.outgoing:
-//       return "assets/image/call_outgoing_icon.png";
-//     case CallType.wifiOutgoing:
-//       return "assets/image/call_outgoing_icon.png";
-//     case CallType.missed:
-//       return "assets/image/call_missed_icon.png";
-//     case CallType.rejected:
-//       return "assets/image/call_rejected_icon.png";
-//     default:
-//       return "unknown";
-//   }
-// }
 }

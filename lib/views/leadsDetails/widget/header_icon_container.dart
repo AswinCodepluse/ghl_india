@@ -9,9 +9,11 @@ import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HeaderIconContainer extends StatelessWidget {
-  HeaderIconContainer({super.key, required this.phoneNumber});
+  HeaderIconContainer(
+      {super.key, required this.phoneNumber, required this.email});
 
   final String phoneNumber;
+  final String email;
 
   final leadsController = Get.find<LeadsController>();
 
@@ -103,6 +105,34 @@ class HeaderIconContainer extends StatelessWidget {
                 ),
                 CustomText(
                   text: "Whatsapp",
+                  // color: Colors.red,
+                )
+              ],
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    leadsController.launchEmail(email);
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Image(
+                            image: AssetImage(
+                          "assets/image/gmail_icon.png",
+                        ))),
+                  ),
+                ),
+                CustomText(
+                  text: "Gmail",
                   // color: Colors.red,
                 )
               ],

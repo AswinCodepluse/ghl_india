@@ -15,6 +15,13 @@ class CallLogRepository {
     required String type,
     required File callRecordingFile,
   }) async {
+    print('leadId  $leadId');
+    print('userId  $userId');
+    print('startTime  $startTime');
+    print('endTime  $endTime');
+    print('duration  $duration');
+    print('type  $type');
+    print('callRecordingFile  ${callRecordingFile.path}');
     var url = Uri.parse(
         'https://sales.ghlindia.com/api/sales-person/lead/call-log/create');
 

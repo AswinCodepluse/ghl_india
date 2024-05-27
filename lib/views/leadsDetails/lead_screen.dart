@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/leads_container.dart';
+import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class LeadScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class LeadScreen extends StatefulWidget {
 
 class _LeadScreenState extends State<LeadScreen> {
   LeadsDataController leadsDataController = Get.put(LeadsDataController());
+  FileController fileController = Get.put(FileController());
 
   @override
   void initState() {
@@ -30,6 +33,9 @@ class _LeadScreenState extends State<LeadScreen> {
     leadsDataController.leadType = widget.platforms;
     leadsDataController.fetchAllLeadsData(
         filterBy: widget.platforms, session: widget.session);
+    Future.delayed(Duration(seconds: 1), () {
+      fileController.checkPermission();
+    });
   }
 
   @override
@@ -38,6 +44,17 @@ class _LeadScreenState extends State<LeadScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Get.to(() => FileScreen());
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15.0),
+              child: Icon(Icons.file_copy),
+            ),
+          ),
+        ],
         title: CustomText(
           text: widget.platforms == 'allLeads'
               ? "Leads"

@@ -28,7 +28,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    print('session  ${widget.seasons}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dashboardController.leadSeasons = widget.seasons;
       dashboardController.fetchDashboardData(widget.seasons);

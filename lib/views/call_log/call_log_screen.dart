@@ -1,10 +1,8 @@
-import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
 import 'package:ghl_callrecoding/models/get_call_log_model.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
-import 'package:intl/intl.dart';
 
 class CallLogScreen extends StatefulWidget {
   CallLogScreen({super.key, required this.leadPhoneNumber});
@@ -69,14 +67,8 @@ class _CallLogScreenState extends State<CallLogScreen> {
   }
 
   Widget callLogContainer(GetCallLogData data) {
-    // String dateTime = callLogController.formatTimestamp(data.timestamp!);
     String duration = callLogController.formatDuration(data.duration!);
-    // String callTypes = callLogController.callTypeToString(data.callType!);
     String icon = callLogController.callTypeIcon(data.type!);
-
-    // String callEndTime =
-    //     callLogController.callEndTime(startTime: time, duration: duration);
-
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,7 +109,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              data.type != "Rejected" && data.type != "Missed"
+              data.type != "rejected" && data.type != "missed"
                   ? CustomText(
                       text: duration,
                       fontSize: 18,
@@ -128,7 +120,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
                 text: data.type ?? '',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: data.type == "Rejected" || data.type == "Missed"
+                color: data.type == "rejected" || data.type == "missed"
                     ? Colors.red
                     : Colors.grey,
               ),

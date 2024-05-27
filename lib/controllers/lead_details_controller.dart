@@ -13,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-import 'package:whatsapp_share/whatsapp_share.dart';
 
 class LeadsController extends GetxController {
   var isLeads = false.obs;
@@ -26,6 +25,7 @@ class LeadsController extends GetxController {
   TextEditingController datePickedCon = TextEditingController();
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController timeCon = TextEditingController();
+  TextEditingController amountCon = TextEditingController();
   var leadStatusList = <Data>[].obs;
   RxList<String> leadStatusNameList = <String>[].obs;
   RxString selectedLeadStatus = ''.obs;
@@ -35,6 +35,7 @@ class LeadsController extends GetxController {
   File? files;
   bool isSubmitted = false;
   String hours = '';
+  String phoneNumber = '';
   String minutes = '';
   RxBool loadingState = false.obs;
 
@@ -54,9 +55,7 @@ class LeadsController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    fetchAll();
     fetchLeadStatus();
-
     fetchLastCallRecordingFile();
     super.onInit();
   }
@@ -84,13 +83,8 @@ class LeadsController extends GetxController {
   ];
 
   isDisable() {
-    if (
-        // (fileCon.text.isEmpty || fileCon.text == '') ||
-        //     (callRecordingFileCon.text.isEmpty ||
-        //         callRecordingFileCon.text == '')
-        //     || (datePickedCon.text.isEmpty ||
-        //     datePickedCon.text == '') ||
-        (followupNotesCon.text.isEmpty || followupNotesCon.text == '')) {
+    if ((followupNotesCon.text.isEmpty || followupNotesCon.text == '') ||
+        (selectedLeadIds == 10 && amountCon.text == '')) {
       setDisable.value = true;
     } else {
       setDisable.value = false;
@@ -164,15 +158,7 @@ class LeadsController extends GetxController {
   //   firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
   // }
 
-  fetchAllLeadsDatas() async {
-    isLeads.value = true;
-    isLeads.value = false;
-    update();
-  }
 
-  fetchAll() {
-    fetchAllLeadsDatas();
-  }
 
   clearAll() {
     fileCon.clear();
@@ -258,7 +244,6 @@ class LeadsController extends GetxController {
 
   fetchIndividualLeads(int id) async {
     leadDetailsData.value = await Dashboard().fetchOIndividualLeads(id);
-
     selectedLeadIds.value = leadDetailsData.value.statusInt!;
   }
 
@@ -266,15 +251,12 @@ class LeadsController extends GetxController {
     isLeads.value = true;
     var leadsResponse = await Dashboard().fetchLeadStatus();
     leadStatusList.addAll(leadsResponse);
-
-    // Clear lists before adding to avoid duplicates
     leadStatusNameList.clear();
 
     for (int i = 0; i < leadStatusList.length; i++) {
       leadStatusNameList.add(leadStatusList[i].name!);
     }
 
-    // Convert to a Set to remove duplicates
     Set<String> uniqueStatusNames = leadStatusNameList.toSet();
     leadStatusNameList.value = uniqueStatusNames.toList();
     isLeads.value = false;
@@ -301,12 +283,22 @@ class LeadsController extends GetxController {
     }
   }
 
+  Future<void> launchEmail(String email) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunch(emailUri.toString())) {
+      await launch(emailUri.toString());
+    } else {
+      throw 'Could not launch $email';
+    }
+  }
+
   openWhatsApp(context, phoneNumber) async {
     var whatsapp = "$phoneNumber";
 
-    var whatsappURl_android = "whatsapp://send?phone=" +
-        whatsapp +
-        "&text=Hello, I have a question about https://ghlindia.com/";
+    var whatsappURl_android = "whatsapp://send?phone=$whatsapp";
     var whatsappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
     if (Platform.isIOS) {
       // for iOS phone only
@@ -328,9 +320,11 @@ class LeadsController extends GetxController {
   }
 
   fetchLastCallRecordingFile() async {
+    print('phoneNumber $phoneNumber');
     if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
       if (fileController.filePathsWithPhoneNumber.last
           .contains(selectedLeadPhoneNumber)) {
+
         callRecordingFileCon.text =
             fileController.filePathsWithPhoneNumber.last;
         lastCallRecording = File(fileController.filePathsWithPhoneNumber.last);

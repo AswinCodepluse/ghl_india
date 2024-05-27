@@ -180,9 +180,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    Future.delayed(Duration(seconds: 1), () {
-      dashboardController.checkPermission();
-    });
+
   }
 
   @override
@@ -205,17 +203,6 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
                 bottomSheet(context);
               },
               child: Icon(Icons.menu)),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                Get.to(() => FileScreen());
-              },
-              child: const Padding(
-                padding: EdgeInsets.only(right: 15.0),
-                child: Icon(Icons.file_copy),
-              ),
-            ),
-          ],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(0),

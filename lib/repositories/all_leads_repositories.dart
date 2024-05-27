@@ -31,8 +31,6 @@ class Dashboard {
   Future<FilterLeadsModel> fetchFilterLeads(
       {required String filterBy, required String session}) async {
     var post_body = jsonEncode({"filter": filterBy, "type": session});
-    print("filterBy  $filterBy");
-    print("session  $session");
 
     var url = Uri.parse("https://sales.ghlindia.com/api/sales-person");
     try {

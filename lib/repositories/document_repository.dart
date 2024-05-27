@@ -14,7 +14,6 @@ class DocumentRepository {
         "Authorization": "Bearer ${access_token.$}",
       },
     );
-    print("Document data Response=========>${response.body}");
     return DocumentModel.fromJson(jsonDecode(response.body));
   }
 }

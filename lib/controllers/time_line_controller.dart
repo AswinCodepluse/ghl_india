@@ -98,7 +98,7 @@ class TimeLineController extends GetxController {
   Future<void> stop() async {
     await player.stop();
     playerState.value = PlayerState.stopped;
-    position.value = Duration.zero;
+    // position.value = Duration.zero;
     update();
   }
 }

@@ -159,6 +159,7 @@ import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/bottom_sheet.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/exist_conformation_dailog.dart';
 import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
@@ -184,7 +185,6 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
     });
   }
 
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -193,97 +193,103 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: CustomText(text: "hello, ${user_name.$}"),
-        leading: GestureDetector(
-            onTap: () {
-              bottomSheet(context);
-            },
-            child: Icon(Icons.menu)),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.to(() => FileScreen());
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15.0),
-              child: Icon(Icons.file_copy),
+    return WillPopScope(
+      onWillPop: () async {
+        return await exitConfirmationDialog(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: CustomText(text: "hello, ${user_name.$}"),
+          leading: GestureDetector(
+              onTap: () {
+                bottomSheet(context);
+              },
+              child: Icon(Icons.menu)),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Get.to(() => FileScreen());
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 15.0),
+                child: Icon(Icons.file_copy),
+              ),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(0),
             ),
           ),
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(0),
+          elevation: 0,
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: 'Today Leads'),
+              Tab(text: 'Total Leads'),
+            ],
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: Colors.red,
+            ),
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.black,
+            labelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontSize: 14.0),
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorPadding:
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+            splashFactory: NoSplash.splashFactory,
           ),
         ),
-        elevation: 0,
-        bottom: TabBar(
+        body: TabBarView(
           controller: _tabController,
-          tabs: [
-            Tab(text: 'Today Leads'),
-            Tab(text: 'Total Leads'),
+          children: [
+            DashBoardScreen(seasons: 'today'),
+            DashBoardScreen(seasons: 'total')
           ],
-          indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: Colors.red,
-          ),
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.black,
-          labelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          unselectedLabelStyle: TextStyle(fontSize: 14.0),
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-          splashFactory: NoSplash.splashFactory,
         ),
+        // drawer: Drawer(
+        //   child: ListView(
+        //     padding: EdgeInsets.zero,
+        //     children: <Widget>[
+        //       const DrawerHeader(
+        //         decoration: BoxDecoration(
+        //           color: Colors.red,
+        //         ),
+        //         child: Text(
+        //           'GHL India Pvt Ltd',
+        //           style: TextStyle(
+        //             color: Colors.white,
+        //             fontSize: 24,
+        //           ),
+        //         ),
+        //       ),
+        //       ListTile(
+        //         title: const Text('Logout'),
+        //         onTap: () {
+        //           onTapLogout(context);
+        //         },
+        //       ),
+        //       // Padding(
+        //       //   padding: const EdgeInsets.all(8.0),
+        //       //   child: CustomText(text: "Call Recording Path Storing"),
+        //       // ),
+        //       // Padding(
+        //       //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        //       //   child: CustomTextField(
+        //       //     readOnly: true,
+        //       //     controller: dashboardController.callRecordingFileCon,
+        //       //     hintText: "Choose File Path",
+        //       //     onTap: () {
+        //       //       dashboardController.pickFile();
+        //       //     },
+        //       //   ),
+        //       // ),
+        //     ],
+        //   ),
+        // ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          DashBoardScreen(seasons: 'today'),
-          DashBoardScreen(seasons: 'total')
-        ],
-      ),
-      // drawer: Drawer(
-      //   child: ListView(
-      //     padding: EdgeInsets.zero,
-      //     children: <Widget>[
-      //       const DrawerHeader(
-      //         decoration: BoxDecoration(
-      //           color: Colors.red,
-      //         ),
-      //         child: Text(
-      //           'GHL India Pvt Ltd',
-      //           style: TextStyle(
-      //             color: Colors.white,
-      //             fontSize: 24,
-      //           ),
-      //         ),
-      //       ),
-      //       ListTile(
-      //         title: const Text('Logout'),
-      //         onTap: () {
-      //           onTapLogout(context);
-      //         },
-      //       ),
-      //       // Padding(
-      //       //   padding: const EdgeInsets.all(8.0),
-      //       //   child: CustomText(text: "Call Recording Path Storing"),
-      //       // ),
-      //       // Padding(
-      //       //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      //       //   child: CustomTextField(
-      //       //     readOnly: true,
-      //       //     controller: dashboardController.callRecordingFileCon,
-      //       //     hintText: "Choose File Path",
-      //       //     onTap: () {
-      //       //       dashboardController.pickFile();
-      //       //     },
-      //       //   ),
-      //       // ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

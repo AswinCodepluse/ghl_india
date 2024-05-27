@@ -26,14 +26,21 @@ class DocumentScreen extends StatelessWidget {
           children: [
             Expanded(
               child: Obx(() {
-                return documentController.documentList.isEmpty
-                    ? Center(child: CustomText(text: "No Document Found"))
-                    : ListView.builder(
-                        itemCount: documentController.documentList.length,
-                        itemBuilder: (context, index) {
-                          final data = documentController.documentList[index];
-                          return documentContainer(data: data);
-                        });
+                return documentController.loadingState.value
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                        ),
+                      )
+                    : documentController.documentList.isEmpty
+                        ? Center(child: CustomText(text: "No Document Found"))
+                        : ListView.builder(
+                            itemCount: documentController.documentList.length,
+                            itemBuilder: (context, index) {
+                              final data =
+                                  documentController.documentList[index];
+                              return documentContainer(data: data);
+                            });
               }),
             )
           ],
@@ -70,7 +77,7 @@ class DocumentScreen extends StatelessWidget {
                   } else {
                     leadPhoneNumber = phoneNUmber;
                   }
-                 await leadsController.shareDocument(
+                  await leadsController.shareDocument(
                     data.file!,
                     leadPhoneNumber,
                   );

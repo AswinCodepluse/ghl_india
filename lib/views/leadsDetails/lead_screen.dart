@@ -1,14 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
-import 'package:ghl_callrecoding/local_db/shared_preference.dart';
-import 'package:ghl_callrecoding/models/all_leads_models.dart';
-import 'package:ghl_callrecoding/models/filter_leads_model.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
-import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/leads_container.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
@@ -51,7 +45,13 @@ class _LeadScreenState extends State<LeadScreen> {
                   ? "Website Leads"
                   : widget.platforms == "facebook"
                       ? "Facebook Leads"
-                      : "Google Leads",
+                      : widget.platforms == 'ai_chat'
+                          ? "AI Chats"
+                          : widget.platforms == 'whatsapp'
+                              ? "Whatsapp"
+                              : widget.platforms == 'dp'
+                                  ? "DP"
+                                  : "Google Leads",
         ),
         leading: GestureDetector(
           onTap: () {

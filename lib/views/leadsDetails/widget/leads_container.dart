@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/filter_leads_model.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
@@ -74,27 +75,39 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w700),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                      width: 100, child: CustomText(text: data.phoneNo ?? '')),
-
-                  SizedBox(
-                      width: 130,
-                      child: CustomText(
-                        text: data.createAt ?? '',
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      )),
-                ],
+              SizedBox(
+                width: 220,
+                child: CustomText(text: data.phoneNo ?? ''),
               ),
               SizedBox(
-                  width: 220,
-                  child: CustomText(
-                    text: data.email ?? '',
-                    fontSize: 12,
-                  )),
+                width: 220,
+                child: CustomText(
+                  text: data.email ?? '',
+                  fontSize: 12,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              SizedBox(
+                width: 240,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.timer,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    CustomText(
+                      text: data.createAt ?? '',
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ],

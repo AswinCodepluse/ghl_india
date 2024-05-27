@@ -36,8 +36,10 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
   @override
   void initState() {
     // TODO: implement initState
+    leadStatusFilterController.getCurrentDate();
     leadStatusFilterController.fetchFilterLeadStatus(
         widget.statusId, widget.filterBy);
+
     super.initState();
   }
 
@@ -209,6 +211,20 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                     fontSize: 12,
                   ),
                 ),
+                SizedBox(height: 2,),
+                SizedBox(
+                  width: 220,
+                  child: Row(
+                    children: [
+                      Icon(Icons.date_range,color: Colors.red,),
+                      SizedBox(width: 5,),
+                      CustomText(
+                          text: data.nextFollowUpDate ?? '',
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ],
+                  ),
+                )
               ],
             ),
           ],

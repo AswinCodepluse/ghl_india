@@ -20,6 +20,9 @@ class DashboardController extends GetxController {
   var websiteLead = 0.obs;
   var facebookLead = 0.obs;
   var totalLead = 0.obs;
+  var whatsAppLead = 0.obs;
+  var aiLead = 0.obs;
+  var dpLead = 0.obs;
   String leadSeasons = '';
   TextEditingController searchCon = TextEditingController();
   TextEditingController callRecordingFileCon = TextEditingController();
@@ -68,6 +71,9 @@ class DashboardController extends GetxController {
     websiteLead.value = dashboardData.website!;
     facebookLead.value = dashboardData.facebook!;
     totalLead.value = dashboardData.total!;
+    whatsAppLead.value = dashboardData.whatsapp!;
+    aiLead.value = dashboardData.ai!;
+    dpLead.value = dashboardData.dp!;
     dashboardData.leadStatus?.forEach((element) {
       element.data?.forEach((element) {
         dashboardCountList.add(element);

@@ -4,6 +4,7 @@ import 'package:ghl_callrecoding/repositories/document_repository.dart';
 
 class DocumentController extends GetxController {
   RxList<DocumentData> documentList = <DocumentData>[].obs;
+  RxBool loadingState = false.obs;
 
   @override
   void onInit() {
@@ -18,7 +19,9 @@ class DocumentController extends GetxController {
   }
 
   fetchDocument() async {
+    loadingState.value = true;
     final response = await DocumentRepository().fetchDocument();
+    loadingState.value = false;
     documentList.addAll(response.data!);
   }
 }

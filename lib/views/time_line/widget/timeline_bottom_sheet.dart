@@ -46,9 +46,14 @@ Future<void> timelineBottomSheet(BuildContext context, Data data) {
               ),
               GestureDetector(
                 onTap: () {
+                  print(
+                      'timeLineController.playerState.value ${timeLineController.playerState.value}');
                   if (timeLineController.playerState.value ==
                       PlayerState.playing) {
                     timeLineController.pause();
+                  } else if (timeLineController.playerState.value ==
+                      PlayerState.stopped) {
+                    timeLineController.play(data.callRecord!);
                   } else {
                     timeLineController.play(data.callRecord!);
                   }

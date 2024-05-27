@@ -29,18 +29,19 @@ class FileController extends GetxController {
     try {
       Directory? externalDir = await getExternalStorageDirectory();
       if (externalDir != null) {
+        print('====================================');
         Directory? directoryPath = Directory('/storage/emulated/0');
         List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
+        print('files $files');
         recordedFiles.value = files.where((file) {
           return (file.path.endsWith(".amr") ||
               file.path.endsWith(".wav") ||
               file.path.endsWith(".mp3") ||
               file.path.endsWith(".m4a"));
         }).toList();
-
-        print(recordedFiles);
         for (FileSystemEntity filePath in recordedFiles) {
           for (String phoneNumber in dashboardController.leadPhoneNumbers) {
+            print('phoneNumber $phoneNumber');
             if ((filePath as File).path.contains(phoneNumber)) {
               filePathsWithPhoneNumber.add(filePath.path);
               break;

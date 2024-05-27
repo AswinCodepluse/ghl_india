@@ -2,7 +2,9 @@ import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
+import 'package:ghl_callrecoding/models/get_call_log_model.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
+import 'package:intl/intl.dart';
 
 class CallLogScreen extends StatefulWidget {
   CallLogScreen({super.key, required this.leadPhoneNumber});
@@ -14,15 +16,13 @@ class CallLogScreen extends StatefulWidget {
 }
 
 class _CallLogScreenState extends State<CallLogScreen> {
-  final CallLogController callLogController =
-      Get.put(CallLogController(phoneNumber: "9025075398"));
+  CallLogController callLogController = Get.find<CallLogController>();
 
-// @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   callLogController.fetchCallLogs("9025075398");
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +43,23 @@ class _CallLogScreenState extends State<CallLogScreen> {
           children: [
             Obx(() {
               return Expanded(
-                child: callLogController.callLogsList.isEmpty
+                child: callLogController.loadingState.value
                     ? Center(
-                        child: CustomText(
-                            text: "No Call Log History For This Lead"))
-                    : ListView.builder(
-                        itemCount: callLogController.callLogsList.length,
-                        itemBuilder: (context, index) {
-                          final data = callLogController.callLogsList[index];
-                          return callLogContainer(data);
-                        }),
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                        ),
+                      )
+                    : callLogController.getCallLogsList.isEmpty
+                        ? Center(
+                            child: CustomText(
+                                text: "No Call Log History For This Lead"))
+                        : ListView.builder(
+                            itemCount: callLogController.getCallLogsList.length,
+                            itemBuilder: (context, index) {
+                              final data =
+                                  callLogController.getCallLogsList[index];
+                              return callLogContainer(data);
+                            }),
               );
             })
           ],
@@ -61,15 +68,17 @@ class _CallLogScreenState extends State<CallLogScreen> {
     );
   }
 
-  Widget callLogContainer(CallLogEntry data) {
-    String dateTime = callLogController.formatTimestamp(data.timestamp!);
+  Widget callLogContainer(GetCallLogData data) {
+    // String dateTime = callLogController.formatTimestamp(data.timestamp!);
     String duration = callLogController.formatDuration(data.duration!);
-    String callTypes = callLogController.callTypeToString(data.callType!);
-    String icon = callLogController.callTypeIcon(data.callType!);
+    // String callTypes = callLogController.callTypeToString(data.callType!);
+    String icon = callLogController.callTypeIcon(data.type!);
+
+    // String callEndTime =
+    //     callLogController.callEndTime(startTime: time, duration: duration);
 
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
@@ -84,33 +93,31 @@ class _CallLogScreenState extends State<CallLogScreen> {
                 borderRadius: BorderRadius.circular(10)),
           ),
           SizedBox(
-            width: 8,
+            width: 20,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomText(
-                text: data.number ?? '',
+                text: data.name ?? '',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
               CustomText(
-                text: dateTime,
+                text: data.startTime ?? '',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: Colors.grey,
               ),
             ],
           ),
-          SizedBox(
-            width: 8,
-          ),
+          Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              callTypes != "Rejected" && callTypes != "Missed"
+              data.type != "Rejected" && data.type != "Missed"
                   ? CustomText(
                       text: duration,
                       fontSize: 18,
@@ -118,10 +125,10 @@ class _CallLogScreenState extends State<CallLogScreen> {
                     )
                   : Container(),
               CustomText(
-                text: callTypes,
+                text: data.type ?? '',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: callTypes == "Rejected" || callTypes == "Missed"
+                color: data.type == "Rejected" || data.type == "Missed"
                     ? Colors.red
                     : Colors.grey,
               ),

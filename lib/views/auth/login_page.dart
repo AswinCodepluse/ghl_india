@@ -6,7 +6,6 @@ import 'package:ghl_callrecoding/repositories/auth_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:ghl_callrecoding/views/auth/password_forget.dart';
-import 'package:ghl_callrecoding/views/dashboard/dashboard.dart';
 import 'package:toast/toast.dart';
 import 'components/btn_elements.dart';
 import 'components/input_decorations.dart';
@@ -38,13 +37,6 @@ class _LoginPageState extends State<LoginPage> {
           gravity: Toast.center, duration: Toast.lengthLong);
       return;
     }
-    // else if ( _phone == "") {
-    //   ToastComponent.showDialog(
-    //       "",
-    //       gravity: Toast.center,
-    //       duration: Toast.lengthLong);
-    //   return;
-    // }
     else if (password == "") {
       ToastComponent.showDialog("Enter Password",
           gravity: Toast.center, duration: Toast.lengthLong);
@@ -53,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
 
     var loginResponse = await AuthRepository().getLoginResponse(
         _login_by == 'email' ? email : _phone, password, _login_by);
-    // Loading.close();
     if (loginResponse.result == false) {
       if (loginResponse.message.runtimeType == List) {
         ToastComponent.showDialog(loginResponse.message!.splitMapJoin("\n"),

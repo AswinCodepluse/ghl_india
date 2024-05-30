@@ -56,36 +56,39 @@ class FilterLeadsData {
   String? createdDate;
   String? lastUpdatedDate;
   String? createAt;
+  String? followupDate;
 
-  FilterLeadsData(
-      {this.id,
-      this.name,
-      this.address,
-      this.city,
-      this.state,
-      this.pincode,
-      this.email,
-      this.phoneNo,
-      this.status,
-      this.statusInt,
-      this.source,
-      this.interest,
-      this.assigned,
-      this.campaign,
-      this.medium,
-      this.incomebracket,
-      this.ip,
-      this.occupation,
-      this.planning,
-      this.sendMsg,
-      this.taxsaving,
-      this.utmContent,
-      this.company,
-      this.website,
-      this.designation,
-      this.createdDate,
-      this.lastUpdatedDate,
-      this.createAt});
+  FilterLeadsData({
+    this.id,
+    this.name,
+    this.address,
+    this.city,
+    this.state,
+    this.pincode,
+    this.email,
+    this.phoneNo,
+    this.status,
+    this.statusInt,
+    this.source,
+    this.interest,
+    this.assigned,
+    this.campaign,
+    this.medium,
+    this.incomebracket,
+    this.ip,
+    this.occupation,
+    this.planning,
+    this.sendMsg,
+    this.taxsaving,
+    this.utmContent,
+    this.company,
+    this.website,
+    this.designation,
+    this.createdDate,
+    this.lastUpdatedDate,
+    this.createAt,
+    this.followupDate,
+  });
 
   FilterLeadsData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -116,6 +119,7 @@ class FilterLeadsData {
     createdDate = json['created_date'];
     lastUpdatedDate = json['last_updated_date'];
     createAt = json['created_at'];
+    followupDate = json['next_followup_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -148,6 +152,7 @@ class FilterLeadsData {
     data['created_date'] = this.createdDate;
     data['last_updated_date'] = this.lastUpdatedDate;
     data['created_at'] = this.createAt;
+    data['next_followup_date'] = this.followupDate;
     return data;
   }
 }

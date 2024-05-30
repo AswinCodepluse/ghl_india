@@ -59,22 +59,20 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   String? dates;
   TimeLineController timeLineController = Get.put(TimeLineController());
   AttachmentController attachmentController = Get.put(AttachmentController());
-
-  // CallLogController callLogController = Get.put(CallLogController());
   FileController fileController = Get.put(FileController());
   DashboardController dashboardController = Get.find<DashboardController>();
   int? user_Id;
+  LeadsController leadsController = Get.put(LeadsController());
 
   @override
   void initState() {
     super.initState();
     initRecorder();
-    // Dashboard().fetchOIndividualLeads(widget.leadId);
     timeLineController.leadId.value = widget.leadId;
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
     leadsController.fetchIndividualLeads(widget.leadId);
-    leadsController.phoneNumber = widget.phoneNumber;
+    leadsController.fetchLastCallRecordingFile(widget.phoneNumber);
     CallLogController callLogController = Get.put(CallLogController(
         phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
     callLogController.getCallLog();
@@ -115,20 +113,15 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   Future stopRecorder() async {
     final filePath = await recorder.stopRecorder();
     final file = File(filePath!);
-    // String base64File = await convertFileToBase64(file);
     audioFilesData = File(filePath);
     audioFileData = FileHelper.getBase64FormateFile(file.path);
     String fileName = file.path.split("/").last;
     setState(() {});
   }
 
-  LeadsController leadsController = Get.put(LeadsController());
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    print('screenWidth $screenWidth');
-    leadsController.selectedLeadPhoneNumber.value = widget.phoneNumber;
     return Scaffold(
       appBar: AppBar(
         title: Text('Lead Details'),
@@ -264,12 +257,12 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   ),
                   Obx(
                     () => subTitleRow(
-                        firstSubTitle: leadsController
-                                .leadDetailsData.value.lastUpdatedDate ??
-                            '',
-                        secondSubTitle:
+                        firstSubTitle:
                             leadsController.leadDetailsData.value.createdDate ??
                                 '',
+                        secondSubTitle: leadsController
+                                .leadDetailsData.value.lastUpdatedDate ??
+                            '',
                         firstIcon: Icons.calendar_month,
                         secondIcon: Icons.calendar_month),
                   ),
@@ -448,12 +441,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                             ),
                           );
                         }).toList(),
-                        onTap: () {},
                         onChanged: (value) {
-                          leadsController.isDisable();
                           leadsController.selectedLeadIds.value = value!.id!;
-                          leadsController.amountCon.clear();
                           leadsController.selectedLeadNames.value = value.name!;
+                          leadsController.amountCon.clear();
+                          leadsController.investDateCon.clear();
+                          leadsController.investTypeCon.clear();
+                          leadsController.isDisable();
                         },
                         hint: Text('Select Status'),
                         style: TextStyle(
@@ -469,22 +463,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     () => leadsController.selectedLeadIds.value == 10
                         ? Wrap(
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Amount',
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 15),
-                                    ),
-                                    TextSpan(
-                                      text: " *",
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 24),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              customRichText(text: "Amount"),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10.0),
@@ -492,6 +471,38 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                                   controller: leadsController.amountCon,
                                   hintText: "Enter Amount",
                                   keyboardType: TextInputType.number,
+                                  onChange: (String value) {
+                                    leadsController.isDisable();
+                                  },
+                                ),
+                              ),
+                              customRichText(text: "Invest Date"),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: CustomTextField(
+                                  controller: leadsController.investDateCon,
+                                  readOnly: true,
+                                  hintText: "Select Invest Date",
+                                  onTap: () async {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    await leadsController.displayDatePicker(
+                                        context, leadsController.investDateCon);
+                                  },
+                                  suffixIcon: Icon(
+                                    Icons.date_range,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              customRichText(text: "Invest Type"),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: CustomTextField(
+                                  controller: leadsController.investTypeCon,
+                                  hintText: "Example : PT",
                                   onChange: (String value) {
                                     leadsController.isDisable();
                                   },
@@ -521,20 +532,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Followup Notes',
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                        ),
-                        TextSpan(
-                          text: " *",
-                          style: TextStyle(color: Colors.red, fontSize: 24),
-                        ),
-                      ],
-                    ),
-                  ),
+                  customRichText(text: "Followup Notes"),
                   SizedBox(
                     height: 10,
                   ),
@@ -668,6 +666,23 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
           boxShadow: leadsController.shadow),
+    );
+  }
+
+  Widget customRichText({required String text}) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: text,
+            style: TextStyle(color: Colors.black, fontSize: 15),
+          ),
+          TextSpan(
+            text: " *",
+            style: TextStyle(color: Colors.red, fontSize: 24),
+          ),
+        ],
+      ),
     );
   }
 }

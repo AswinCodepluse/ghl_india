@@ -33,245 +33,254 @@ class HeaderIconContainer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Column(
-              children: [
-                GestureDetector(
-                    onTap: () async {
-                      final call = Uri.parse('tel:+91 ${phoneNumber}');
-                      if (await canLaunchUrl(call)) {
-                        launchUrl(call);
-                      } else {
-                        throw 'Could not launch $call';
-                      }
-                    },
-                    child: Image(
-                      height: 40,
-                      image: AssetImage(
-                        "assets/image/call_img.png",
-                      ),
-                    )),
-                CustomText(
-                  text: "Call",
-                )
-              ],
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                      onTap: () async {
+                        final call = Uri.parse('tel:+91 ${phoneNumber}');
+                        if (await canLaunchUrl(call)) {
+                          launchUrl(call);
+                        } else {
+                          throw 'Could not launch $call';
+                        }
+                      },
+                      child: Image(
+                        height: 30,
+                        width: 30,
+                        image: AssetImage(
+                          "assets/image/call_icon.png",
+                        ),
+                      )),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  CustomText(
+                    text: "Call",
+                  )
+                ],
+              ),
             ),
             SizedBox(
               width: 5,
             ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    leadsController.openSMS(
-                        context: context, phoneNumber: phoneNumber);
-                  },
-                  child: SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: Image(
-                      image: AssetImage(
-                        'assets/image/message_img.png',
-                      ),
-                    ),
-                  ),
-                ),
-                CustomText(
-                  text: "Message",
-                  // color: Colors.red,
-                )
-              ],
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    leadsController.openWhatsApp(context, phoneNumber);
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Image(
-                            image: AssetImage(
-                          "assets/image/whatsapp_img.png",
-                        ))),
-                  ),
-                ),
-                CustomText(
-                  text: "Whatsapp",
-                  // color: Colors.red,
-                )
-              ],
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    leadsController.launchEmail(email);
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Image(
-                            image: AssetImage(
-                          "assets/image/gmail_icon.png",
-                        ))),
-                  ),
-                ),
-                CustomText(
-                  text: "Gmail",
-                  // color: Colors.red,
-                )
-              ],
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TimeLinePage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Image(
-                            image: AssetImage(
-                          "assets/image/activities_img.png",
-                        ))),
-                  ),
-                ),
-                CustomText(
-                  text: "Activities",
-                  // color: Colors.red,
-                )
-              ],
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            // Column(
-            //   children: [
-            //     GestureDetector(
-            //       onTap: () {
-            //         Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //                 builder: (context) => AttachmentScreen()));
-            //       },
-            //       child: Container(
-            //         decoration: const BoxDecoration(
-            //           shape: BoxShape.circle,
-            //         ),
-            //         child: const SizedBox(
-            //           height: 40,
-            //           width: 40,
-            //           child: Image(
-            //             image: AssetImage(
-            //               "assets/image/record_img.png",
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     CustomText(
-            //       text: "Record",
-            //       // color: Colors.red,
-            //     )
-            //   ],
-            // ),
-            // SizedBox(
-            //   width: 8,
-            // ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DocumentScreen(
-                                  phoneNUmber: phoneNumber,
-                                )));
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                      height: 40,
-                      width: 40,
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      leadsController.openSMS(
+                          context: context, phoneNumber: phoneNumber);
+                    },
+                    child: SizedBox(
+                      height: 30,
+                      width: 30,
                       child: Image(
                         image: AssetImage(
-                          "assets/image/document_icon.png",
+                          'assets/image/message_icon.png',
                         ),
                       ),
                     ),
                   ),
-                ),
-                CustomText(
-                  text: "Documents",
-                  // color: Colors.red,
-                )
-              ],
+                  SizedBox(
+                    height: 2,
+                  ),
+                  CustomText(
+                    text: "Message",
+                  )
+                ],
+              ),
             ),
             SizedBox(
               width: 8,
             ),
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      leadsController.openWhatsApp(context, phoneNumber);
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox(
+                          height: 35,
+                          width: 35,
+                          child: Image(
+                              image: AssetImage(
+                            "assets/image/whatsapp_icon.png",
+                          ))),
+                    ),
+                  ),
+                  CustomText(
+                    text: "Whatsapp",
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      leadsController.launchEmail(email);
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Image(
+                              image: AssetImage(
+                            "assets/image/gmail_icon.png",
+                          ))),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  CustomText(
+                    text: "Gmail",
+                    // color: Colors.red,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CallLogScreen(
-                                  leadPhoneNumber: phoneNumber,
-                                )));
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                          builder: (context) => TimeLinePage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox(
+                          height: 34,
+                          width: 34,
+                          child: Image(
+                              image: AssetImage(
+                            "assets/image/activity_icon.png",
+                          ))),
                     ),
-                    child: const SizedBox(
-                      height: 40,
-                      width: 40,
-                      child: Image(
-                        image: AssetImage(
-                          "assets/image/call_log_image.png",
+                  ),
+                  CustomText(
+                    text: "Activities",
+                    // color: Colors.red,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DocumentScreen(
+                                    phoneNUmber: phoneNumber,
+                                  )));
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Image(
+                          image: AssetImage(
+                            "assets/image/document_icon.png",
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                CustomText(
-                  text: "Call Log",
-                  // color: Colors.red,
-                )
-              ],
+                  SizedBox(
+                    height: 2,
+                  ),
+                  CustomText(
+                    text: "Documents",
+                    // color: Colors.red,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CallLogScreen(
+                                    leadPhoneNumber: phoneNumber,
+                                  )));
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Image(
+                          image: AssetImage(
+                            "assets/image/call_log_icon.png",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  CustomText(
+                    text: "Call Log",
+                    // color: Colors.red,
+                  )
+                ],
+              ),
             ),
           ],
         ),

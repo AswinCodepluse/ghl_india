@@ -13,11 +13,13 @@ class LeadScreen extends StatefulWidget {
       {super.key,
       required this.platforms,
       required this.session,
-      required this.filterBy});
+      required this.filterBy,
+      this.status});
 
   final String platforms;
   final String session;
   final String filterBy;
+  final int? status;
 
   @override
   State<LeadScreen> createState() => _LeadScreenState();
@@ -31,8 +33,12 @@ class _LeadScreenState extends State<LeadScreen> {
   void initState() {
     super.initState();
     leadsDataController.leadType = widget.platforms;
-    leadsDataController.fetchAllLeadsData(
-        filterBy: widget.platforms, session: widget.session);
+    if (widget.status != null) {
+      leadsDataController.fetchTodayFollowUpLeads(status: widget.status!);
+    } else {
+      leadsDataController.fetchAllLeadsData(
+          filterBy: widget.platforms, session: widget.session);
+    }
     Future.delayed(Duration(seconds: 1), () {
       fileController.checkPermission();
     });
@@ -68,7 +74,13 @@ class _LeadScreenState extends State<LeadScreen> {
                               ? "Whatsapp"
                               : widget.platforms == 'dp'
                                   ? "DP"
-                                  : "Google Leads",
+                                  : widget.platforms == 'google'
+                                      ? "Google Leads"
+                                      : widget.status == 4
+                                          ? "Followup Call Later"
+                                          : widget.status == 13
+                                              ? "Followup Interested"
+                                              : "Followup KYC Fill",
         ),
         leading: GestureDetector(
           onTap: () {
@@ -127,7 +139,8 @@ class _LeadScreenState extends State<LeadScreen> {
               : leadsDataController.filterLeadsList[index];
           final randomColor = leadsDataController
               .colors[Random().nextInt(leadsDataController.colors.length)];
-          return leadsContainer(data, randomColor, leadsDataController);
+          return leadsContainer(
+              data, randomColor, leadsDataController, widget.platforms);
         });
   }
 }

@@ -1,16 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:get/get.dart';
-import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/models/dashboard_model.dart';
 import 'package:ghl_callrecoding/repositories/dashboard_repository.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class DashboardController extends GetxController {
   var dashboardCountList = [].obs;
@@ -22,6 +15,9 @@ class DashboardController extends GetxController {
   var whatsAppLead = 0.obs;
   var aiLead = 0.obs;
   var dpLead = 0.obs;
+  var followUpTodayCallLater = 0.obs;
+  var followUpTodayInterested = 0.obs;
+  var followUpTodayKYCFill = 0.obs;
   String leadSeasons = '';
   TextEditingController searchCon = TextEditingController();
   TextEditingController callRecordingFileCon = TextEditingController();
@@ -56,14 +52,28 @@ class DashboardController extends GetxController {
     isLeads.value = true;
     dashboardCountList.clear();
     var response = await DashboardRepository().fetchDashboardCount(season);
-    DashboardModel dashboardData = DashboardModel.fromJson(response);
+    DashBoardModel dashboardData = DashBoardModel.fromJson(response);
+    print('dashboardData => $dashboardData');
     googleLead.value = dashboardData.google!;
     websiteLead.value = dashboardData.website!;
     facebookLead.value = dashboardData.facebook!;
     totalLead.value = dashboardData.total!;
     whatsAppLead.value = dashboardData.whatsapp!;
-    aiLead.value = dashboardData.ai!;
+    aiLead.value = dashboardData.aiChat!;
     dpLead.value = dashboardData.dp!;
+    dashboardData.followUpToday?.forEach((element) {
+      element.data?.forEach((data) {
+        if (data.id == 4) {
+          followUpTodayCallLater.value = data.count!;
+        }
+        if (data.id == 7) {
+          followUpTodayKYCFill.value = data.count!;
+        }
+        if (data.id == 13) {
+          followUpTodayInterested.value = data.count!;
+        }
+      });
+    });
     dashboardData.leadStatus?.forEach((element) {
       element.data?.forEach((element) {
         dashboardCountList.add(element);
@@ -77,48 +87,6 @@ class DashboardController extends GetxController {
     dashboardCountList.clear();
     await fetchDashboardData(leadSeasons);
   }
-  //
-  // Future<void> pickFile() async {
-  //   String? result = await FilePicker.platform.getDirectoryPath();
-  //
-  //   if (result != null) {
-  //     callRecordingDirPath = result;
-  //     await storeRecordedFiles(callRecordingDirPath!);
-  //     callRecordingFileCon.text = callRecordingDirPath!;
-  //     update();
-  //   }
-  // }
-  //
-  // Future<String> getFilePath() async {
-  //   String? filePath;
-  //   try {
-  //     filePath = await StoragePath.audioPath;
-  //     var response = jsonDecode(filePath!);
-  //   } on PlatformException {
-  //     filePath = 'Failed to get path';
-  //   }
-  //   return filePath;
-  // }
-  //
-  // Future<void> storeRecordedFiles(String callRecordingDirPath) async {
-  //   try {
-  //     Directory? directoryPath = Directory(callRecordingDirPath);
-  //     List<FileSystemEntity> files = directoryPath.listSync(recursive: true);
-  //     print('files  $files');
-  //     recordedFiles.value = files.where((file) {
-  //       return file is File &&
-  //           (file.path.endsWith(".amr") ||
-  //               file.path.endsWith(".wav") ||
-  //               file.path.endsWith(".mp3") ||
-  //               file.path.endsWith(".m4a"));
-  //     }).toList();
-  //
-  //     print("recordedFiles  $recordedFiles");
-  //     update();
-  //   } catch (e) {
-  //     print('Error finding recorded files: $e');
-  //   }
-  // }
 
   Color getColor(String colorName) {
     switch (colorName) {

@@ -22,7 +22,8 @@ class LeadsController extends GetxController {
   TextEditingController fileCon = TextEditingController();
   TextEditingController statusCon = TextEditingController();
   TextEditingController followupNotesCon = TextEditingController();
-  TextEditingController datePickedCon = TextEditingController();
+  TextEditingController investDateCon = TextEditingController();
+  TextEditingController investTypeCon = TextEditingController();
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController timeCon = TextEditingController();
   TextEditingController amountCon = TextEditingController();
@@ -31,15 +32,11 @@ class LeadsController extends GetxController {
   RxString selectedLeadStatus = ''.obs;
   RxString message = ''.obs;
   File lastCallRecording = File("");
-  RxString selectedLeadPhoneNumber = ''.obs;
   File? files;
   bool isSubmitted = false;
   String hours = '';
-  String phoneNumber = '';
   String minutes = '';
   RxBool loadingState = false.obs;
-
-  // var leadDetailsData = Rx<LeadDetails?>(LeadDetails);
   Rx<LeadDetails> leadDetailsData = LeadDetails().obs;
 
   File callFiles = File("");
@@ -56,7 +53,7 @@ class LeadsController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     fetchLeadStatus();
-    fetchLastCallRecordingFile();
+
     super.onInit();
   }
 
@@ -84,7 +81,13 @@ class LeadsController extends GetxController {
 
   isDisable() {
     if ((followupNotesCon.text.isEmpty || followupNotesCon.text == '') ||
-        (selectedLeadIds == 10 && amountCon.text == '')) {
+        (selectedLeadIds == 10 &&
+            (amountCon.text.isEmpty ||
+                amountCon.text == '' ||
+                investTypeCon.text.isEmpty ||
+                investTypeCon.text == '' ||
+                investDateCon.text.isEmpty ||
+                investDateCon.text == ''))) {
       setDisable.value = true;
     } else {
       setDisable.value = false;
@@ -111,7 +114,7 @@ class LeadsController extends GetxController {
     return '$hours:$minutes';
   }
 
-  Future displayDatePicker(BuildContext context, dateValue) async {
+  Future<void> displayDatePicker(BuildContext context, dateValue) async {
     DateTime date = DateTime(1900);
     FocusScope.of(context).requestFocus(FocusNode());
     date = await showDatePicker(
@@ -119,15 +122,12 @@ class LeadsController extends GetxController {
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime(2100)) as DateTime;
-    if (date != null) {
-      DateFormat formatter = DateFormat('yyyy-MM-dd');
-      dateValue.text = formatter.format(date);
-      datePickedCon.text = formatter.format(date);
-      remindDate = dateValue.text;
-      // SharedPreference().setRemainderDate(remindDate);
-      // FirebaseRepository().setNotification();
-      update();
-    }
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    dateValue.text = formatter.format(date);
+    investDateCon.text = formatter.format(date);
+    remindDate = dateValue.text;
+    isDisable();
+    update();
   }
 
   Future dateTimePicker(BuildContext context) async {
@@ -158,15 +158,15 @@ class LeadsController extends GetxController {
   //   firebaseRepo.scheduleNotificationAtSpecificTime(targetDateTime, token);
   // }
 
-
-
   clearAll() {
     fileCon.clear();
     followupNotesCon.clear();
     callRecordingFileCon.clear();
-    datePickedCon.clear();
+    investDateCon.clear();
     dateTimeCon.clear();
     timeCon.clear();
+    amountCon.clear();
+    investTypeCon.clear();
   }
 
   onChanged(String? newValue) {
@@ -181,19 +181,6 @@ class LeadsController extends GetxController {
         callFiles = File(result.files.single.path!);
         callFileName.value = callFiles.path.split('/').last;
         callRecordingFileCon.text = callFiles.path.split('/').last;
-
-        // if (!callFiles.path.contains(".mp3") &&
-        //     !callFiles.path.contains(".amr") &&
-        //     !callFiles.path.contains(".jpg") &&
-        //     !callFiles.path.contains(".jpeg") &&
-        //     !callFiles.path.contains(".m4a")) {
-        //   String reNameFilePath = '';
-        //   reNameFilePath += "${callFiles.path}.mp3";
-        //   callFiles = await File(reNameFilePath).rename(reNameFilePath);
-        //   callRecordingFileCon.text = callFiles.path.split('/').last;
-        //   print(reNameFilePath);
-        // }
-
         update();
       }
     } else {
@@ -231,7 +218,10 @@ class LeadsController extends GetxController {
           time,
           files,
           callRecord,
-          voiceRecord);
+          voiceRecord,
+          amountCon.text,
+          investTypeCon.text,
+          investDateCon.text);
       message.value = response.message!;
       return response;
     } catch (e) {
@@ -289,14 +279,14 @@ class LeadsController extends GetxController {
       path: email,
     );
     if (await canLaunch(emailUri.toString())) {
-      await launch(emailUri.toString());
+      await launchUrl(emailUri);
     } else {
       throw 'Could not launch $email';
     }
   }
 
   openWhatsApp(context, phoneNumber) async {
-    var whatsapp = "$phoneNumber";
+    var whatsapp = "+91$phoneNumber";
 
     var whatsappURl_android = "whatsapp://send?phone=$whatsapp";
     var whatsappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
@@ -319,12 +309,9 @@ class LeadsController extends GetxController {
     }
   }
 
-  fetchLastCallRecordingFile() async {
-    print('phoneNumber $phoneNumber');
+  fetchLastCallRecordingFile(String phoneNumber) async {
     if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
-      if (fileController.filePathsWithPhoneNumber.last
-          .contains(selectedLeadPhoneNumber)) {
-
+      if (fileController.filePathsWithPhoneNumber.last.contains(phoneNumber)) {
         callRecordingFileCon.text =
             fileController.filePathsWithPhoneNumber.last;
         lastCallRecording = File(fileController.filePathsWithPhoneNumber.last);
@@ -390,17 +377,10 @@ class LeadsController extends GetxController {
   Future<void> shareDocument(String url, String phoneNumber) async {
     if (url.isNotEmpty && phoneNumber.isNotEmpty) {
       try {
-        // Download the file if necessary
         final filePath = await downloadFile(url: url);
-
-        // Construct the WhatsApp message
         String message = "Here's the document: $url";
-
-        // Construct the WhatsApp URL
         String whatsappUrl =
             "whatsapp://send?phone=91$phoneNumber&text=${Uri.encodeFull(message)}";
-
-        // Launch WhatsApp
         if (await canLaunch(whatsappUrl)) {
           await launch(whatsappUrl);
         } else {

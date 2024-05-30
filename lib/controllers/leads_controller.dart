@@ -53,9 +53,19 @@ class LeadsDataController extends GetxController {
       leadPhoneNumbers.add(lead.phoneNo!);
     });
     isLeads.value = false;
-    leadPhoneNumbers.forEach((element) {
-      print('Phone number ${element}');
+  }
+
+  fetchTodayFollowUpLeads({required int status}) async {
+    isLeads.value = true;
+    filterLeadsList.clear();
+    leadPhoneNumbers.clear();
+    var leadsResponse = await Dashboard()
+        .fetchTodayFollowUpLeads(status: status);
+    filterLeadsList.addAll(leadsResponse.data!);
+    filterLeadsList.forEach((lead) {
+      leadPhoneNumbers.add(lead.phoneNo!);
     });
+    isLeads.value = false;
   }
 
   var colors = [

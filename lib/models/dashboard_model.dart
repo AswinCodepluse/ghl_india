@@ -1,28 +1,43 @@
-class DashboardModel {
+class DashBoardModel {
   int? total;
   int? facebook;
   int? google;
   int? website;
   int? whatsapp;
   int? dp;
-  int? ai;
+  int? aiChat;
   List<LeadStatus>? leadStatus;
+  List<FollowUpToday>? followUpToday;
 
-  DashboardModel(
-      {this.total, this.facebook, this.google, this.website,this.whatsapp,this.dp,this.ai, this.leadStatus});
+  DashBoardModel(
+      {this.total,
+      this.facebook,
+      this.google,
+      this.website,
+      this.whatsapp,
+      this.dp,
+      this.aiChat,
+      this.leadStatus,
+      this.followUpToday});
 
-  DashboardModel.fromJson(Map<String, dynamic> json) {
+  DashBoardModel.fromJson(Map<String, dynamic> json) {
     total = json['total'];
     facebook = json['facebook'];
     google = json['google'];
     website = json['website'];
     whatsapp = json['whatsapp'];
     dp = json['dp'];
-    ai = json['ai_chat'];
+    aiChat = json['ai_chat'];
     if (json['lead_status'] != null) {
       leadStatus = <LeadStatus>[];
       json['lead_status'].forEach((v) {
         leadStatus!.add(new LeadStatus.fromJson(v));
+      });
+    }
+    if (json['follow_up_today'] != null) {
+      followUpToday = <FollowUpToday>[];
+      json['follow_up_today'].forEach((v) {
+        followUpToday!.add(new FollowUpToday.fromJson(v));
       });
     }
   }
@@ -35,24 +50,28 @@ class DashboardModel {
     data['website'] = this.website;
     data['whatsapp'] = this.whatsapp;
     data['dp'] = this.dp;
-    data['ai_chat'] = this.ai;
+    data['ai_chat'] = this.aiChat;
     if (this.leadStatus != null) {
       data['lead_status'] = this.leadStatus!.map((v) => v.toJson()).toList();
+    }
+    if (this.followUpToday != null) {
+      data['follow_up_today'] =
+          this.followUpToday!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class LeadStatus {
-  List<Data>? data;
+  List<DashboardData>? data;
 
   LeadStatus({this.data});
 
   LeadStatus.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DashboardData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new DashboardData.fromJson(v));
       });
     }
   }
@@ -66,14 +85,37 @@ class LeadStatus {
   }
 }
 
-class Data {
+class FollowUpToday {
+  List<DashboardData>? data;
+
+  FollowUpToday({this.data});
+
+  FollowUpToday.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      data = <DashboardData>[];
+      json['data'].forEach((v) {
+        data!.add(new DashboardData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class DashboardData {
   int? id;
   String? name;
   int? count;
 
-  Data({this.id, this.name, this.count});
+  DashboardData({this.id, this.name, this.count});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DashboardData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     count = json['count'];

@@ -3,12 +3,11 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/filter_leads_model.dart';
-import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 Widget leadsContainer(FilterLeadsData data, String randomColor,
-    LeadsDataController leadsDataController) {
+    LeadsDataController leadsDataController, String filterBy) {
   String firstLetter = data.name!.substring(0, 1).toUpperCase();
   String lastLetter = data.name!.substring(data.name!.length - 1).toUpperCase();
   SharedPreference sharedPreference = SharedPreference();
@@ -89,25 +88,46 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
               SizedBox(
                 height: 2,
               ),
-              SizedBox(
-                width: 240,
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.timer,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    CustomText(
-                      text: data.createAt ?? '',
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ],
-                ),
-              )
+              filterBy == "Call Later" ||
+                      filterBy == "Interested" ||
+                      filterBy == "KYC Fill"
+                  ? SizedBox(
+                      width: 220,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.date_range,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          CustomText(
+                              text: data.followupDate ?? '',
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      width: 220,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          CustomText(
+                            text: data.createAt ?? '',
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                    )
             ],
           ),
         ],

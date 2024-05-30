@@ -12,7 +12,8 @@ class CustomTextField extends StatelessWidget {
       this.maxLines,
       this.hintText,
       this.onChange,
-      this.readOnly});
+      this.readOnly,
+      this.keyboardType});
 
   final TextEditingController controller;
   final void Function()? onTap;
@@ -22,6 +23,7 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final void Function(String)? onChange;
   final bool? readOnly;
+  final TextInputType? keyboardType;
   final leadsController = Get.find<LeadsController>();
 
   @override
@@ -36,7 +38,7 @@ class CustomTextField extends StatelessWidget {
         // onChanged: dashboardController.searchLead,
         cursorHeight: 20,
         onChanged: onChange,
-
+        keyboardType: keyboardType,
         onTap: onTap,
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -62,5 +64,3 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
-
-

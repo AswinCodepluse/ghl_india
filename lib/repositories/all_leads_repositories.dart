@@ -59,6 +59,34 @@ class Dashboard {
     }
   }
 
+  Future<FilterLeadsModel> fetchTodayFollowUpLeads(
+      {required int status}) async {
+    var post_body = jsonEncode({"status": status});
+
+    var url = Uri.parse(
+        "https://sales.ghlindia.com/api/sales-person/lead/get-lead-by-next-followup-date-today");
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "App-Language": app_language.$!,
+          "Authorization": "Bearer ${access_token.$}",
+        },
+        body: post_body,
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> json = jsonDecode(response.body);
+        return FilterLeadsModel.fromJson(json);
+      } else {
+        throw Exception(
+            'Failed to make POST request. Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<List<Data>> fetchLeadStatus() async {
     final response = await http.get(
       Uri.parse('https://sales.ghlindia.com/api/sales-person/leads/status'),
@@ -115,6 +143,9 @@ class Dashboard {
     File files,
     File callRecord,
     File voiceRecord,
+    String investAmount,
+    String investType,
+    String investDate,
   ) async {
     var url = Uri.parse(
         "https://sales.ghlindia.com/api/sales-person/leads/activity/store");
@@ -132,7 +163,10 @@ class Dashboard {
       'status': '$status',
       'notes': '$testNotes',
       'next_follow_up_date': '$date',
-      'next_follow_up_time': time
+      'next_follow_up_time': time,
+      'invest_amount': investAmount,
+      'invest_date': investDate,
+      'invest_type': investType
     });
     if (files.existsSync()) {
       request.files.add(http.MultipartFile(

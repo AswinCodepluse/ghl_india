@@ -45,9 +45,26 @@ class LeadsDataController extends GetxController {
   fetchAllLeadsData({required String filterBy, required String session}) async {
     isLeads.value = true;
     filterLeadsList.clear();
+    leadPhoneNumbers.clear();
     var leadsResponse = await Dashboard()
         .fetchFilterLeads(filterBy: filterBy, session: session);
     filterLeadsList.addAll(leadsResponse.data!);
+    filterLeadsList.forEach((lead) {
+      leadPhoneNumbers.add(lead.phoneNo!);
+    });
+    isLeads.value = false;
+  }
+
+  fetchTodayFollowUpLeads({required int status}) async {
+    isLeads.value = true;
+    filterLeadsList.clear();
+    leadPhoneNumbers.clear();
+    var leadsResponse = await Dashboard()
+        .fetchTodayFollowUpLeads(status: status);
+    filterLeadsList.addAll(leadsResponse.data!);
+    filterLeadsList.forEach((lead) {
+      leadPhoneNumbers.add(lead.phoneNo!);
+    });
     isLeads.value = false;
   }
 

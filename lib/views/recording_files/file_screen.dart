@@ -29,11 +29,13 @@ class FileScreen extends StatelessWidget {
                           .filePathsWithPhoneNumber[index]
                           .split('/')
                           .last;
+                      print(
+                          'file path  ${fileController.filePathsWithPhoneNumber[index]}');
                       return ListTile(
                         title: Text(fileName),
                         onTap: () {
                           fileController.openFile(
-                              fileController.recordedFiles[index].path);
+                              fileController.filePathsWithPhoneNumber[index]);
                         },
                       );
                     },

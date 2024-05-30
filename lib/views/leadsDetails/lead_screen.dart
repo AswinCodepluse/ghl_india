@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/controllers/leads_controller.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/search_bar.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/leads_container.dart';
+import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class LeadScreen extends StatefulWidget {
@@ -11,11 +13,13 @@ class LeadScreen extends StatefulWidget {
       {super.key,
       required this.platforms,
       required this.session,
-      required this.filterBy});
+      required this.filterBy,
+      this.status});
 
   final String platforms;
   final String session;
   final String filterBy;
+  final int? status;
 
   @override
   State<LeadScreen> createState() => _LeadScreenState();
@@ -23,13 +27,21 @@ class LeadScreen extends StatefulWidget {
 
 class _LeadScreenState extends State<LeadScreen> {
   LeadsDataController leadsDataController = Get.put(LeadsDataController());
+  FileController fileController = Get.put(FileController());
 
   @override
   void initState() {
     super.initState();
     leadsDataController.leadType = widget.platforms;
-    leadsDataController.fetchAllLeadsData(
-        filterBy: widget.platforms, session: widget.session);
+    if (widget.status != null) {
+      leadsDataController.fetchTodayFollowUpLeads(status: widget.status!);
+    } else {
+      leadsDataController.fetchAllLeadsData(
+          filterBy: widget.platforms, session: widget.session);
+    }
+    Future.delayed(Duration(seconds: 1), () {
+      fileController.checkPermission();
+    });
   }
 
   @override
@@ -38,6 +50,17 @@ class _LeadScreenState extends State<LeadScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Get.to(() => FileScreen());
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15.0),
+              child: Icon(Icons.file_copy),
+            ),
+          ),
+        ],
         title: CustomText(
           text: widget.platforms == 'allLeads'
               ? "Leads"
@@ -51,7 +74,13 @@ class _LeadScreenState extends State<LeadScreen> {
                               ? "Whatsapp"
                               : widget.platforms == 'dp'
                                   ? "DP"
-                                  : "Google Leads",
+                                  : widget.platforms == 'google'
+                                      ? "Google Leads"
+                                      : widget.status == 4
+                                          ? "Followup Call Later"
+                                          : widget.status == 13
+                                              ? "Followup Interested"
+                                              : "Followup KYC Fill",
         ),
         leading: GestureDetector(
           onTap: () {
@@ -110,7 +139,8 @@ class _LeadScreenState extends State<LeadScreen> {
               : leadsDataController.filterLeadsList[index];
           final randomColor = leadsDataController
               .colors[Random().nextInt(leadsDataController.colors.length)];
-          return leadsContainer(data, randomColor, leadsDataController);
+          return leadsContainer(
+              data, randomColor, leadsDataController, widget.platforms);
         });
   }
 }

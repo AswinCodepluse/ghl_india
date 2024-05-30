@@ -7,7 +7,6 @@ class DashboardRepository {
   Future<Map<String, dynamic>> fetchDashboardCount(String seasons) async {
 
     var post_body = jsonEncode({"filter": '${seasons}'});
-    print("post_body Dashboard Seasons------>$post_body");
 
     var url =
     Uri.parse("${AppConfig.BASE_URL}/sales-person/dashboard");
@@ -34,19 +33,5 @@ class DashboardRepository {
       print('Exception occurred: $e');
       throw e;
     }
-    // final response = await http.get(
-    //   Uri.parse('https://sales.ghlindia.com/api/sales-person/dashboard'),
-    //   headers: {
-    //     "Authorization": "Bearer ${access_token.$}",
-    //   },
-    // );
-    // print("response Leads : ${response.body}");
-    //
-    // if (response.statusCode == 200) {
-    //   Map<String, dynamic> dashboardData = json.decode(response.body);
-    //   return dashboardData;
-    // } else {
-    //   throw Exception('Failed to load leads');
-    // }
   }
 }

@@ -7,8 +7,8 @@ import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-class DashBoardScreen extends StatefulWidget {
-  DashBoardScreen({
+class TodayDashBoardScreen extends StatefulWidget {
+  TodayDashBoardScreen({
     super.key,
     required this.seasons,
   });
@@ -16,10 +16,10 @@ class DashBoardScreen extends StatefulWidget {
   final String seasons;
 
   @override
-  State<DashBoardScreen> createState() => _DashBoardScreenState();
+  State<TodayDashBoardScreen> createState() => _TodayDashBoardScreenState();
 }
 
-class _DashBoardScreenState extends State<DashBoardScreen> {
+class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
   final DashboardController dashboardController = Get.find();
 
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
@@ -28,7 +28,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    print('session  ${widget.seasons}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dashboardController.leadSeasons = widget.seasons;
       dashboardController.fetchDashboardData(widget.seasons);
@@ -57,9 +56,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth / 18,
+                        vertical: screenWidth / 45),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -81,7 +82,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               );
                             })),
                             SizedBox(
-                              width: screenWidth / 24,
+                              width: screenWidth / 45,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
@@ -104,7 +105,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: screenWidth / 24,
+                          height: screenWidth / 45,
                         ),
                         Row(
                           children: [
@@ -127,7 +128,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               );
                             })),
                             SizedBox(
-                              width: screenWidth / 24,
+                              width: screenWidth / 45,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
@@ -150,55 +151,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: screenWidth / 24,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(child: Obx(() {
-                              return InkWell(
-                                child: dashboardContainer(
-                                    color: Color(0xFF970652),
-                                    screenWidth: screenWidth,
-                                    text: "AI Chat",
-                                    icon: "assets/image/ai_image.png",
-                                    count: dashboardController.aiLead.value),
-                                onTap: () {
-                                  Get.to(
-                                    () => LeadScreen(
-                                      platforms: "ai_chat",
-                                      session: widget.seasons,
-                                      filterBy: "ai_chat",
-                                    ),
-                                  );
-                                },
-                              );
-                            })),
-                            SizedBox(
-                              width: screenWidth / 24,
-                            ),
-                            Expanded(child: Obx(() {
-                              return InkWell(
-                                child: dashboardContainer(
-                                    color: Color(0xFF2C3E50),
-                                    screenWidth: screenWidth,
-                                    text: "DP",
-                                    icon: "assets/image/dp_images.png",
-                                    count: dashboardController.dpLead.value),
-                                onTap: () {
-                                  Get.to(
-                                    () => LeadScreen(
-                                      platforms: "dp",
-                                      session: widget.seasons,
-                                      filterBy: "dp",
-                                    ),
-                                  );
-                                },
-                              );
-                            })),
-                          ],
-                        ),
-                        SizedBox(
-                          height: screenWidth / 24,
+                          height: screenWidth / 45,
                         ),
                         InkWell(
                           child: whatsappContainer(
@@ -217,8 +170,87 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             );
                           },
                         ),
+                        widget.seasons == "today"
+                            ? Wrap(
+                                children: [
+                                  Padding(
+                                    padding:  EdgeInsets.symmetric(
+                                        vertical: screenWidth / 45),
+                                    child: CustomText(text: "Today's Followup"),
+                                  ),
+                                  Padding(
+                                    padding:  EdgeInsets.only(bottom: screenWidth / 45),
+                                    child: InkWell(
+                                      child: whatsappContainer(
+                                        screenWidth: screenWidth,
+                                        icon:
+                                            "assets/image/call_later_icon.png",
+                                        text: "Call Later",
+                                        count: dashboardController
+                                            .followUpTodayCallLater.value,
+                                        color: Color(0xFF2C3E50),
+                                      ),
+                                      onTap: () {
+                                        Get.to(
+                                          () => LeadScreen(
+                                            platforms: "Call Later",
+                                            session: widget.seasons,
+                                            filterBy: "Call Later",
+                                            status: 4,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:  EdgeInsets.only(bottom: screenWidth / 45),
+                                    child: InkWell(
+                                      child: whatsappContainer(
+                                        screenWidth: screenWidth,
+                                        icon:
+                                            "assets/image/interested_icon.png",
+                                        text: "Interested",
+                                        count: dashboardController
+                                            .followUpTodayInterested.value,
+                                        color: Colors.blueAccent,
+                                      ),
+                                      onTap: () {
+                                        Get.to(
+                                          () => LeadScreen(
+                                            platforms: "Interested",
+                                            session: widget.seasons,
+                                            filterBy: "Interested",
+                                            status: 13,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  InkWell(
+                                    child: whatsappContainer(
+                                      screenWidth: screenWidth,
+                                      icon: "assets/image/kyc_icon.png",
+                                      text: "KYC Fill",
+                                      count: dashboardController
+                                          .followUpTodayKYCFill.value,
+                                      color: Color(0xFF970652),
+                                    ),
+                                    onTap: () {
+                                      Get.to(
+                                        () => LeadScreen(
+                                          platforms: "KYC Fill",
+                                          session: widget.seasons,
+                                          filterBy: "KYC Fill",
+                                          status: 7,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         SizedBox(
-                          height: screenWidth / 24,
+                          height: screenWidth / 45,
                         ),
                         Obx(() {
                           return GridView.builder(
@@ -291,7 +323,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             child: Center(
               child: FittedBox(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.all(screenWidth / 45),
                   child: CustomText(
                     text: count.toString(),
                     fontWeight: FontWeight.w800,
@@ -384,15 +416,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       required int count,
       required String icon}) {
     return Container(
-      padding: EdgeInsets.all(screenWidth / 24),
-      height: screenWidth / 3.3,
+      padding: EdgeInsets.all(screenWidth / 45),
+      height: screenWidth / 4.5,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: screenWidth / 14,
+                height: screenWidth /14.4,
                 width: screenWidth / 14,
                 child: Image(
                   image: AssetImage(icon),
@@ -411,9 +444,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
             ],
-          ),
-          SizedBox(
-            height: screenWidth / 44,
           ),
           FittedBox(
             child: CustomText(

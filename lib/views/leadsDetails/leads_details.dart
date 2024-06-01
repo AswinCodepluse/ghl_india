@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/common/custom_button.dart';
@@ -13,15 +14,18 @@ import 'package:ghl_callrecoding/helpers/file_helper.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
-import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:ghl_callrecoding/utils/colors.dart';
+import 'package:ghl_callrecoding/utils/custom_rich_text.dart';
+import 'package:ghl_callrecoding/utils/custom_text_field.dart';
+import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/conformation_dialog.dart';
-import 'package:ghl_callrecoding/views/leadsDetails/widget/custom_text_feild.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/detail_container.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/header_icon_container.dart';
-import 'package:ghl_callrecoding/views/leadsDetails/widget/sub_title_row.dart';
-import 'package:ghl_callrecoding/views/leadsDetails/widget/title_row.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/invest_widget.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/widget/text_card.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
   const LeadDetailsScreen({
@@ -63,6 +67,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   DashboardController dashboardController = Get.find<DashboardController>();
   int? user_Id;
   LeadsController leadsController = Get.put(LeadsController());
+
+  final key = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -115,7 +121,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     final file = File(filePath!);
     audioFilesData = File(filePath);
     audioFileData = FileHelper.getBase64FormateFile(file.path);
-    String fileName = file.path.split("/").last;
     setState(() {});
   }
 
@@ -123,6 +128,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: key,
       appBar: AppBar(
         title: Text('Lead Details'),
         backgroundColor: Colors.transparent,
@@ -167,15 +173,59 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
-            CustomText(
-              text: widget.email,
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomText(
+                  text: widget.email,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(
+                      ClipboardData(text: widget.email),
+                    );
+                    ToastComponent.showDialog("Email Copied",
+                        gravity: Toast.center, duration: Toast.lengthLong);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Icon(
+                      Icons.copy,
+                      size: 15,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              ],
             ),
-            CustomText(
-              text: widget.phoneNumber,
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomText(
+                  text: widget.phoneNumber,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(
+                      ClipboardData(text: widget.phoneNumber),
+                    );
+                    ToastComponent.showDialog("Phone Number Copied",
+                        gravity: Toast.center, duration: Toast.lengthLong);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Icon(
+                      Icons.copy,
+                      size: 15,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              ],
             ),
             SizedBox(
               height: 20,
@@ -183,127 +233,34 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             HeaderIconContainer(
               phoneNumber: widget.phoneNumber,
               email: widget.email,
+              leadId: widget.leadId,
             ),
             SizedBox(
               height: 20,
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: leadsController.shadow),
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "Source", secondTitle: "Medium"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.source ?? "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.medium ?? "",
-                        firstIcon: Icons.location_on_sharp,
-                        secondIcon: Icons.account_tree_rounded),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "Status", secondTitle: "Occupation"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.status ?? "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.occupation ??
-                                "",
-                        firstIcon: Icons.circle_rounded,
-                        secondIcon: Icons.work),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "Designation", secondTitle: "Planning"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.designation ??
-                                "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.planning ??
-                                '',
-                        firstIcon: Icons.cases_outlined,
-                        secondIcon: Icons.alarm),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "Created On", secondTitle: "Updated On"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.createdDate ??
-                                '',
-                        secondSubTitle: leadsController
-                                .leadDetailsData.value.lastUpdatedDate ??
-                            '',
-                        firstIcon: Icons.calendar_month,
-                        secondIcon: Icons.calendar_month),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "Interest", secondTitle: "Assigned"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.interest ??
-                                "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.assigned ??
-                                "",
-                        firstIcon: Icons.interests,
-                        secondIcon: Icons.work),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  titleRow(firstTitle: "City", secondTitle: "Created At"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => subTitleRow(
-                        firstSubTitle:
-                            leadsController.leadDetailsData.value.city ?? "",
-                        secondSubTitle:
-                            leadsController.leadDetailsData.value.createdAt ??
-                                '',
-                        firstIcon: Icons.location_city,
-                        secondIcon: Icons.alarm_on_outlined),
-                  ),
-                ],
-              ),
+            leadsController.leadDetailsData.value.notes != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Wrap(
+                      children: [
+                        CustomText(text: "Followup Notes"),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Obx(
+                            () => textCard(
+                                text: leadsController
+                                        .leadDetailsData.value.notes ??
+                                    ""),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(),
+            SizedBox(
+              height: 10,
             ),
+            detailContainer(leadsController),
             SizedBox(
               height: 10,
             ),
@@ -441,14 +398,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (value) {
-                          leadsController.selectedLeadIds.value = value!.id!;
-                          leadsController.selectedLeadNames.value = value.name!;
-                          leadsController.amountCon.clear();
-                          leadsController.investDateCon.clear();
-                          leadsController.investTypeCon.clear();
-                          leadsController.isDisable();
-                        },
+                        onChanged: leadsController.onChangeStatus,
                         hint: Text('Select Status'),
                         style: TextStyle(
                           color: MyTheme.black,
@@ -461,55 +411,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   ),
                   Obx(
                     () => leadsController.selectedLeadIds.value == 10
-                        ? Wrap(
-                            children: [
-                              customRichText(text: "Amount"),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: CustomTextField(
-                                  controller: leadsController.amountCon,
-                                  hintText: "Enter Amount",
-                                  keyboardType: TextInputType.number,
-                                  onChange: (String value) {
-                                    leadsController.isDisable();
-                                  },
-                                ),
-                              ),
-                              customRichText(text: "Invest Date"),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: CustomTextField(
-                                  controller: leadsController.investDateCon,
-                                  readOnly: true,
-                                  hintText: "Select Invest Date",
-                                  onTap: () async {
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    await leadsController.displayDatePicker(
-                                        context, leadsController.investDateCon);
-                                  },
-                                  suffixIcon: Icon(
-                                    Icons.date_range,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                              customRichText(text: "Invest Type"),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: CustomTextField(
-                                  controller: leadsController.investTypeCon,
-                                  hintText: "Example : PT",
-                                  onChange: (String value) {
-                                    leadsController.isDisable();
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
+                        ? investWidget(context)
                         : Container(),
                   ),
                   CustomText(text: "Followup DateTime"),
@@ -618,6 +520,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       leadsController.followupNotesCon.text,
                       leadsController.dateTimeCon.text,
                       "",
+                      leadsController.transactionIdCon.text,
                       leadsController.files ?? File(""),
                       callRecordingFile,
                       audioFilesData ?? File(""),
@@ -625,18 +528,12 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                     if (response.result == true) {
                       sharedPreference
                           .setRemainderDate(leadsController.remindDate);
-                      if (leadsController.selectedLeadIds.value == 4) {
-                        sharedPreference
-                            .setRemainderTime(leadsController.postTime);
-                      }
-
                       audioFilesData = File("");
                       callRecordingFile = File("");
                       leadsController.files = File("");
                       leadsController.clearAll();
                       await dashboardController
                           .fetchDashboardData(dashboardController.leadSeasons);
-                      await Dashboard().fetchOIndividualLeads(widget.leadId);
                       leadsController.fetchIndividualLeads(widget.leadId);
                       setState(() {});
                     }
@@ -647,41 +544,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget textCard({required String text}) {
-    return Container(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: CustomText(
-          text: text,
-          color: Colors.grey,
-          maxLines: 10,
-        ),
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: leadsController.shadow),
-    );
-  }
-
-  Widget customRichText({required String text}) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: text,
-            style: TextStyle(color: Colors.black, fontSize: 15),
-          ),
-          TextSpan(
-            text: " *",
-            style: TextStyle(color: Colors.red, fontSize: 24),
-          ),
-        ],
       ),
     );
   }

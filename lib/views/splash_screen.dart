@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _initPackageInfo();
     getSharedValueHelperData().then((value) {
-      Future.delayed(const Duration(seconds: 3)).then((value) async {
+      Future.delayed(const Duration(seconds: 2)).then((value) async {
         final isLogged = await SharedPreference().getLogin();
         if (isLogged) {
           Navigator.pushReplacement(context,
@@ -73,8 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
     access_token.load().whenComplete(() {
       AuthHelper().fetch_and_set();
     });
-    // AddonsHelper().setAddonsData();
-    // BusinessSettingHelper().setBusinessSettingData();
     await app_language.load();
     await app_mobile_language.load();
     await app_language_rtl.load();

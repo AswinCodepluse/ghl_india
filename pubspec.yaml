@@ -63,6 +63,7 @@ dependencies:
   syncfusion_flutter_charts:
   photo_view:
   flutter_datetime_picker_plus: ^2.2.0
+  omni_datetime_picker:
 
 
 

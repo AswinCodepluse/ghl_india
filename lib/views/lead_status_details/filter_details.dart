@@ -45,9 +45,9 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
 
   @override
   void dispose() {
-    print("called Dispose");
     // TODO: implement dispose
     leadStatusFilterController.filterLeadStatusList.clear();
+    leadStatusFilterController.searchCon.clear();
     super.dispose();
   }
 
@@ -78,7 +78,7 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: leadStatusFilterController
-                              .filterLeadStatusList.isEmpty
+                              .descendingOrderStatusList.isEmpty
                           ? Container()
                           : searchBar(leadStatusFilterController.searchCon,
                               leadStatusFilterController),
@@ -86,7 +86,7 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                     Expanded(
                       child:
                           leadStatusFilterController
-                                  .filterLeadStatusList.isEmpty
+                                  .descendingOrderStatusList.isEmpty
                               ? Center(
                                   child: CustomText(
                                     text: "No Leads Available For This Status",
@@ -110,14 +110,18 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                                               ? leadStatusFilterController
                                                   .searchLeadsList.length
                                               : leadStatusFilterController
-                                                  .filterLeadStatusList.length,
+                                                  .descendingOrderStatusList
+                                                  .length,
+                                      // leadStatusFilterController
+                                      //         .filterLeadStatusList.length,
                                       itemBuilder: (context, index) {
                                         final data = leadStatusFilterController
                                                 .searchCon.text.isNotEmpty
                                             ? leadStatusFilterController
                                                 .searchLeadsList[index]
                                             : leadStatusFilterController
-                                                .filterLeadStatusList[index];
+                                                    .descendingOrderStatusList[
+                                                index];
                                         final randomColor =
                                             leadsDataController.colors[Random()
                                                 .nextInt(leadsDataController
@@ -211,13 +215,20 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                     fontSize: 12,
                   ),
                 ),
-                SizedBox(height: 2,),
+                SizedBox(
+                  height: 2,
+                ),
                 SizedBox(
                   width: 220,
                   child: Row(
                     children: [
-                      Icon(Icons.date_range,color: Colors.red,),
-                      SizedBox(width: 5,),
+                      Icon(
+                        Icons.date_range,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       CustomText(
                           text: data.nextFollowUpDate ?? '',
                           fontSize: 15,

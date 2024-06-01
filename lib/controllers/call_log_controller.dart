@@ -17,6 +17,8 @@ class CallLogController extends GetxController {
   RxList<GetCallLogData> getCallLogsList = <GetCallLogData>[].obs;
   final String phoneNumber;
   final String? leadId;
+  String? firstCallStartTime;
+  bool contain = false;
 
   RxBool loadingState = false.obs;
   StreamSubscription? _subscription;
@@ -42,47 +44,61 @@ class CallLogController extends GetxController {
     callLogsList.assignAll(entries);
     if (callLogsList.isNotEmpty && getCallLogsList.isNotEmpty) {
       fileController.findRecordedFiles();
-      String firstCallStartTime =
-          formatTimestamp(callLogsList.first.timestamp!);
       String getFirstCallStartTime = getCallLogsList.first.startTime!;
-      List<String> dateTimeComponents =
-          firstCallStartTime.split(RegExp(r'[: \-]'));
-      String joinedString = dateTimeComponents.join('');
-
+      firstCallStartTime = formatTimestamp(callLogsList.first.timestamp!);
+      print('firstCallStartTime $firstCallStartTime');
+      print('getFirstCallStartTime $getFirstCallStartTime');
+      // getCallLogsList.forEach((element) {
+      //   if (element.startTime == firstCallStartTime) {
+      //     contain = true;
+      //   }
+      // });
+      // print('contain   ${contain}');
+      // if (contain == false) {
+      //   print("Call log if************************************");
+      //   postCallLog();
+      // }
       if (firstCallStartTime == getFirstCallStartTime) {
+        print("Call log if************************************");
         return;
       } else {
-        String userId = await SharedPreference().getUserId();
-        DateTime findCallEndTime =
-            DateTime.fromMillisecondsSinceEpoch(callLogsList.first.timestamp!);
-        String time = DateFormat('yyyy-MM-dd HH:mm:ss').format(findCallEndTime);
-        String formattedDuration = formatDuration(callLogsList.first.duration!);
-        String endTime =
-            callEndTime(startTime: time, duration: formattedDuration);
-        String callType = callTypeToString(callLogsList.first.callType!);
-        String duration = "${callLogsList.first.duration}";
-        File callRecordingFile = File("");
-        if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
-          if (fileController.filePathsWithPhoneNumber.last
-                  .contains(phoneNumber) &&
-              fileController.filePathsWithPhoneNumber.last
-                  .contains(joinedString)) {
-            callRecordingFile =
-                File(fileController.filePathsWithPhoneNumber.first);
-          }
-        }
+        print("Call log else************************************");
+        postCallLog();
+      }
+    } else if (callLogsList.isNotEmpty && getCallLogsList.isEmpty) {
+      print("2nd elseif-=========================================");
+      postCallLog();
+    }
+  }
 
-        callLogRepository.postCallLog(
-            leadId: leadId!,
-            userId: userId,
-            startTime: firstCallStartTime,
-            endTime: endTime,
-            duration: duration,
-            type: callType,
-            callRecordingFile: callRecordingFile);
-        await getCallLog();
+  postCallLog() async {
+    List<String> dateTimeComponents =
+        firstCallStartTime!.split(RegExp(r'[: \-]'));
+    String joinedString = dateTimeComponents.join('');
+    String userId = await SharedPreference().getUserId();
+    DateTime findCallEndTime =
+        DateTime.fromMillisecondsSinceEpoch(callLogsList.first.timestamp!);
+    String time = DateFormat('yyyy-MM-dd HH:mm:ss').format(findCallEndTime);
+    String formattedDuration = formatDuration(callLogsList.first.duration!);
+    String endTime = callEndTime(startTime: time, duration: formattedDuration);
+    String callType = callTypeToString(callLogsList.first.callType!);
+    String duration = "${callLogsList.first.duration}";
+    File callRecordingFile = File("");
+    if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
+      if (fileController.filePathsWithPhoneNumber.last.contains(phoneNumber) &&
+          fileController.filePathsWithPhoneNumber.last.contains(joinedString)) {
+        callRecordingFile = File(fileController.filePathsWithPhoneNumber.first);
       }
     }
+    callLogRepository.postCallLog(
+        leadId: leadId!,
+        userId: userId,
+        startTime: firstCallStartTime!,
+        endTime: endTime,
+        duration: duration,
+        type: callType,
+        callRecordingFile: callRecordingFile);
+    await getCallLog();
   }
 
   Future<void> getCallLog() async {
@@ -91,14 +107,6 @@ class CallLogController extends GetxController {
     GetCallLogModel response = await callLogRepository.getCallLog(leadId!);
     getCallLogsList.addAll(response.data!);
     loadingState.value = false;
-  }
-
-  @override
-  void onClose() {
-    // TODO: implement onClose
-
-    _subscription?.cancel();
-    super.onClose();
   }
 
   String formatDuration(int seconds) {
@@ -163,5 +171,13 @@ class CallLogController extends GetxController {
       default:
         return "unknown";
     }
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+
+    _subscription?.cancel();
+    super.onClose();
   }
 }

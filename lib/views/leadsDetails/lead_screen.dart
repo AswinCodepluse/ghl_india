@@ -45,6 +45,12 @@ class _LeadScreenState extends State<LeadScreen> {
   }
 
   @override
+  void dispose() {
+    leadsDataController.searchCon.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +84,7 @@ class _LeadScreenState extends State<LeadScreen> {
                                       ? "Google Leads"
                                       : widget.status == 4
                                           ? "Followup Call Later"
-                                          : widget.status == 13
+                                          : widget.status == 5
                                               ? "Followup Interested"
                                               : "Followup KYC Fill",
         ),
@@ -104,7 +110,7 @@ class _LeadScreenState extends State<LeadScreen> {
                 child: leadsDataController.isLeads.value
                     ? Center(
                         child: CircularProgressIndicator(
-                          color: Colors.black,
+                          color: Colors.red,
                         ),
                       )
                     : leadsDataController.searchCon.text.isNotEmpty &&

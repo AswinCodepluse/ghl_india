@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
+import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_details_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
 import 'package:intl/intl.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,12 +26,16 @@ class LeadsController extends GetxController {
   TextEditingController followupNotesCon = TextEditingController();
   TextEditingController investDateCon = TextEditingController();
   TextEditingController investTypeCon = TextEditingController();
+  TextEditingController transactionIdCon = TextEditingController();
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController timeCon = TextEditingController();
   TextEditingController amountCon = TextEditingController();
   var leadStatusList = <Data>[].obs;
   RxList<String> leadStatusNameList = <String>[].obs;
   RxString selectedLeadStatus = ''.obs;
+  RxInt isInvestor = 0.obs;
+
+  // RxInt leadId = 0.obs;
   RxString message = ''.obs;
   File lastCallRecording = File("");
   File? files;
@@ -87,7 +93,9 @@ class LeadsController extends GetxController {
                 investTypeCon.text.isEmpty ||
                 investTypeCon.text == '' ||
                 investDateCon.text.isEmpty ||
-                investDateCon.text == ''))) {
+                investDateCon.text == '' ||
+                transactionIdCon.text.isEmpty ||
+                transactionIdCon.text == ''))) {
       setDisable.value = true;
     } else {
       setDisable.value = false;
@@ -131,15 +139,58 @@ class LeadsController extends GetxController {
   }
 
   Future dateTimePicker(BuildContext context) async {
-    return DatePicker.showDateTimePicker(context,
-        showTitleActions: true,
-        minTime: DateTime(2000, 1, 1),
-        maxTime: DateTime(4000, 12, 31), onConfirm: (date) {
+    DateTime? dateTime = await showOmniDateTimePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 3652),
+      ),
+      is24HourMode: true,
+      isShowSeconds: false,
+      minutesInterval: 1,
+      secondsInterval: 1,
+      isForce2Digits: true,
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      constraints: const BoxConstraints(
+        maxWidth: 350,
+        maxHeight: 650,
+      ),
+      transitionDuration: const Duration(milliseconds: 200),
+      barrierDismissible: true,
+    );
+    if (dateTime != null) {
       String desiredFormat = "yyyy-MM-dd HH:mm";
-      dateTimeCon.text = DateFormat(desiredFormat).format(date);
-      update();
-    }, currentTime: DateTime.now(), locale: LocaleType.en);
+      dateTimeCon.text = DateFormat(desiredFormat).format(dateTime);
+      FirebaseRepository().sendPushNotification(
+                  "f3OFDmxCRXG4MIziiyvfvb:APA91bFjKktivZ80f9O_Sd-RNHE-9zImohq6PGqADd1mCd3hjRX5eSr3hjaOMkOqJQQNLSVA6Sf1A8FCL0a6rT7B5CJzNoace2QtREs7dyDNqutZ-xOtrLxYftFpRaruF5qZQ88GbCnZ",
+                  "test test test");
+    }
   }
+
+  void onChangeStatus(value){
+    selectedLeadIds.value = value!.id!;
+    selectedLeadNames.value = value.name!;
+   amountCon.clear();
+    investDateCon.clear();
+    investTypeCon.clear();
+    isDisable();
+  }
+
+  // Future dateTimePicker(BuildContext context) async {
+  //   return DatePicker.showDateTimePicker(context,
+  //       showTitleActions: true,
+  //       minTime: DateTime(2000, 1, 1),
+  //       maxTime: DateTime(4000, 12, 31), onConfirm: (date) {
+  //     String desiredFormat = "yyyy-MM-dd HH:mm";
+  //     dateTimeCon.text = DateFormat(desiredFormat).format(date);
+  //     print('dateTimeCon  ${dateTimeCon.text}');
+  //     FirebaseRepository().sendPushNotification(
+  //         "f3OFDmxCRXG4MIziiyvfvb:APA91bFjKktivZ80f9O_Sd-RNHE-9zImohq6PGqADd1mCd3hjRX5eSr3hjaOMkOqJQQNLSVA6Sf1A8FCL0a6rT7B5CJzNoace2QtREs7dyDNqutZ-xOtrLxYftFpRaruF5qZQ88GbCnZ",
+  //         "test test test");
+  //     update();
+  //   }, currentTime: DateTime.now(), locale: LocaleType.en);
+  // }
 
   // setNotification() async {
   //   String dateString = datePickedCon.text;
@@ -167,6 +218,7 @@ class LeadsController extends GetxController {
     timeCon.clear();
     amountCon.clear();
     investTypeCon.clear();
+    transactionIdCon.clear();
   }
 
   onChanged(String? newValue) {
@@ -202,6 +254,7 @@ class LeadsController extends GetxController {
     String testNotes,
     String date,
     String time,
+    String transactionId,
     File files,
     File callRecord,
     File voiceRecord,
@@ -219,13 +272,14 @@ class LeadsController extends GetxController {
           files,
           callRecord,
           voiceRecord,
+          transactionId,
           amountCon.text,
           investTypeCon.text,
           investDateCon.text);
       message.value = response.message!;
       return response;
     } catch (e) {
-      message.value = "Something Went Wrong";
+      message.value = "Failed To Update Lead Status";
       throw "$e";
     } finally {
       loadingState.value = false;
@@ -234,6 +288,8 @@ class LeadsController extends GetxController {
 
   fetchIndividualLeads(int id) async {
     leadDetailsData.value = await Dashboard().fetchOIndividualLeads(id);
+    isInvestor.value = leadDetailsData.value.isInvestor!;
+    // leadId.value = leadDetailsData.value.id!;
     selectedLeadIds.value = leadDetailsData.value.statusInt!;
   }
 

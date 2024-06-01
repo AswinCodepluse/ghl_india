@@ -13,19 +13,19 @@ import 'package:shared_value/shared_value.dart';
 import 'firebase/firebase_repository.dart';
 import 'firebase_options.dart';
 
-// @pragma("vm:entry-point")
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print('message id ${message.messageId}');
-// }
+@pragma("vm:entry-point")
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('message id ${message.messageId}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FirebaseMessaging.instance.getInitialMessage();
+  await FirebaseMessaging.instance.getInitialMessage();
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -41,8 +41,8 @@ void main() async {
   var token = await firebaseRepo.getToken();
   print('device token $token');
   SharedPreference().setDeviceToken(token);
-  // firebaseRepo.initInfo();
-  // firebaseRepo.setNotification();
+  firebaseRepo.initInfo();
+
 
   runApp(
     SharedValue.wrapApp(
@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       title: 'GHL Leads',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
         useMaterial3: true,
       ),
       initialBinding: ControllerBinding(),

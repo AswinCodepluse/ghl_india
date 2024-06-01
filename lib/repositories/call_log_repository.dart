@@ -15,13 +15,6 @@ class CallLogRepository {
     required String type,
     required File callRecordingFile,
   }) async {
-    print('leadId  $leadId');
-    print('userId  $userId');
-    print('startTime  $startTime');
-    print('endTime  $endTime');
-    print('duration  $duration');
-    print('type  $type');
-    print('callRecordingFile  ${callRecordingFile.path}');
     var url = Uri.parse(
         'https://sales.ghlindia.com/api/sales-person/lead/call-log/create');
 
@@ -51,9 +44,7 @@ class CallLogRepository {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        print('POST request successful');
         String responseBody = await response.stream.bytesToString();
-        print('Response body: $responseBody');
       } else {
         String responseBody = await response.stream.bytesToString();
         print(
@@ -67,51 +58,6 @@ class CallLogRepository {
       throw e;
     }
   }
-
-  // Future<void> postCallLog(
-  //     {required String leadId,
-  //     required String userId,
-  //     required String startTime,
-  //     required String endTime,
-  //     required String duration,
-  //     required String type,
-  //     required File callRecordingFile}) async {
-  //   var url = Uri.parse(
-  //       'https://sales.ghlindia.com/api/sales-person/lead/call-log/create');
-  //
-  //   var post_body = jsonEncode({
-  //     'lead_id': '1',
-  //     'user_id': '8',
-  //     'start_time': '2024-05-25 14:20:00',
-  //     'end_time': '2024-05-25 14:21:00',
-  //     'duration': '100',
-  //     'type': 'incoming',
-  //     'File': callRecordingFile
-  //   });
-  //
-  //   try {
-  //     var response = await http.post(url,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "App-Language": app_language.$!,
-  //           "Authorization": "Bearer ${access_token.$}",
-  //         },
-  //         body: post_body);
-  //
-  //     if (response.statusCode == 200) {
-  //       print('POST request successful');
-  //       print('Response body Login: ${response.body}');
-  //       return;
-  //     } else {
-  //       print('Failed to make POST request. Error: ${response.statusCode}');
-  //       throw Exception(
-  //           'Failed to make POST request. Error: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Exception occurred: $e');
-  //     throw e;
-  //   }
-  // }
 
   Future<GetCallLogModel> getCallLog(String leadId) async {
     var url = Uri.parse(
@@ -129,9 +75,7 @@ class CallLogRepository {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        print('POST request successful');
         String responseBody = await response.stream.bytesToString();
-        print('Response body: $responseBody');
         Map<String, dynamic> json = jsonDecode(responseBody);
         return GetCallLogModel.fromJson(json);
       } else {
@@ -144,33 +88,4 @@ class CallLogRepository {
       throw e;
     }
   }
-// Future<GetCallLogModel> getCallLog(String leadId) async {
-//   var post_body = jsonEncode({"lead_id": leadId});
-//
-//   var url = Uri.parse(
-//       "https://sales.ghlindia.com/api/sales-person/lead/get-call-log-details");
-//   try {
-//     var response = await http.post(
-//       url,
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": "Bearer ${access_token.$}",
-//       },
-//       body: post_body,
-//     );
-//     if (response.statusCode == 200) {
-//       print('POST request successful');
-//       print('Response body: ${response.body}');
-//       Map<String, dynamic> json = jsonDecode(response.body);
-//       return GetCallLogModel.fromJson(json);
-//     } else {
-//       print('Failed to make POST request. Error: ${response.statusCode}');
-//       throw Exception(
-//           'Failed to make POST request. Error: ${response.statusCode}');
-//     }
-//   } catch (e) {
-//     print('Exception occurred: $e');
-//     throw e;
-//   }
-// }
 }

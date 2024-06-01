@@ -33,8 +33,6 @@ class AuthRepository {
           body: post_body);
 
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body Login: ${response.body}');
         return loginResponseFromJson(response.body);
       } else if (response.statusCode == 401) {
         return loginResponseFromJson(response.body);
@@ -65,8 +63,6 @@ class AuthRepository {
         );
 
         if (response.statusCode == 200) {
-          print('POST request successful');
-          print('Response body: ${response.body}');
           return loginResponseFromJson(response.body);
         } else {
           print('Failed to make POST request. Error: ${response.statusCode}');
@@ -111,20 +107,6 @@ class AuthRepository {
       print('Exception occurred: $e');
       throw e;
     }
-    // final response = await http.get(
-    //   Uri.parse('${AppConfig.BASE_URL}/api/auth/logout'),
-    //   headers: {
-    //     "Authorization": "Bearer ${access_token.$}",
-    //     "App-Language": app_language.$!,
-    //   },
-    // );
-    // print("response Logout : ${response.body}");
-    //
-    // if (response.statusCode == 200) {
-    //   return logoutResponseFromJson(response.body);
-    // } else {
-    //   throw Exception('Failed to load leads');
-    // }
   }
 
   Future<PasswordConfirmResponse> getPasswordConfirmResponse(
@@ -144,8 +126,6 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         return passwordConfirmResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');
@@ -175,8 +155,6 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         return resendCodeResponseFromJson(response.body);
       } else {
         print('Failed to make POST request. Error: ${response.statusCode}');

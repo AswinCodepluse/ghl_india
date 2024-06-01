@@ -35,6 +35,7 @@ class GetCallLogData {
   int? duration;
   String? type;
   String? filePath;
+  String? phone;
   CallLogFile? file;
 
   GetCallLogData(
@@ -54,6 +55,7 @@ class GetCallLogData {
     endTime = json['end_time'];
     duration = json['duration'];
     type = json['type'];
+    phone = json['phone'];
     filePath = json['file_path'];
     file = json['file'] != null ? new CallLogFile.fromJson(json['file']) : null;
   }
@@ -67,6 +69,7 @@ class GetCallLogData {
     data['duration'] = this.duration;
     data['type'] = this.type;
     data['file_path'] = this.filePath;
+    data['phone'] = this.phone;
     if (this.file != null) {
       data['file'] = this.file!.toJson();
     }

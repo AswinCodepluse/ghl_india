@@ -5,15 +5,17 @@ import 'package:ghl_callrecoding/views/attachment/attachment_screen.dart';
 import 'package:ghl_callrecoding/views/call_log/call_log_screen.dart';
 import 'package:ghl_callrecoding/views/document/document_screen.dart';
 import 'package:ghl_callrecoding/views/time_line/time_line_page.dart';
+import 'package:ghl_callrecoding/views/transaction/screen/transaction_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HeaderIconContainer extends StatelessWidget {
   HeaderIconContainer(
-      {super.key, required this.phoneNumber, required this.email});
+      {super.key, required this.phoneNumber, required this.email, required this.leadId});
 
   final String phoneNumber;
   final String email;
+  final int leadId;
 
   final leadsController = Get.find<LeadsController>();
 
@@ -281,6 +283,50 @@ class HeaderIconContainer extends StatelessWidget {
                   )
                 ],
               ),
+            ),
+            Obx(
+              () => leadsController.isInvestor.value == 1
+                  ? Container(
+                      width: 78,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TransactionScreen(
+                                            leadId:
+                                                leadId,
+                                          )));
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Image(
+                                  image: AssetImage(
+                                    "assets/image/transaction_icon.png",
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          CustomText(
+                            text: "Transaction",
+                            // color: Colors.red,
+                          )
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
             ),
           ],
         ),

@@ -29,38 +29,43 @@ class LeadDetails {
   String? createdDate;
   String? createdAt;
   String? lastUpdatedDate;
+  String? notes;
+  int? isInvestor;
 
-  LeadDetails(
-      {this.id,
-      this.name,
-      this.address,
-      this.information,
-      this.description,
-      this.city,
-      this.state,
-      this.pincode,
-      this.email,
-      this.phoneNo,
-      this.status,
-      this.statusInt,
-      this.source,
-      this.interest,
-      this.assigned,
-      this.campaign,
-      this.medium,
-      this.incomebracket,
-      this.ip,
-      this.occupation,
-      this.planning,
-      this.sendMsg,
-      this.taxsaving,
-      this.utmContent,
-      this.company,
-      this.website,
-      this.designation,
-      this.createdDate,
-      this.createdAt,
-      this.lastUpdatedDate});
+  LeadDetails({
+    this.id,
+    this.name,
+    this.address,
+    this.information,
+    this.description,
+    this.city,
+    this.state,
+    this.pincode,
+    this.email,
+    this.phoneNo,
+    this.status,
+    this.statusInt,
+    this.source,
+    this.interest,
+    this.assigned,
+    this.campaign,
+    this.medium,
+    this.incomebracket,
+    this.ip,
+    this.occupation,
+    this.planning,
+    this.sendMsg,
+    this.taxsaving,
+    this.utmContent,
+    this.company,
+    this.website,
+    this.designation,
+    this.createdDate,
+    this.createdAt,
+    this.lastUpdatedDate,
+    this.notes,
+    this.isInvestor,
+  });
 
   LeadDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -93,6 +98,8 @@ class LeadDetails {
     createdDate = json['created_date'];
     createdAt = json['created_at'];
     lastUpdatedDate = json['last_updated_date'];
+    isInvestor = json['is_investor'];
+    notes = json['notes'];
   }
 
   Map<String, dynamic> toJson() {
@@ -127,6 +134,8 @@ class LeadDetails {
     data['created_date'] = this.createdDate;
     data['created_at'] = this.createdAt;
     data['last_updated_date'] = this.lastUpdatedDate;
+    data['is_investor'] = this.isInvestor;
+    data['notes'] = this.notes;
     return data;
   }
 }

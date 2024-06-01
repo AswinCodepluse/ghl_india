@@ -3,6 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/dashboard_container.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/round_container.dart';
+import 'package:ghl_callrecoding/views/dashboard/components/whatsapp_container.dart';
 import 'package:ghl_callrecoding/views/lead_status_details/filter_details.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/lead_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
@@ -67,7 +71,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    color: Colors.green,
                                     screenWidth: screenWidth,
                                     text: "Total Leads",
                                     icon: "assets/image/dashboard_icon_1.png",
@@ -87,7 +90,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    color: Colors.pink,
                                     screenWidth: screenWidth,
                                     text: "Website Lead",
                                     icon: "assets/image/dashboard_icon_2.png",
@@ -112,7 +114,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    color: Color(0xFF7569DE),
                                     screenWidth: screenWidth,
                                     text: "Facebook Lead",
                                     icon: "assets/image/dashboard_icon_3.png",
@@ -133,7 +134,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             Expanded(child: Obx(() {
                               return InkWell(
                                 child: dashboardContainer(
-                                    color: Color(0xFFF3C41F),
                                     screenWidth: screenWidth,
                                     text: "Google Lead",
                                     icon: "assets/image/google_drive_icon.png",
@@ -156,10 +156,11 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                         InkWell(
                           child: whatsappContainer(
                               screenWidth: screenWidth,
-                              icon: "assets/image/whatsapp_icon.png",
+                              icon: "assets/image/dashboard_whatsapp-icon.png",
                               text: "Whatsapp",
                               count: dashboardController.whatsAppLead.value,
-                              color: Color(0XFFBA4A00)),
+                              color: MyTheme.mainColor,
+                              iconColor: Colors.white),
                           onTap: () {
                             Get.to(
                               () => LeadScreen(
@@ -174,12 +175,13 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             ? Wrap(
                                 children: [
                                   Padding(
-                                    padding:  EdgeInsets.symmetric(
+                                    padding: EdgeInsets.symmetric(
                                         vertical: screenWidth / 45),
                                     child: CustomText(text: "Today's Followup"),
                                   ),
                                   Padding(
-                                    padding:  EdgeInsets.only(bottom: screenWidth / 45),
+                                    padding: EdgeInsets.only(
+                                        bottom: screenWidth / 45),
                                     child: InkWell(
                                       child: whatsappContainer(
                                         screenWidth: screenWidth,
@@ -188,7 +190,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                         text: "Call Later",
                                         count: dashboardController
                                             .followUpTodayCallLater.value,
-                                        color: Color(0xFF2C3E50),
                                       ),
                                       onTap: () {
                                         Get.to(
@@ -203,7 +204,8 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                     ),
                                   ),
                                   Padding(
-                                    padding:  EdgeInsets.only(bottom: screenWidth / 45),
+                                    padding: EdgeInsets.only(
+                                        bottom: screenWidth / 45),
                                     child: InkWell(
                                       child: whatsappContainer(
                                         screenWidth: screenWidth,
@@ -212,7 +214,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                         text: "Interested",
                                         count: dashboardController
                                             .followUpTodayInterested.value,
-                                        color: Colors.blueAccent,
                                       ),
                                       onTap: () {
                                         Get.to(
@@ -220,7 +221,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                             platforms: "Interested",
                                             session: widget.seasons,
                                             filterBy: "Interested",
-                                            status: 13,
+                                            status: 5,
                                           ),
                                         );
                                       },
@@ -233,7 +234,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                       text: "KYC Fill",
                                       count: dashboardController
                                           .followUpTodayKYCFill.value,
-                                      color: Color(0xFF970652),
                                     ),
                                     onTap: () {
                                       Get.to(
@@ -258,7 +258,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             physics: NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
+                              crossAxisCount: 3,
                               mainAxisSpacing: screenWidth / 36,
                               crossAxisSpacing: screenWidth / 36,
                               childAspectRatio: 1.0,
@@ -275,23 +275,24 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                   Random().nextInt(
                                       dashboardController.colors.length)];
                               return roundContainer(
-                                  screenWidth: screenWidth,
-                                  count: data.count!,
-                                  text: data.name!,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            LeadDataFilterStatus(
-                                          status: status,
-                                          statusId: statusId,
-                                          filterBy: widget.seasons,
-                                        ),
+                                screenWidth: screenWidth,
+                                count: data.count!,
+                                text: data.name!,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LeadDataFilterStatus(
+                                        status: status,
+                                        statusId: statusId,
+                                        filterBy: widget.seasons,
                                       ),
-                                    );
-                                  },
-                                  color: randomColor);
+                                    ),
+                                  );
+                                },
+                                // color: randomColor
+                              );
                             },
                           );
                         }),
@@ -303,161 +304,6 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                   ),
                 );
         }),
-      ),
-    );
-  }
-
-  Widget roundContainer(
-      {required int count,
-      String? color,
-      required double screenWidth,
-      required String text,
-      required void Function() onTap}) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: screenWidth / 7.2,
-            width: screenWidth / 7.2,
-            child: Center(
-              child: FittedBox(
-                child: Padding(
-                  padding:  EdgeInsets.all(screenWidth / 45),
-                  child: CustomText(
-                    text: count.toString(),
-                    fontWeight: FontWeight.w800,
-                    fontSize: screenWidth / 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            decoration: BoxDecoration(
-                color: dashboardController.getColor(color!),
-                shape: BoxShape.circle),
-          ),
-        ),
-        SizedBox(
-          height: screenWidth / 120,
-        ),
-        SizedBox(
-          width: screenWidth / 5.3,
-          child: Center(
-            child: FittedBox(
-              child: CustomText(
-                text: text,
-                fontSize: screenWidth / 27.7,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget whatsappContainer({
-    required double screenWidth,
-    required String icon,
-    required String text,
-    required int count,
-    required Color color,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(screenWidth / 24),
-      height: screenWidth / 7,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(screenWidth / 36),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: screenWidth / 14,
-                width: screenWidth / 14,
-                child: Image(
-                  image: AssetImage(icon),
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                width: screenWidth / 30,
-              ),
-              FittedBox(
-                child: CustomText(
-                  text: text,
-                  fontWeight: FontWeight.w700,
-                  fontSize: screenWidth / 20,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          FittedBox(
-            child: CustomText(
-              text: count.toString(),
-              fontSize: screenWidth / 14,
-              color: Colors.white,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget dashboardContainer(
-      {required Color color,
-      required double screenWidth,
-      required String text,
-      required int count,
-      required String icon}) {
-    return Container(
-      padding: EdgeInsets.all(screenWidth / 45),
-      height: screenWidth / 4.5,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: screenWidth /14.4,
-                width: screenWidth / 14,
-                child: Image(
-                  image: AssetImage(icon),
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                width: screenWidth / 15,
-              ),
-              FittedBox(
-                child: CustomText(
-                  text: count.toString(),
-                  fontSize: screenWidth / 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          FittedBox(
-            child: CustomText(
-              text: text,
-              fontWeight: FontWeight.w700,
-              fontSize: screenWidth / 20,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(screenWidth / 36),
       ),
     );
   }

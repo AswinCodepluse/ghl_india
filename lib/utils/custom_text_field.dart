@@ -5,15 +5,15 @@ import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 class CustomTextField extends StatelessWidget {
   CustomTextField(
       {super.key,
-      required this.controller,
-      this.onTap,
-      this.suffixIcon,
-      this.prefixIcon,
-      this.maxLines,
-      this.hintText,
-      this.onChange,
-      this.readOnly,
-      this.keyboardType});
+        required this.controller,
+        this.onTap,
+        this.suffixIcon,
+        this.prefixIcon,
+        this.maxLines,
+        this.hintText,
+        this.onChange,
+        this.readOnly,
+        this.keyboardType});
 
   final TextEditingController controller;
   final void Function()? onTap;

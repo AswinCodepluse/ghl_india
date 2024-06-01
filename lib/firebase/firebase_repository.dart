@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
-import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:http/http.dart' as http;
 
 class FirebaseRepository {
@@ -45,6 +44,7 @@ class FirebaseRepository {
         InitializationSettings(android: androidInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('message++++++++++=  ${message.data}');
       BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
           message.notification!.body.toString(),
           htmlFormatBigText: true,
@@ -63,57 +63,112 @@ class FirebaseRepository {
           NotificationDetails(android: androidPlatformChannelSpecific);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
           message.notification?.body, platformChannelSpecific,
-          payload: message.data['title']);
+          payload: message.data['data']);
+      initLocalNotifications(message);
     });
   }
 
-  Duration calculateDelayUntilTargetTime(DateTime targetTime) {
-    final now = DateTime.now();
-    final targetDateTime = DateTime(
-        now.year, now.month, now.day, targetTime.hour, targetTime.minute);
+  void initLocalNotifications(RemoteMessage message) async {
+    print('message=========  ${message.data}');
+    Map<String, dynamic> notificationData= message.data;
+    print('notificationData  $notificationData');
+    var androidInitializationSettings =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iosInitializationSettings = const DarwinInitializationSettings();
 
-    if (targetDateTime.isBefore(now)) {
-      return Duration(
-        days: 1,
-        hours: targetTime.hour,
-        minutes: targetTime.minute,
-      );
-    } else {
-      return targetDateTime.difference(now);
-    }
-  }
+    var initializationSetting = InitializationSettings(
+        android: androidInitializationSettings, iOS: iosInitializationSettings);
 
-  void scheduleNotificationAtSpecificTime(DateTime targetTime, String token) {
-    Duration delay = calculateDelayUntilTargetTime(targetTime);
-
-    Timer(delay, () {
-      sendPushNotification(token, "Reminder", targetTime);
+    await flutterLocalNotificationsPlugin.initialize(initializationSetting,
+        onDidReceiveNotificationResponse: (payload) {
+       handleMessage(message.data);
     });
   }
 
-  Future<void> setNotification() async {
-    SharedPreference sharedPreference = SharedPreference();
-    String dateString = await sharedPreference.getRemainderDate();
-    String getRemainderTime = await sharedPreference.getRemainderTime();
-    if (dateString != "") {
-      String TimeString = getRemainderTime == "" ? "10:00" : getRemainderTime;
-      List<String> dateParts = dateString.split('-');
-      List<String> timeParts = TimeString.split(':');
-      int year = int.parse(dateParts[0]);
-      int month = int.parse(dateParts[1]);
-      int day = int.parse(dateParts[2]);
-      int hour = int.parse(timeParts[0]);
-      int minute = int.parse(timeParts[1]);
-      FirebaseRepository firebaseRepo = FirebaseRepository();
-      var deviceToken = await sharedPreference.getDeviceToken();
-      final targetDateTime = DateTime(year, month, day, hour, minute);
-      firebaseRepo.scheduleNotificationAtSpecificTime(
-          targetDateTime, deviceToken);
+  Future<void> setupInteractMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      print('===========initialMessage=================');
+      print(initialMessage.data);
+
+      handleMessage(initialMessage.data);
     }
+
+    //when app ins background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+      handleMessage(event.data);
+    });
   }
+
+  void handleMessage(Map<String, dynamic> message) {
+    Get.to(
+      () => LeadDetailsScreen(
+        phoneNumber: message['phoneNumber'],
+        firstLetter: message['firstLetter'],
+        lastLetter: message['secondLetter'],
+        leadName: message['leadName'],
+        leadId: int.parse(message['leadId']),
+        email: message['email'],
+        userName: message['userName'],
+      ),
+    );
+  }
+
+  // Duration calculateDelayUntilTargetTime(DateTime targetTime) {
+  //   final now = DateTime.now();
+  //   final targetDateTime = DateTime(
+  //       now.year, now.month, now.day, targetTime.hour, targetTime.minute);
+  //
+  //   if (targetDateTime.isBefore(now)) {
+  //     return Duration(
+  //       days: 1,
+  //       hours: targetTime.hour,
+  //       minutes: targetTime.minute,
+  //     );
+  //   } else {
+  //     return targetDateTime.difference(now);
+  //   }
+  // }
+
+  // void scheduleNotificationAtSpecificTime(DateTime targetTime, String token) {
+  //   Duration delay = calculateDelayUntilTargetTime(targetTime);
+  //
+  //   Timer(delay, () {
+  //     sendPushNotification(
+  //       token, "Reminder",
+  //       // targetTime
+  //     );
+  //   });
+  // }
+
+  // Future<void> setNotification() async {
+  //   SharedPreference sharedPreference = SharedPreference();
+  //   String dateString = await sharedPreference.getRemainderDate();
+  //   String getRemainderTime = await sharedPreference.getRemainderTime();
+  //   if (dateString != "") {
+  //     String TimeString = getRemainderTime == "" ? "10:00" : getRemainderTime;
+  //     List<String> dateParts = dateString.split('-');
+  //     List<String> timeParts = TimeString.split(':');
+  //     int year = int.parse(dateParts[0]);
+  //     int month = int.parse(dateParts[1]);
+  //     int day = int.parse(dateParts[2]);
+  //     int hour = int.parse(timeParts[0]);
+  //     int minute = int.parse(timeParts[1]);
+  //     FirebaseRepository firebaseRepo = FirebaseRepository();
+  //     var deviceToken = await sharedPreference.getDeviceToken();
+  //     final targetDateTime = DateTime(year, month, day, hour, minute);
+  //     firebaseRepo.scheduleNotificationAtSpecificTime(
+  //         targetDateTime, deviceToken);
+  //   }
+  // }
 
   void sendPushNotification(
-      String token, String message, DateTime targetDateTime) async {
+    String token,
+    String message,
+    // DateTime targetDateTime
+  ) async {
     try {
       await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
           headers: {
@@ -123,12 +178,14 @@ class FirebaseRepository {
           },
           body: jsonEncode({
             'priority': 'high',
-            // 'targetDateTime': targetDateTime.toIso8601String(),
             'data': {
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-              'status': 'done',
-              'body': message,
-              'title': 'GHL Notification',
+              "firstLetter": "A",
+              "secondLetter": "J",
+              "leadId": 1,
+              "phoneNumber": "9025075398",
+              "email": "notification@gmail.com",
+              "userName": "Jana",
+              "leadName": "Jana"
             },
             'notification': {
               'title': 'GHL Notification',

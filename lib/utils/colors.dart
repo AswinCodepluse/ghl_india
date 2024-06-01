@@ -7,9 +7,10 @@ class MyTheme {
   static const Color accent_color2 = Color(0xff38DA39);
   static const Color teal_light = Color(0xff73e5ad);
   static const Color accent_color_shadow =
-  Color.fromRGBO(229, 65, 28, .40); // this color is a dropshadow of
+      Color.fromRGBO(229, 65, 28, .40); // this color is a dropshadow of
   static Color soft_accent_color = const Color.fromRGBO(254, 234, 209, 1);
-  static Color splash_screen_color = Color(0XFF495867); // if not sure , use the same color as accent color
+  static Color splash_screen_color =
+      Color(0XFF495867); // if not sure , use the same color as accent color
   /*configurable colors ends*/
   /*If you are not a developer, do not change the bottom colors*/
   static const Color white = Color.fromRGBO(255, 255, 255, 1);
@@ -39,6 +40,7 @@ class MyTheme {
   static const Color pale = Color(0xFFFAF9DE);
   static Color shimmer_base = Colors.grey.shade50;
   static Color shimmer_highlighted = Colors.grey.shade200;
+
   //testing shimmer
   /*static Color shimmer_base = Colors.redAccent;
   static Color shimmer_highlighted = Colors.yellow;*/
@@ -61,35 +63,36 @@ class MyTheme {
   static const Color couponFirstColor = Color(0xFF4C1A75);
   static const Color couponSecondColor = Color(0xFF00A8AA);
 
- static const PrimaryColor = Color(0xffea4b4b);
-static const PrimaryLightColor = Color(0xffF7F9F9);
-static const CardBackgroundColor = Color(0xfff3f4f4);
-static const PrimaryGradientColor = LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
-);
-static const SecondaryColor = Color(0xFF979797);
-static const SecondaryColorDark = Color(0xff292929);
+  static const PrimaryColor = Color(0xffea4b4b);
+  static const PrimaryLightColor = Color(0xffF7F9F9);
+  static const CardBackgroundColor = Color(0xfff3f4f4);
+  static const PrimaryGradientColor = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
+  );
+  static const SecondaryColor = Color(0xFF979797);
+  static const SecondaryColorDark = Color(0xff292929);
+  static const mainColor = Color(0xFFD92B31);
 
   static TextTheme textTheme1 = const TextTheme(
     bodyLarge: TextStyle(fontFamily: "Poppins", fontSize: 14),
     bodyMedium: TextStyle(fontFamily: "Poppins", fontSize: 12),
   );
 
-  static LinearGradient buildLinearGradient3() {
+  static LinearGradient linearGradient() {
     return const LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [MyTheme.polo_blue, MyTheme.gigas],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0XFFE94444), Color(0XFF262530)],
     );
   }
 
-  static LinearGradient buildLinearGradient2() {
+  static LinearGradient linearGradient1() {
     return const LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [MyTheme.cruise, MyTheme.blue_chill],
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      colors: [Color(0XFFE94444), Color(0XFF262530)],
     );
   }
 

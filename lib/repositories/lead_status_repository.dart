@@ -23,8 +23,6 @@ class LeadStatusRepository {
         body: post_body,
       );
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         Map<String, dynamic> json = jsonDecode(response.body);
         return LeadsFilterResponse.fromJson(json);
       } else {
@@ -55,8 +53,6 @@ class LeadStatusRepository {
         body: post_body,
       );
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         Map<String, dynamic> json = jsonDecode(response.body);
         return LeadsFilterResponse.fromJson(json);
       } else {

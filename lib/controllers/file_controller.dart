@@ -12,7 +12,8 @@ class FileController extends GetxController {
   RxList<String> filePathsWithPhoneNumber = <String>[].obs;
   RxBool isLoading = false.obs;
   final dashboardController = Get.find<DashboardController>();
-  final leadsDataController = Get.find<LeadsDataController>();
+  // final leadsDataController = Get.find<LeadsDataController>();
+  LeadsDataController leadsDataController = Get.put(LeadsDataController());
 
   @override
   void onInit() {

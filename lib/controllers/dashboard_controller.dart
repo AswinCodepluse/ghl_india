@@ -53,7 +53,6 @@ class DashboardController extends GetxController {
     dashboardCountList.clear();
     var response = await DashboardRepository().fetchDashboardCount(season);
     DashBoardModel dashboardData = DashBoardModel.fromJson(response);
-    print('dashboardData => $dashboardData');
     googleLead.value = dashboardData.google!;
     websiteLead.value = dashboardData.website!;
     facebookLead.value = dashboardData.facebook!;
@@ -69,7 +68,7 @@ class DashboardController extends GetxController {
         if (data.id == 7) {
           followUpTodayKYCFill.value = data.count!;
         }
-        if (data.id == 13) {
+        if (data.id == 5) {
           followUpTodayInterested.value = data.count!;
         }
       });

@@ -24,43 +24,45 @@ class _CallLogScreenState extends State<CallLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text("Call Logs"),
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(Icons.arrow_back)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            Obx(() {
-              return Expanded(
-                child: callLogController.loadingState.value
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.red,
-                        ),
-                      )
-                    : callLogController.getCallLogsList.isEmpty
-                        ? Center(
-                            child: CustomText(
-                                text: "No Call Log History For This Lead"))
-                        : ListView.builder(
-                            itemCount: callLogController.getCallLogsList.length,
-                            itemBuilder: (context, index) {
-                              final data =
-                                  callLogController.getCallLogsList[index];
-                              return callLogContainer(data);
-                            }),
-              );
-            })
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text("Call Logs"),
+          leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.arrow_back)),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Obx(() {
+                return Expanded(
+                  child: callLogController.loadingState.value
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.red,
+                          ),
+                        )
+                      : callLogController.getCallLogsList.isEmpty
+                          ? Center(
+                              child: CustomText(
+                                  text: "No Call Log History For This Lead"))
+                          : ListView.builder(
+                              itemCount: callLogController.getCallLogsList.length,
+                              itemBuilder: (context, index) {
+                                final data =
+                                    callLogController.getCallLogsList[index];
+                                return callLogContainer(data);
+                              }),
+                );
+              })
+            ],
+          ),
         ),
       ),
     );

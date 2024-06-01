@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
+import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/utils/shared_value.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/bottom_sheet.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/exist_conformation_dailog.dart';
@@ -17,7 +19,7 @@ class DashBoardTabBar extends StatefulWidget {
 
 class _DashBoardTabBarState extends State<DashBoardTabBar>
     with SingleTickerProviderStateMixin {
-  final DashboardController dashboardController = Get.find();
+  final DashboardController dashboardController = Get.put(DashboardController());
   late TabController _tabController;
   String userName = '';
   SharedPreference sharedPreference = SharedPreference();
@@ -26,6 +28,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    FirebaseRepository().setupInteractMessage();
   }
 
   @override
@@ -56,13 +59,16 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
           elevation: 0,
           bottom: TabBar(
             controller: _tabController,
+            isScrollable: false,
+
             tabs: [
               Tab(text: 'Today Leads'),
               Tab(text: 'Total Leads'),
             ],
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: Colors.red,
+              color: MyTheme.mainColor,
+
             ),
             labelColor: Colors.white,
             unselectedLabelColor: Colors.black,
@@ -76,6 +82,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
         ),
         body: TabBarView(
           controller: _tabController,
+          physics: NeverScrollableScrollPhysics(),
           children: [
             TodayDashBoardScreen(seasons: 'today'),
             TotalDashBoardScreen(seasons: 'total')

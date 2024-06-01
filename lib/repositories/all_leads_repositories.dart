@@ -44,8 +44,6 @@ class Dashboard {
         body: post_body,
       );
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body ========= : ${response.body}');
         Map<String, dynamic> json = jsonDecode(response.body);
         return FilterLeadsModel.fromJson(json);
       } else {
@@ -117,8 +115,6 @@ class Dashboard {
         body: post_body,
       );
       if (response.statusCode == 200) {
-        print('POST request successful');
-        print('Response body: ${response.body}');
         Map<String, dynamic> json = jsonDecode(response.body);
         return LeadDetails.fromJson(json);
       } else {
@@ -143,6 +139,7 @@ class Dashboard {
     File files,
     File callRecord,
     File voiceRecord,
+    String transactionId,
     String investAmount,
     String investType,
     String investDate,
@@ -166,7 +163,8 @@ class Dashboard {
       'next_follow_up_time': time,
       'invest_amount': investAmount,
       'invest_date': investDate,
-      'invest_type': investType
+      'invest_type': investType,
+      "txn_id": transactionId
     });
     if (files.existsSync()) {
       request.files.add(http.MultipartFile(

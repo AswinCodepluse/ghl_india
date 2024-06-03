@@ -53,6 +53,8 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
 
   @override
   Widget build(BuildContext context) {
+    print('statusId   ${widget.statusId}');
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -127,7 +129,7 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                                                 .nextInt(leadsDataController
                                                     .colors.length)];
                                         return leadsContainer(
-                                            data, randomColor);
+                                            data, randomColor, screenWidth);
                                       }),
                     )
                   ],
@@ -137,10 +139,13 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
     );
   }
 
-  Widget leadsContainer(UserLeadsDetails data, String randomColor) {
+  Widget leadsContainer(
+      UserLeadsDetails data, String randomColor, double screenWidth) {
     String firstLetter = data.name!.substring(0, 1).toUpperCase();
     String lastLetter =
         data.name!.substring(data.name!.length - 1).toUpperCase();
+    String icon = leadsDataController.sourceTypeIcon(data.source!);
+
     return GestureDetector(
       onTap: () async {
         var userName = await SharedPreference().getUserName();
@@ -198,18 +203,18 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 220,
+                  width: screenWidth / 1.89,
                   child: CustomText(
                       text: data.name ?? '',
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w700),
                 ),
                 SizedBox(
-                  width: 220,
+                  width: screenWidth / 1.89,
                   child: CustomText(text: data.phoneNo ?? ''),
                 ),
                 SizedBox(
-                  width: 220,
+                  width: screenWidth / 1.89,
                   child: CustomText(
                     text: data.email ?? '',
                     fontSize: 12,
@@ -218,26 +223,53 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
                 SizedBox(
                   height: 2,
                 ),
-                SizedBox(
-                  width: 220,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.date_range,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      CustomText(
-                          text: data.nextFollowUpDate ?? '',
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ],
-                  ),
-                )
+                data.statusInt == 3 ||
+                        data.statusInt == 2 ||
+                        data.statusInt == 11 ||
+                        data.statusInt == 13
+                    ? SizedBox()
+                    : SizedBox(
+                        width: screenWidth / 1.89,
+                        child: Row(
+                          children: [
+                            data.statusInt == 1
+                                ? Icon(
+                                    Icons.timer,
+                                    color: Colors.red,
+                                  )
+                                : data.nextFollowUpDate != null
+                                    ? Icon(
+                                        Icons.date_range,
+                                        color: Colors.red,
+                                      )
+                                    : SizedBox(),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            data.statusInt == 1
+                                ? CustomText(
+                                    text: data.createdAt ?? '',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold)
+                                : data.nextFollowUpDate != null
+                                    ? CustomText(
+                                        text: data.nextFollowUpDate ?? '',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold)
+                                    : SizedBox(),
+                          ],
+                        ),
+                      )
               ],
             ),
+            Spacer(),
+            Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: Image(
+                  image: AssetImage(icon),
+                )),
           ],
         ),
       ),

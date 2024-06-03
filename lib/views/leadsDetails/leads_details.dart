@@ -9,6 +9,7 @@ import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
 import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
+import 'package:ghl_callrecoding/controllers/report_controller.dart';
 import 'package:ghl_callrecoding/controllers/time_line_controller.dart';
 import 'package:ghl_callrecoding/helpers/file_helper.dart';
 import 'package:ghl_callrecoding/local_db/shared_preference.dart';
@@ -23,6 +24,7 @@ import 'package:ghl_callrecoding/views/leadsDetails/widget/detail_container.dart
 import 'package:ghl_callrecoding/views/leadsDetails/widget/header_icon_container.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/invest_widget.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/text_card.dart';
+import 'package:ghl_callrecoding/views/transaction/screen/transaction_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
@@ -63,8 +65,10 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   String? dates;
   TimeLineController timeLineController = Get.put(TimeLineController());
   AttachmentController attachmentController = Get.put(AttachmentController());
+  ReportController reportController = Get.put(ReportController());
   FileController fileController = Get.put(FileController());
   DashboardController dashboardController = Get.find<DashboardController>();
+
   int? user_Id;
   LeadsController leadsController = Get.put(LeadsController());
 
@@ -234,29 +238,79 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               phoneNumber: widget.phoneNumber,
               email: widget.email,
               leadId: widget.leadId,
+              screenWidth: screenWidth,
+            ),
+            Obx(
+              () => leadsController.isInvestor.value == 1
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0,right: 15.0, top: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TransactionScreen(
+                                        leadId: widget.leadId,
+                                      )));
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          child: ListTile(
+                            leading: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: SizedBox(
+                                height: screenWidth / 12,
+                                width: screenWidth / 12,
+                                child: Image(
+                                  image: AssetImage(
+                                    "assets/image/transaction_icon.png",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            title: CustomText(text: "Transaction"),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                              color: Colors.red,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              boxShadow: leadsController.shadow),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
             ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
-            leadsController.leadDetailsData.value.notes != null
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Wrap(
-                      children: [
-                        CustomText(text: "Followup Notes"),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Obx(
-                            () => textCard(
-                                text: leadsController
-                                        .leadDetailsData.value.notes ??
-                                    ""),
+            Obx(
+                ()=>leadsController.leadDetailsData.value.notes != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Wrap(
+                        children: [
+                          CustomText(text: "Followup Notes"),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Obx(
+                              () => textCard(
+                                  text: leadsController
+                                          .leadDetailsData.value.notes ??
+                                      ""),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                : SizedBox(),
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -414,25 +468,38 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         ? investWidget(context)
                         : Container(),
                   ),
-                  CustomText(text: "Followup DateTime"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  CustomTextField(
-                    controller: leadsController.dateTimeCon,
-                    readOnly: true,
-                    hintText: "Select DateTime",
-                    onTap: () async {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      await leadsController.dateTimePicker(context);
-                    },
-                    suffixIcon: Icon(
-                      Icons.date_range,
-                      color: Colors.red,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
+                  Obx(
+                    () => leadsController.selectedLeadIds.value == 3 ||
+                            leadsController.selectedLeadIds.value == 2 ||
+                            leadsController.selectedLeadIds.value == 11 ||
+                            leadsController.selectedLeadIds.value == 13
+                        ? SizedBox()
+                        : Wrap(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: CustomText(text: "Followup DateTime"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: CustomTextField(
+                                  controller: leadsController.dateTimeCon,
+                                  readOnly: true,
+                                  hintText: "Select DateTime",
+                                  onTap: () async {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    await leadsController
+                                        .dateTimePicker(context);
+                                  },
+                                  suffixIcon: Icon(
+                                    Icons.date_range,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                   customRichText(text: "Followup Notes"),
                   SizedBox(

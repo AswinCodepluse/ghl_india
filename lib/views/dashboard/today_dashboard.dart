@@ -85,7 +85,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                               );
                             })),
                             SizedBox(
-                              width: screenWidth / 45,
+                              width: screenWidth / 24,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
@@ -107,7 +107,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: screenWidth / 45,
+                          height: screenWidth / 24,
                         ),
                         Row(
                           children: [
@@ -129,7 +129,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                               );
                             })),
                             SizedBox(
-                              width: screenWidth / 45,
+                              width: screenWidth / 24,
                             ),
                             Expanded(child: Obx(() {
                               return InkWell(
@@ -151,7 +151,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: screenWidth / 45,
+                          height: screenWidth / 24,
                         ),
                         InkWell(
                           child: whatsappContainer(
@@ -175,8 +175,8 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                             ? Wrap(
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: screenWidth / 45),
+                                    padding: EdgeInsets.only(
+                                        bottom: screenWidth / 45,top: screenWidth / 24,),
                                     child: CustomText(text: "Today's Followup"),
                                   ),
                                   Padding(
@@ -250,7 +250,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                               )
                             : Container(),
                         SizedBox(
-                          height: screenWidth / 45,
+                          height: screenWidth / 24,
                         ),
                         Obx(() {
                           return GridView.builder(

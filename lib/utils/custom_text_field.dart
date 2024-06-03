@@ -35,7 +35,6 @@ class CustomTextField extends StatelessWidget {
         readOnly: readOnly ?? false,
         cursorColor: Colors.grey,
         maxLines: maxLines ?? 1,
-        // onChanged: dashboardController.searchLead,
         cursorHeight: 20,
         onChanged: onChange,
         keyboardType: keyboardType,
@@ -43,6 +42,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,
+          hintStyle: TextStyle(fontSize: 15,color: Colors.grey.shade500),
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           contentPadding: EdgeInsets.all(8),

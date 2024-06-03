@@ -33,10 +33,10 @@ Widget roundContainer(
         ),
       ),
       SizedBox(
-        height: 8,
+        height: screenWidth/51.4,
       ),
       SizedBox(
-        width: 110,
+        width:  screenWidth/3.27,
         child: Center(
           child: FittedBox(
             child: CustomText(

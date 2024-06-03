@@ -128,7 +128,7 @@ class LeadsController extends GetxController {
     date = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2100)) as DateTime;
     DateFormat formatter = DateFormat('yyyy-MM-dd');
     dateValue.text = formatter.format(date);
@@ -146,7 +146,7 @@ class LeadsController extends GetxController {
       lastDate: DateTime.now().add(
         const Duration(days: 3652),
       ),
-      is24HourMode: true,
+      is24HourMode: false,
       isShowSeconds: false,
       minutesInterval: 1,
       secondsInterval: 1,
@@ -169,8 +169,10 @@ class LeadsController extends GetxController {
   }
 
   void onChangeStatus(value){
+
     selectedLeadIds.value = value!.id!;
     selectedLeadNames.value = value.name!;
+    print('selectedLeadIds  ${selectedLeadIds.value}');
    amountCon.clear();
     investDateCon.clear();
     investTypeCon.clear();

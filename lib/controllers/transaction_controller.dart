@@ -59,6 +59,7 @@ class TransactionController extends GetxController {
 
   void onTapCancel(BuildContext context) {
     clearAll();
+    isDisable();
     Navigator.pop(context);
   }
 
@@ -75,6 +76,7 @@ class TransactionController extends GetxController {
         gravity: Toast.center, duration: Toast.lengthLong);
     if (transactionPostData.result == true) {
       clearAll();
+      isDisable();
       Navigator.pop(context);
       getTransaction(leadId: leadId);
     }

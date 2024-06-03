@@ -15,32 +15,34 @@ class LeadsDataController extends GetxController {
   String leadType = "";
   TextEditingController searchCon = TextEditingController();
   var isLeads = false.obs;
+  RxBool displayDateTime = false.obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
-    // fetchAllLeadsData();
-
     super.onInit();
   }
 
-  // fetchAllLeadsData() async {
-  //   isLeads.value = true;
-  //   var leadsResponse = await Dashboard().fetchLeads();
-  //   leadsList.addAll(leadsResponse);
-  //   facebookLeads.value = leadsResponse
-  //       .where((n) => n.source == "Fb_leads_GHL India Asset")
-  //       .toList();
-  //   googleLeads.value =
-  //       leadsResponse.where((n) => n.source == 'google').toList();
-  //   websiteLeads.value =
-  //       leadsResponse.where((n) => n.source == 'website').toList();
-  //   for (int i = 0; i < leadsList.length; i++) {
-  //     leadPhoneNumbers.add(leadsList[i].phoneNo!);
-  //   }
-//   isLeads.value = false;
-//   update();
-// }
+
+  String sourceTypeIcon(String source) {
+    print('source    $source');
+    switch (source) {
+      case "Facebook":
+        return "assets/image/logo_facebook.png";
+      case "Fb_leads_GHL India Asset":
+        return "assets/image/logo_facebook.png";
+      case "google":
+        return "assets/image/logo_google.png";
+      case "an":
+        return "assets/image/logo_google.png";
+      case "website":
+        return "assets/image/app_logo.png";
+      case "whatsapp":
+        return "assets/image/logo_whatsapp.png";
+      default:
+        return "unknown";
+    }
+  }
 
   fetchAllLeadsData({required String filterBy, required String session}) async {
     isLeads.value = true;
@@ -59,8 +61,8 @@ class LeadsDataController extends GetxController {
     isLeads.value = true;
     filterLeadsList.clear();
     leadPhoneNumbers.clear();
-    var leadsResponse = await Dashboard()
-        .fetchTodayFollowUpLeads(status: status);
+    var leadsResponse =
+        await Dashboard().fetchTodayFollowUpLeads(status: status);
     filterLeadsList.addAll(leadsResponse.data!);
     filterLeadsList.forEach((lead) {
       leadPhoneNumbers.add(lead.phoneNo!);

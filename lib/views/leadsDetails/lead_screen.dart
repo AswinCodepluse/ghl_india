@@ -52,6 +52,7 @@ class _LeadScreenState extends State<LeadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth=MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -124,7 +125,7 @@ class _LeadScreenState extends State<LeadScreen> {
                                 child: CustomText(
                                 text: "No Leads ${widget.filterBy} Leads Found",
                               ))
-                            : leadListViewBuilder(),
+                            : leadListViewBuilder(screenWidth),
               ),
             ],
           );
@@ -133,7 +134,7 @@ class _LeadScreenState extends State<LeadScreen> {
     );
   }
 
-  Widget leadListViewBuilder() {
+  Widget leadListViewBuilder(double screenWidth) {
     return ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: leadsDataController.searchCon.text.isNotEmpty
@@ -146,7 +147,7 @@ class _LeadScreenState extends State<LeadScreen> {
           final randomColor = leadsDataController
               .colors[Random().nextInt(leadsDataController.colors.length)];
           return leadsContainer(
-              data, randomColor, leadsDataController, widget.platforms);
+              data, randomColor, leadsDataController, widget.platforms,widget.status,screenWidth);
         });
   }
 }

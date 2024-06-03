@@ -6,10 +6,16 @@ import 'package:ghl_callrecoding/models/filter_leads_model.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/leads_details.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-Widget leadsContainer(FilterLeadsData data, String randomColor,
-    LeadsDataController leadsDataController, String filterBy) {
+Widget leadsContainer(
+    FilterLeadsData data,
+    String randomColor,
+    LeadsDataController leadsDataController,
+    String filterBy,
+    int? status,
+    double screenWidth) {
   String firstLetter = data.name!.substring(0, 1).toUpperCase();
   String lastLetter = data.name!.substring(data.name!.length - 1).toUpperCase();
+  String icon = leadsDataController.sourceTypeIcon(data.source!);
   SharedPreference sharedPreference = SharedPreference();
   return GestureDetector(
     onTap: () async {
@@ -68,18 +74,18 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 220,
+                width: screenWidth / 1.89,
                 child: CustomText(
                     text: data.name ?? '',
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700),
               ),
               SizedBox(
-                width: 220,
+                width: screenWidth / 1.89,
                 child: CustomText(text: data.phoneNo ?? ''),
               ),
               SizedBox(
-                width: 220,
+                width: screenWidth / 1.89,
                 child: CustomText(
                   text: data.email ?? '',
                   fontSize: 12,
@@ -92,7 +98,7 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
                       filterBy == "Interested" ||
                       filterBy == "KYC Fill"
                   ? SizedBox(
-                      width: 220,
+                      width: screenWidth / 1.89,
                       child: Row(
                         children: [
                           Icon(
@@ -110,7 +116,7 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
                       ),
                     )
                   : Container(
-                      width: 220,
+                      width: screenWidth / 1.89,
                       child: Row(
                         children: [
                           Icon(
@@ -127,9 +133,43 @@ Widget leadsContainer(FilterLeadsData data, String randomColor,
                           ),
                         ],
                       ),
+                    ),
+              status != null && data.notes != null
+                  ? SizedBox(
+                      width: screenWidth / 1.89,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.note_alt,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          SizedBox(
+                            width: screenWidth/2.25,
+                            child: CustomText(
+                                text: data.notes ?? '',
+                                fontSize: 12,
+                                maxLines: 5,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     )
+                  : SizedBox(),
+
             ],
           ),
+          Spacer(),
+          Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(shape: BoxShape.circle),
+              child: Image(
+                image: AssetImage(icon),
+              )),
         ],
       ),
     ),

@@ -42,6 +42,8 @@ class CallLogController extends GetxController {
   Future<void> fetchCallLogs() async {
     Iterable<CallLogEntry> entries = await CallLog.query(number: phoneNumber);
     callLogsList.assignAll(entries);
+    print('callLogsList  $callLogsList');
+    print('getCallLogsList  $getCallLogsList');
     if (callLogsList.isNotEmpty && getCallLogsList.isNotEmpty) {
       fileController.findRecordedFiles();
       String getFirstCallStartTime = getCallLogsList.first.startTime!;
@@ -66,6 +68,7 @@ class CallLogController extends GetxController {
         postCallLog();
       }
     } else if (callLogsList.isNotEmpty && getCallLogsList.isEmpty) {
+      firstCallStartTime = formatTimestamp(callLogsList.first.timestamp!);
       print("2nd elseif-=========================================");
       postCallLog();
     }
@@ -105,6 +108,7 @@ class CallLogController extends GetxController {
     loadingState.value = true;
     getCallLogsList.clear();
     GetCallLogModel response = await callLogRepository.getCallLog(leadId!);
+    print('response   ======= ${response.data}');
     getCallLogsList.addAll(response.data!);
     loadingState.value = false;
   }

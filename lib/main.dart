@@ -40,9 +40,9 @@ void main() async {
   firebaseRepo.requestPermission();
   var token = await firebaseRepo.getToken();
   print('device token $token');
+
   SharedPreference().setDeviceToken(token);
   firebaseRepo.initInfo();
-
 
   runApp(
     SharedValue.wrapApp(

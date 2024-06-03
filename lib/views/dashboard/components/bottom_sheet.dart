@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghl_callrecoding/utils/colors.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/log_out_dialog.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
@@ -22,7 +23,7 @@ Future<void> bottomSheet(BuildContext context) {
                     Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            color: Colors.red, shape: BoxShape.circle),
+                            color: MyTheme.mainColor, shape: BoxShape.circle),
                         child: Icon(
                           Icons.logout,
                           color: Colors.white,

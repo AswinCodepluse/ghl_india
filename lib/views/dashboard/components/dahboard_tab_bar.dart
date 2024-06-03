@@ -27,6 +27,7 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
   @override
   void initState() {
     super.initState();
+    print('access token ${access_token.$}');
     _tabController = TabController(length: 2, vsync: this);
     FirebaseRepository().setupInteractMessage();
   }

@@ -57,6 +57,7 @@ class FilterLeadsData {
   String? lastUpdatedDate;
   String? createAt;
   String? followupDate;
+  String? notes;
 
   FilterLeadsData({
     this.id,
@@ -88,6 +89,7 @@ class FilterLeadsData {
     this.lastUpdatedDate,
     this.createAt,
     this.followupDate,
+    this.notes,
   });
 
   FilterLeadsData.fromJson(Map<String, dynamic> json) {
@@ -120,6 +122,7 @@ class FilterLeadsData {
     lastUpdatedDate = json['last_updated_date'];
     createAt = json['created_at'];
     followupDate = json['next_followup_date'];
+    notes = json['notes'];
   }
 
   Map<String, dynamic> toJson() {
@@ -153,6 +156,7 @@ class FilterLeadsData {
     data['last_updated_date'] = this.lastUpdatedDate;
     data['created_at'] = this.createAt;
     data['next_followup_date'] = this.followupDate;
+    data['notes'] = this.notes;
     return data;
   }
 }

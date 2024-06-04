@@ -45,6 +45,7 @@ class CallLogRepository {
 
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
+        print("post call  log response========>${responseBody}");
       } else {
         String responseBody = await response.stream.bytesToString();
         print(
@@ -58,6 +59,54 @@ class CallLogRepository {
       throw e;
     }
   }
+
+  Future<void> postCallLogForAdmin({
+    required String phoneNumber,
+    required String userId,
+    required String startTime,
+    required String endTime,
+    required String duration,
+    required String type,
+  }) async {
+    var url = Uri.parse(
+        'https://sales.ghlindia.com/api/sales-person/lead/call-all-log/create');
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.fields['phone'] = phoneNumber;
+    request.fields['user_id'] = userId;
+    request.fields['start_time'] = startTime;
+    request.fields['end_time'] = endTime;
+    request.fields['duration'] = duration;
+    request.fields['type'] = type;
+
+    request.headers.addAll({
+      "Content-Type": "multipart/form-data",
+      "App-Language": app_language.$!,
+      "Authorization": "Bearer ${access_token.$}",
+    });
+
+    try {
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('call log All responseBody $responseBody');
+      } else {
+        String responseBody = await response.stream.bytesToString();
+        print(
+            'Failed to make POST request. Status code: ${response.statusCode}');
+        print('Response body: $responseBody');
+        throw Exception(
+            'Failed to make POST request. Status code: ${response.statusCode}. Response body: $responseBody');
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      throw e;
+    }
+  }
+
+
 
   Future<GetCallLogModel> getCallLog(String leadId) async {
     var url = Uri.parse(
@@ -76,6 +125,7 @@ class CallLogRepository {
 
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
+        print('responseBody get  $responseBody');
         Map<String, dynamic> json = jsonDecode(responseBody);
         return GetCallLogModel.fromJson(json);
       } else {

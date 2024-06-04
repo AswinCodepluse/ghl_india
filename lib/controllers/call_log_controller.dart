@@ -14,6 +14,7 @@ class CallLogController extends GetxController {
 
   String leadPhoneNumber = "";
   RxList<CallLogEntry> callLogsList = <CallLogEntry>[].obs;
+  RxList<CallLogEntry> allCallLogsList = <CallLogEntry>[].obs;
   RxList<GetCallLogData> getCallLogsList = <GetCallLogData>[].obs;
   final String phoneNumber;
   final String? leadId;
@@ -31,6 +32,7 @@ class CallLogController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     fetchCallLogFromPhone();
+    fetchAllCallLogs();
   }
 
   void fetchCallLogFromPhone({Duration interval = const Duration(seconds: 5)}) {
@@ -74,6 +76,33 @@ class CallLogController extends GetxController {
     }
   }
 
+  Future<void> fetchAllCallLogs() async {
+    print("Fetching All Call log functions");
+    Iterable<CallLogEntry> entries = await CallLog.query();
+    allCallLogsList.assignAll(entries);
+    for (int i = 0; i < allCallLogsList.length; i++) {
+      String userId = await SharedPreference().getUserId();
+      DateTime findCallEndTime =
+          DateTime.fromMillisecondsSinceEpoch(allCallLogsList[i].timestamp!);
+      String time = DateFormat('yyyy-MM-dd HH:mm:ss').format(findCallEndTime);
+      String formattedDuration = formatDuration(allCallLogsList[i].duration!);
+      String endTime =
+          callEndTime(startTime: time, duration: formattedDuration);
+      String callType = callTypeToString(allCallLogsList[i].callType!);
+      String duration = "${allCallLogsList[i].duration}";
+      String number = allCallLogsList[i].number!;
+      String formattedStartTime =
+          formatTimestamp(allCallLogsList[i].timestamp!);
+      await postCallLogForAdmin(
+          userId: userId,
+          endTime: endTime,
+          duration: duration,
+          callType: callType,
+          startTime: formattedStartTime,
+          number: number);
+    }
+  }
+
   postCallLog() async {
     List<String> dateTimeComponents =
         firstCallStartTime!.split(RegExp(r'[: \-]'));
@@ -102,6 +131,23 @@ class CallLogController extends GetxController {
         type: callType,
         callRecordingFile: callRecordingFile);
     await getCallLog();
+  }
+
+  Future<void> postCallLogForAdmin(
+      {required String userId,
+      required String startTime,
+      required String number,
+      required String endTime,
+      required String duration,
+      required String callType}) async {
+    await callLogRepository.postCallLogForAdmin(
+      phoneNumber: number,
+      userId: userId,
+      startTime: startTime,
+      endTime: endTime,
+      duration: duration,
+      type: callType,
+    );
   }
 
   Future<void> getCallLog() async {

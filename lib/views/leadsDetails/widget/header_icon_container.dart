@@ -320,7 +320,6 @@ class HeaderIconContainer extends StatelessWidget {
                     ),
                     CustomText(
                       text: "Report",
-
                     )
                   ],
                 ),

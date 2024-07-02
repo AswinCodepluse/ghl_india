@@ -1,9 +1,10 @@
 class GetCallLogModel {
   List<GetCallLogData>? data;
   bool? success;
+  bool? result;
   int? status;
 
-  GetCallLogModel({this.data, this.success, this.status});
+  GetCallLogModel({this.data, this.success, this.status,this.result});
 
   GetCallLogModel.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
@@ -14,6 +15,7 @@ class GetCallLogModel {
     }
     success = json['success'];
     status = json['status'];
+    result = json['result'];
   }
 
   Map<String, dynamic> toJson() {

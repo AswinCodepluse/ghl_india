@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:ghl_callrecoding/models/report_lead_models.dart';
 import 'package:ghl_callrecoding/repositories/report_repository.dart';
 import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:toast/toast.dart';
@@ -10,7 +9,6 @@ class ReportController extends GetxController {
   RxBool disable = false.obs;
 
   isDisable() {
-    print("is diable-------------");
     if (reportCon.text != '') {
       disable.value = true;
     } else {

@@ -9,7 +9,7 @@ class TimeLineController extends GetxController {
   var firstOldStatus = "".obs;
   RxBool loadingState = false.obs;
   var leadId = 0.obs;
-  late AudioPlayer player = AudioPlayer();
+  late AudioPlayer player;
   Rx<PlayerState> playerState = PlayerState.paused.obs;
   Duration? duration;
   Rx<Duration> position = Duration.zero.obs;
@@ -23,9 +23,9 @@ class TimeLineController extends GetxController {
 
   bool get isPaused => playerState.value == PlayerState.paused;
 
-  String get durationText => duration.toString().split('.').first ?? '';
+  String get durationText => duration?.toString().split('.').first ?? '0:00';
 
-  String get positionText => position.value.toString().split('.').first ?? '';
+  String get positionText => position.value.toString().split('.').first;
 
   @override
   void onInit() {
@@ -33,16 +33,21 @@ class TimeLineController extends GetxController {
     fetchTimeLine(leadId.value);
     player = AudioPlayer();
     player.setReleaseMode(ReleaseMode.stop);
-    // initStreams();
+    initStreams();
   }
 
   @override
   void onClose() {
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerCompleteSubscription?.cancel();
+    _playerStateChangeSubscription?.cancel();
     player.dispose();
     super.onClose();
   }
 
   Future<void> onChange(double value) async {
+    print('value  $value');
     await player.seek(Duration(seconds: value.toInt()));
     update();
   }
@@ -86,6 +91,16 @@ class TimeLineController extends GetxController {
   Future<void> play(String url) async {
     await player.play(UrlSource(url));
     playerState.value = PlayerState.playing;
+    print('duration ================');
+    Duration? dura =await player.getDuration();
+    print(dura?.inMinutes);
+    print(dura?.inMilliseconds);
+    print(dura?.inSeconds);
+    player.onDurationChanged.listen((d) {
+      print('test duration $d');
+      duration = d;
+      update();
+    });
     update();
   }
 
@@ -98,7 +113,7 @@ class TimeLineController extends GetxController {
   Future<void> stop() async {
     await player.stop();
     playerState.value = PlayerState.stopped;
-    // position.value = Duration.zero;
+    position.value = Duration.zero;
     update();
   }
 }

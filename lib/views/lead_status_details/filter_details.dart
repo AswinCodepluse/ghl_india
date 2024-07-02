@@ -58,7 +58,7 @@ class _LeadDataFilterStatusState extends State<LeadDataFilterStatus> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         title: CustomText(text: widget.status),
         leading: GestureDetector(
           onTap: () {

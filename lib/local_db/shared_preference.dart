@@ -46,16 +46,19 @@ class SharedPreference {
     setLogin(true);
     setUserId(loginResponse.user!.id!.toString());
     setUserName(loginResponse.user!.name!);
+    setToken(loginResponse.accessToken!);
   }
 
   Future<void> clearUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await setLogin(false);
+    await prefs.remove("call_recording_folder_path");
     await prefs.remove("user_name");
     await prefs.remove("user_id");
     await prefs.remove("device_token");
     await prefs.remove("remainder_date");
     await prefs.remove("remainder_time");
+    await prefs.remove("token");
   }
 
   Future<void> setRemainderDate(String value) async {
@@ -86,5 +89,25 @@ class SharedPreference {
   Future<String> getDeviceToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("device_token") ?? "";
+  }
+
+  Future<void> setCallRecordingFolderPath(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("call_recording_folder_path", value);
+  }
+
+  Future<String> getCallRecordingFolderPath() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("call_recording_folder_path") ?? "";
+  }
+
+  Future<void> setToken(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("token", value);
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("token");
   }
 }

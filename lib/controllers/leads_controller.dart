@@ -23,7 +23,6 @@ class LeadsDataController extends GetxController {
     super.onInit();
   }
 
-
   String sourceTypeIcon(String source) {
     print('source    $source');
     switch (source) {
@@ -38,6 +37,8 @@ class LeadsDataController extends GetxController {
       case "website":
         return "assets/image/app_logo.png";
       case "whatsapp":
+        return "assets/image/logo_whatsapp.png";
+      case "whatsapp chat":
         return "assets/image/logo_whatsapp.png";
       default:
         return "unknown";
@@ -112,7 +113,10 @@ class LeadsDataController extends GetxController {
 
   searchLead(String str) {
     searchLeadsList.value = filterLeadsList
-        .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+        .where((lead) =>
+            lead.name!.toLowerCase().startsWith(str.toLowerCase()) ||
+            lead.phoneNo!.toLowerCase().startsWith(str.toLowerCase()) ||
+            lead.email!.toLowerCase().startsWith(str.toLowerCase()))
         .toList();
     update();
   }

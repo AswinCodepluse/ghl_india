@@ -30,7 +30,7 @@ class _LeadSeasonDetailsState extends State<LeadSeasonDetails> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         title: CustomText(text: "Today Leads"),
         leading: GestureDetector(
           onTap: () {

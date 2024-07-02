@@ -15,14 +15,14 @@ class HeaderIconContainer extends StatelessWidget {
       required this.phoneNumber,
       required this.email,
       required this.leadId,
-      required this.screenWidth});
+      required this.screenWidth,
+      required this.leadsController});
 
   final String phoneNumber;
   final String email;
   final int leadId;
   final double screenWidth;
-
-  final leadsController = Get.find<LeadsController>();
+  final LeadsController leadsController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,20 @@ class HeaderIconContainer extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenWidth / 24),
-          boxShadow: leadsController.shadow),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.0),
+              spreadRadius: 0,
+              blurRadius: 0,
+              offset: Offset(-1, -1),
+            ),
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 9,
+              blurRadius: 9,
+              offset: Offset(5, 5),
+            ),
+          ]),
       child: Column(
         children: [
           Row(
@@ -265,7 +278,7 @@ class HeaderIconContainer extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CallLogScreen(
-                                      leadPhoneNumber: phoneNumber,
+                                      leadPhoneNumber: phoneNumber, leadId: leadId.toString(),
                                     )));
                       },
                       child: Container(
@@ -300,7 +313,7 @@ class HeaderIconContainer extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        reportAlertDialog(context,leadId);
+                        reportAlertDialog(context, leadId);
                       },
                       child: Container(
                         decoration: const BoxDecoration(

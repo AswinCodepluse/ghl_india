@@ -1,9 +1,20 @@
 import 'dart:io';
+
+import 'package:call_log/call_log.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ghl_callrecoding/controllers/file_controller.dart';
+import 'package:ghl_callrecoding/local_db/shared_preference.dart';
 import 'package:ghl_callrecoding/models/all_leads_models.dart';
 import 'package:ghl_callrecoding/models/dashboard_model.dart';
+import 'package:ghl_callrecoding/models/recording_files_model.dart';
+import 'package:ghl_callrecoding/repositories/call_log_repository.dart';
 import 'package:ghl_callrecoding/repositories/dashboard_repository.dart';
+import 'package:ghl_callrecoding/utils/toast_component.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 
 class DashboardController extends GetxController {
   var dashboardCountList = [].obs;
@@ -20,9 +31,11 @@ class DashboardController extends GetxController {
   var followUpTodayKYCFill = 0.obs;
   String leadSeasons = '';
   TextEditingController searchCon = TextEditingController();
-  TextEditingController callRecordingFileCon = TextEditingController();
+  TextEditingController callRecordingFolderCon = TextEditingController();
   RxList<FileSystemEntity> recordedFiles = <FileSystemEntity>[].obs;
   String? callRecordingDirPath;
+  RxString userName = ''.obs;
+  List<RecordingFileData> callRecordingFilesList = [];
   var colors = [
     'blue',
     'orange',
@@ -48,7 +61,18 @@ class DashboardController extends GetxController {
     super.onClose();
   }
 
+  appPermission() async {
+    await Permission.storage.request();
+    await Permission.contacts.request();
+    await Permission.phone.request();
+    await Permission.microphone.request();
+  }
+
   fetchDashboardData(String season) async {
+    var folderPath = await SharedPreference().getCallRecordingFolderPath();
+    if (folderPath != '') {
+      callRecordingFolderCon.text = folderPath;
+    }
     isLeads.value = true;
     dashboardCountList.clear();
     var response = await DashboardRepository().fetchDashboardCount(season);
@@ -82,9 +106,27 @@ class DashboardController extends GetxController {
     update();
   }
 
+  Future<void> fetchRecordingFiles() async {
+    var response = await DashboardRepository().fetchRecordingFiles();
+    callRecordingFilesList.addAll(response.data!);
+  }
+
   Future<void> refreshData() async {
     dashboardCountList.clear();
     await fetchDashboardData(leadSeasons);
+  }
+
+  Future<void> pickFolderPath(BuildContext context) async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    if (selectedDirectory != null) {
+      await SharedPreference().setCallRecordingFolderPath(selectedDirectory);
+      callRecordingFolderCon.text = selectedDirectory;
+      callRecordingDirPath = selectedDirectory;
+      Navigator.pop(context);
+      ToastComponent.showDialog("Folder Path Saved",
+          gravity: Toast.center, duration: Toast.lengthLong);
+    }
+    update();
   }
 
   Color getColor(String colorName) {

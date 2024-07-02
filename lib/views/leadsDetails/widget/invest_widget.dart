@@ -5,8 +5,7 @@ import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 import 'package:ghl_callrecoding/utils/custom_rich_text.dart';
 import 'package:ghl_callrecoding/utils/custom_text_field.dart';
 
-Widget investWidget(BuildContext context) {
-  LeadsController leadsController = Get.find<LeadsController>();
+Widget investWidget(BuildContext context ,LeadsController  leadsController) {
   return Wrap(
     children: [
       customRichText(text: "Amount"),

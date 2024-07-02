@@ -3,17 +3,18 @@ import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {super.key,
-        required this.controller,
-        this.onTap,
-        this.suffixIcon,
-        this.prefixIcon,
-        this.maxLines,
-        this.hintText,
-        this.onChange,
-        this.readOnly,
-        this.keyboardType});
+  CustomTextField({
+    super.key,
+    required this.controller,
+    this.onTap,
+    this.suffixIcon,
+    this.prefixIcon,
+    this.maxLines,
+    this.hintText,
+    this.onChange,
+    this.readOnly,
+    this.keyboardType,
+  });
 
   final TextEditingController controller;
   final void Function()? onTap;
@@ -24,7 +25,6 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChange;
   final bool? readOnly;
   final TextInputType? keyboardType;
-  final leadsController = Get.find<LeadsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,
-          hintStyle: TextStyle(fontSize: 15,color: Colors.grey.shade500),
+          hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade500),
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           contentPadding: EdgeInsets.all(8),
@@ -60,7 +60,20 @@ class CustomTextField extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
-          boxShadow: leadsController.shadow),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.0),
+              spreadRadius: 0,
+              blurRadius: 0,
+              offset: Offset(-1, -1),
+            ),
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 9,
+              blurRadius: 9,
+              offset: Offset(5, 5),
+            ),
+          ]),
     );
   }
 }

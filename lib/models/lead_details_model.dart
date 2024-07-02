@@ -31,6 +31,7 @@ class LeadDetails {
   String? lastUpdatedDate;
   String? notes;
   int? isInvestor;
+  String? language;
 
   LeadDetails({
     this.id,
@@ -65,6 +66,7 @@ class LeadDetails {
     this.lastUpdatedDate,
     this.notes,
     this.isInvestor,
+    this.language,
   });
 
   LeadDetails.fromJson(Map<String, dynamic> json) {
@@ -100,6 +102,7 @@ class LeadDetails {
     lastUpdatedDate = json['last_updated_date'];
     isInvestor = json['is_investor'];
     notes = json['notes'];
+    language = json['language'];
   }
 
   Map<String, dynamic> toJson() {
@@ -136,6 +139,7 @@ class LeadDetails {
     data['last_updated_date'] = this.lastUpdatedDate;
     data['is_investor'] = this.isInvestor;
     data['notes'] = this.notes;
+    data['language'] = this.language;
     return data;
   }
 }

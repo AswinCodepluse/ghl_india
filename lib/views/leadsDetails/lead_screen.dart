@@ -39,9 +39,9 @@ class _LeadScreenState extends State<LeadScreen> {
       leadsDataController.fetchAllLeadsData(
           filterBy: widget.platforms, session: widget.session);
     }
-    Future.delayed(Duration(seconds: 1), () {
-      fileController.checkPermission();
-    });
+    // Future.delayed(Duration(seconds: 1), () {
+    //   fileController.checkPermission();
+    // });
   }
 
   @override
@@ -52,22 +52,22 @@ class _LeadScreenState extends State<LeadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth=MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.to(() => FileScreen());
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15.0),
-              child: Icon(Icons.file_copy),
-            ),
-          ),
-        ],
+        // backgroundColor: Colors.transparent,
+        // actions: [
+        //   GestureDetector(
+        //     onTap: () {
+        //       Get.to(() => FileScreen());
+        //     },
+        //     child: const Padding(
+        //       padding: EdgeInsets.only(right: 15.0),
+        //       child: Icon(Icons.file_copy),
+        //     ),
+        //   ),
+        // ],
         title: CustomText(
           text: widget.platforms == 'allLeads'
               ? "Leads"
@@ -146,8 +146,8 @@ class _LeadScreenState extends State<LeadScreen> {
               : leadsDataController.filterLeadsList[index];
           final randomColor = leadsDataController
               .colors[Random().nextInt(leadsDataController.colors.length)];
-          return leadsContainer(
-              data, randomColor, leadsDataController, widget.platforms,widget.status,screenWidth);
+          return leadsContainer(data, randomColor, leadsDataController,
+              widget.platforms, widget.status, screenWidth);
         });
   }
 }

@@ -176,7 +176,9 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        bottom: screenWidth / 45,top: screenWidth / 24,),
+                                      bottom: screenWidth / 45,
+                                      top: screenWidth / 24,
+                                    ),
                                     child: CustomText(text: "Today's Followup"),
                                   ),
                                   Padding(
@@ -187,7 +189,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                         screenWidth: screenWidth,
                                         icon:
                                             "assets/image/call_later_icon.png",
-                                        text: "Call Later",
+                                        text: "Today's Call Back",
                                         count: dashboardController
                                             .followUpTodayCallLater.value,
                                       ),
@@ -211,7 +213,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                         screenWidth: screenWidth,
                                         icon:
                                             "assets/image/interested_icon.png",
-                                        text: "Interested",
+                                        text: "Today's Interested",
                                         count: dashboardController
                                             .followUpTodayInterested.value,
                                       ),
@@ -231,7 +233,7 @@ class _TodayDashBoardScreenState extends State<TodayDashBoardScreen> {
                                     child: whatsappContainer(
                                       screenWidth: screenWidth,
                                       icon: "assets/image/kyc_icon.png",
-                                      text: "KYC Fill",
+                                      text: "Today's KYC Fill",
                                       count: dashboardController
                                           .followUpTodayKYCFill.value,
                                     ),

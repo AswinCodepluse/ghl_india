@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/lead_details_controller.dart';
 
-AlertDialog conformationDialog(BuildContext context) {
-  LeadsController leadsController = Get.find<LeadsController>();
+AlertDialog conformationDialog(
+    BuildContext context, LeadsController leadsController) {
   return AlertDialog(
     backgroundColor: Colors.white,
     contentPadding: const EdgeInsets.only(

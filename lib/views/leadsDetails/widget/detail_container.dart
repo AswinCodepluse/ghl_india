@@ -5,7 +5,7 @@ import 'package:ghl_callrecoding/views/leadsDetails/widget/sub_title_row.dart';
 import 'package:ghl_callrecoding/views/leadsDetails/widget/title_row.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
-Widget detailContainer(LeadsController leadsController){
+Widget detailContainer(LeadsController leadsController) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 15),
     decoration: BoxDecoration(
@@ -17,30 +17,29 @@ Widget detailContainer(LeadsController leadsController){
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Obx(
-              () => leadsController.isInvestor.value == 1
+          () => leadsController.isInvestor.value == 1
               ? CustomText(
-            text: "Investor",
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: Colors.red,
-          )
+                  text: "Investor",
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.red,
+                )
               : SizedBox(),
         ),
         SizedBox(
           height: 15,
         ),
-        titleRow(firstTitle: "Source", secondTitle: "Medium"),
+        titleRow(firstTitle: "Source", secondTitle: "Language"),
         SizedBox(
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
-              firstSubTitle:
-              leadsController.leadDetailsData.value.source ?? "",
+          () => subTitleRow(
+              firstSubTitle: leadsController.leadDetailsData.value.source ?? "",
               secondSubTitle:
-              leadsController.leadDetailsData.value.medium ?? "",
+                  leadsController.leadDetailsData.value.language ?? "",
               firstIcon: Icons.location_on_sharp,
-              secondIcon: Icons.account_tree_rounded),
+              secondIcon: Icons.language),
         ),
         SizedBox(
           height: 15,
@@ -50,12 +49,10 @@ Widget detailContainer(LeadsController leadsController){
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
-              firstSubTitle:
-              leadsController.leadDetailsData.value.status ?? "",
+          () => subTitleRow(
+              firstSubTitle: leadsController.leadDetailsData.value.status ?? "",
               secondSubTitle:
-              leadsController.leadDetailsData.value.occupation ??
-                  "",
+                  leadsController.leadDetailsData.value.occupation ?? "",
               firstIcon: Icons.circle_rounded,
               secondIcon: Icons.work),
         ),
@@ -67,13 +64,11 @@ Widget detailContainer(LeadsController leadsController){
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
+          () => subTitleRow(
               firstSubTitle:
-              leadsController.leadDetailsData.value.designation ??
-                  "",
+                  leadsController.leadDetailsData.value.designation ?? "",
               secondSubTitle:
-              leadsController.leadDetailsData.value.planning ??
-                  '',
+                  leadsController.leadDetailsData.value.planning ?? '',
               firstIcon: Icons.cases_outlined,
               secondIcon: Icons.alarm),
         ),
@@ -85,13 +80,11 @@ Widget detailContainer(LeadsController leadsController){
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
+          () => subTitleRow(
               firstSubTitle:
-              leadsController.leadDetailsData.value.createdDate ??
-                  '',
-              secondSubTitle: leadsController
-                  .leadDetailsData.value.lastUpdatedDate ??
-                  '',
+                  leadsController.leadDetailsData.value.createdDate ?? '',
+              secondSubTitle:
+                  leadsController.leadDetailsData.value.lastUpdatedDate ?? '',
               firstIcon: Icons.calendar_month,
               secondIcon: Icons.calendar_month),
         ),
@@ -103,13 +96,11 @@ Widget detailContainer(LeadsController leadsController){
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
+          () => subTitleRow(
               firstSubTitle:
-              leadsController.leadDetailsData.value.interest ??
-                  "",
+                  leadsController.leadDetailsData.value.interest ?? "",
               secondSubTitle:
-              leadsController.leadDetailsData.value.assigned ??
-                  "",
+                  leadsController.leadDetailsData.value.assigned ?? "",
               firstIcon: Icons.interests,
               secondIcon: Icons.work),
         ),
@@ -121,12 +112,10 @@ Widget detailContainer(LeadsController leadsController){
           height: 10,
         ),
         Obx(
-              () => subTitleRow(
-              firstSubTitle:
-              leadsController.leadDetailsData.value.city ?? "",
+          () => subTitleRow(
+              firstSubTitle: leadsController.leadDetailsData.value.city ?? "",
               secondSubTitle:
-              leadsController.leadDetailsData.value.createdAt ??
-                  '',
+                  leadsController.leadDetailsData.value.createdAt ?? '',
               firstIcon: Icons.location_city,
               secondIcon: Icons.alarm_on_outlined),
         ),

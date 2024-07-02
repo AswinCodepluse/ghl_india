@@ -21,7 +21,7 @@ Widget timeLineContainer(
             GetBuilder(
                 init: TimeLineController(),
                 builder: (timeLineController) {
-                  return data.callRecord == null
+                  return data.voiceRecord == null
                       ? GestureDetector(
                           child: Container(
                             height: 208,
@@ -59,48 +59,44 @@ Widget timeLineContainer(
                 }),
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomText(
-                    text: data.user ?? '',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  Row(
-                    children: [
-                      CustomText(
-                        text: "Status : ",
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      CustomText(
-                        text: "${data.newStatus}",
-                        fontSize: 16,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ],
-                  ),
-                ],
+              child: CustomText(
+                text: data.user ?? '',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            CustomText(text: "Notes"),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: CustomText(
-                  text: "${data.notes}",
+            Row(
+              children: [
+                CustomText(
+                  text: "Status : ",
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                CustomText(
+                  text: "${data.oldStatus}",
                   fontSize: 16,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                  maxLines: 3,
+                  fontWeight: FontWeight.w400,
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: CustomText(
+                    text: "to",
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                CustomText(
+                  text: "${data.newStatus}",
+                  fontSize: 16,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w400,
+                ),
+              ],
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 5.0),
+              padding: EdgeInsets.only(bottom: 5.0,top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -148,6 +144,21 @@ Widget timeLineContainer(
                     ],
                   ),
                 ],
+              ),
+            ),
+            CustomText(
+                text: "Notes", fontSize: 16, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: CustomText(
+                  text: "${data.notes}",
+                  fontSize: 16,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                  maxLines: 10000,
+                ),
               ),
             ),
           ],

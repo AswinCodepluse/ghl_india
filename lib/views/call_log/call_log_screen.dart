@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/call_log_controller.dart';
+import 'package:ghl_callrecoding/controllers/dashboard_controller.dart';
 import 'package:ghl_callrecoding/models/get_call_log_model.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class CallLogScreen extends StatefulWidget {
-  CallLogScreen({super.key, required this.leadPhoneNumber});
+  CallLogScreen(
+      {super.key, required this.leadPhoneNumber, required this.leadId});
 
   final String leadPhoneNumber;
+  final String leadId;
 
   @override
   State<CallLogScreen> createState() => _CallLogScreenState();
 }
 
 class _CallLogScreenState extends State<CallLogScreen> {
-  CallLogController callLogController = Get.find<CallLogController>();
+  CallLogController callLogController = Get.put(CallLogController());
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    callLogController.callLogResult = true;
+    callLogController.fetchCallLogs(
+        phoneNumber: widget.leadPhoneNumber, leadId: widget.leadId);
+    // callLogController.getCallLog(leadId: widget.leadId);
   }
 
   @override
@@ -28,7 +35,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          // backgroundColor: Colors.transparent,
           title: Text("Call Logs"),
           leading: GestureDetector(
               onTap: () {
@@ -37,7 +44,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
               child: Icon(Icons.arrow_back)),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
               Obx(() {
@@ -53,7 +60,8 @@ class _CallLogScreenState extends State<CallLogScreen> {
                               child: CustomText(
                                   text: "No Call Log History For This Lead"))
                           : ListView.builder(
-                              itemCount: callLogController.getCallLogsList.length,
+                              itemCount:
+                                  callLogController.getCallLogsList.length,
                               itemBuilder: (context, index) {
                                 final data =
                                     callLogController.getCallLogsList[index];

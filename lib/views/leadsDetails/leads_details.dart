@@ -82,10 +82,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
     timeLineController.fetchTimeLine(widget.leadId);
     attachmentController.fetchAttachment();
     leadsController.fetchIndividualLeads(widget.leadId);
-    leadsController.fetchLastCallRecordingFile(widget.phoneNumber);
-    CallLogController callLogController = Get.put(CallLogController(
-        phoneNumber: widget.phoneNumber, leadId: widget.leadId.toString()));
-    callLogController.getCallLog();
+    // leadsController.fetchLastCallRecordingFile(widget.phoneNumber);
   }
 
   @override
@@ -104,8 +101,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
   final recorder = FlutterSoundRecorder();
 
   Future initRecorder() async {
-    final status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
+    if (!await Permission.microphone.request().isGranted) {
       throw 'Permission not granted';
     }
     await recorder.openRecorder();
@@ -135,7 +131,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
       key: key,
       appBar: AppBar(
         title: Text('Lead Details'),
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -231,20 +227,35 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 )
               ],
             ),
+            GestureDetector(
+              onTap: () {
+                leadsController.createContact(
+                    leadName: widget.leadName, leadNumber: widget.phoneNumber);
+              },
+              child: Container(
+                margin: EdgeInsets.all(5),
+                padding: EdgeInsets.all(8),
+                child: Text('Add To Contact'),
+                decoration: BoxDecoration(
+                    color: Color(0XFFFCE9E9),
+                    borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
             HeaderIconContainer(
               phoneNumber: widget.phoneNumber,
               email: widget.email,
               leadId: widget.leadId,
               screenWidth: screenWidth,
+              leadsController: leadsController,
             ),
             Obx(
               () => leadsController.isInvestor.value == 1
                   ? Padding(
                       padding: const EdgeInsets.only(
-                          left: 15.0,right: 15.0, top: 10),
+                          left: 15.0, right: 15.0, top: 10),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -291,7 +302,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               height: 15,
             ),
             Obx(
-                ()=>leadsController.leadDetailsData.value.notes != null
+              () => leadsController.leadDetailsData.value.notes != null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Wrap(
@@ -465,20 +476,24 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   ),
                   Obx(
                     () => leadsController.selectedLeadIds.value == 10
-                        ? investWidget(context)
+                        ? investWidget(context, leadsController)
                         : Container(),
                   ),
                   Obx(
-                    () => leadsController.selectedLeadIds.value == 3 ||
-                            leadsController.selectedLeadIds.value == 2 ||
-                            leadsController.selectedLeadIds.value == 11 ||
-                            leadsController.selectedLeadIds.value == 13
-                        ? SizedBox()
-                        : Wrap(
+                    () => leadsController.selectedLeadIds.value == 4 ||
+                            leadsController.selectedLeadIds.value == 5
+                        // leadsController.selectedLeadIds.value == 3 ||
+                        //         leadsController.selectedLeadIds.value == 2 ||
+                        //         leadsController.selectedLeadIds.value == 11 ||
+                        //         leadsController.selectedLeadIds.value == 13 ||
+                        //         leadsController.selectedLeadIds.value == 15 ||
+                        //         leadsController.selectedLeadIds.value == 18
+                        ? Wrap(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
-                                child: CustomText(text: "Followup DateTime"),
+                                child:
+                                    customRichText(text: "Followup DateTime"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
@@ -499,7 +514,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                                 ),
                               ),
                             ],
-                          ),
+                          )
+                        : SizedBox(),
                   ),
                   customRichText(text: "Followup Notes"),
                   SizedBox(
@@ -562,6 +578,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               ),
             ),
             Obx(() {
+              print('audioFilesData file ${audioFilesData}');
               return CustomButton(
                   buttonText: "Submit",
                   disable: leadsController.setDisable.value,
@@ -570,13 +587,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
-                        return conformationDialog(context);
+                        return conformationDialog(context, leadsController);
                       },
                     );
                     SharedPreference sharedPreference = SharedPreference();
                     String user_Id = await sharedPreference.getUserId();
                     File callRecordingFile =
-                        fileController.filePathsWithPhoneNumber.isEmpty
+                        fileController.callRecordingFilesList.isEmpty
                             ? leadsController.callFiles
                             : leadsController.lastCallRecording;
                     LeadDatasCreate response = await leadsController.createLead(

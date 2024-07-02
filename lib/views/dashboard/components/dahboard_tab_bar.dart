@@ -9,7 +9,6 @@ import 'package:ghl_callrecoding/views/dashboard/components/bottom_sheet.dart';
 import 'package:ghl_callrecoding/views/dashboard/components/exist_conformation_dailog.dart';
 import 'package:ghl_callrecoding/views/dashboard/today_dashboard.dart';
 import 'package:ghl_callrecoding/views/dashboard/total_dashboard.dart';
-import 'package:ghl_callrecoding/views/recording_files/file_screen.dart';
 import 'package:ghl_callrecoding/views/widget/custom_text.dart';
 
 class DashBoardTabBar extends StatefulWidget {
@@ -19,9 +18,11 @@ class DashBoardTabBar extends StatefulWidget {
 
 class _DashBoardTabBarState extends State<DashBoardTabBar>
     with SingleTickerProviderStateMixin {
-  final DashboardController dashboardController = Get.put(DashboardController());
+  final DashboardController dashboardController =
+      Get.put(DashboardController());
   late TabController _tabController;
-  String userName = '';
+
+  // String userName = '';
   SharedPreference sharedPreference = SharedPreference();
 
   @override
@@ -29,13 +30,23 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
     super.initState();
     print('access token ${access_token.$}');
     _tabController = TabController(length: 2, vsync: this);
+    fetchUserName();
     FirebaseRepository().setupInteractMessage();
+    Future.delayed(Duration(seconds: 2), () async {
+      await dashboardController.appPermission();
+    });
+    dashboardController.fetchRecordingFiles();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  fetchUserName() async {
+    SharedPreference sharedPreference = SharedPreference();
+    dashboardController.userName.value = await sharedPreference.getUserName();
   }
 
   @override
@@ -46,10 +57,11 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: CustomText(text: "hello, ${user_name.$}"),
+          title: Obx(() =>
+              CustomText(text: "hello, ${dashboardController.userName.value}")),
           leading: GestureDetector(
               onTap: () {
-                bottomSheet(context);
+                bottomSheet(context, dashboardController);
               },
               child: Icon(Icons.menu)),
           shape: RoundedRectangleBorder(
@@ -61,7 +73,6 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
           bottom: TabBar(
             controller: _tabController,
             isScrollable: false,
-
             tabs: [
               Tab(text: 'Today Leads'),
               Tab(text: 'Total Leads'),
@@ -69,7 +80,6 @@ class _DashBoardTabBarState extends State<DashBoardTabBar>
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
               color: MyTheme.mainColor,
-
             ),
             labelColor: Colors.white,
             unselectedLabelColor: Colors.black,

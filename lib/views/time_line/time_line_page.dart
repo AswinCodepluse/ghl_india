@@ -27,7 +27,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         title: Text("Activity Timeline"),
         leading: GestureDetector(
             onTap: () {
@@ -44,7 +44,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
               timeLineController.loadingState.value
                   ? Center(
                       child: CircularProgressIndicator(
-                        color: Colors.black,
+                        color: Colors.red,
                       ),
                     )
                   : timeLineController.activeTimeLineList.isEmpty
@@ -57,9 +57,11 @@ class _TimeLinePageState extends State<TimeLinePage> {
                               itemBuilder: (context, index) {
                                 final data = timeLineController
                                     .activeTimeLineList[index];
+                                print('data file ${data.voiceRecord}');
                                 return timeLineContainer(
                                   data: data,
                                   onTap: () {
+                                    timeLineController.play(data.voiceRecord!);
                                     timelineBottomSheet(context, data);
                                     // timeLineController.playerState.value ==
                                     //         PlayerState.playing

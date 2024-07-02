@@ -73,7 +73,10 @@ class LeadStatusFilterController extends GetxController {
 
   searchLead(String str) {
     searchLeadsList.value = filterLeadStatusList
-        .where((lead) => lead.name!.toLowerCase().startsWith(str.toLowerCase()))
+        .where((lead) =>
+            lead.name!.toLowerCase().startsWith(str.toLowerCase()) ||
+            lead.phoneNo!.toLowerCase().startsWith(str.toLowerCase()) ||
+            lead.email!.toLowerCase().startsWith(str.toLowerCase()))
         .toList();
     print(searchLeadsList);
   }

@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:ghl_callrecoding/controllers/file_controller.dart';
 import 'package:ghl_callrecoding/firebase/firebase_repository.dart';
@@ -9,10 +9,12 @@ import 'package:ghl_callrecoding/models/lead_datas_create_model.dart';
 import 'package:ghl_callrecoding/models/lead_details_model.dart';
 import 'package:ghl_callrecoding/models/lead_status_model.dart';
 import 'package:ghl_callrecoding/repositories/all_leads_repositories.dart';
+import 'package:ghl_callrecoding/utils/toast_component.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -97,7 +99,20 @@ class LeadsController extends GetxController {
                 transactionIdCon.text.isEmpty ||
                 transactionIdCon.text == ''))) {
       setDisable.value = true;
-    } else {
+    } else if ((selectedLeadIds.value == 4 || selectedLeadIds.value == 5) &&
+        dateTimeCon.text == '') {
+      setDisable.value = true;
+    }
+    // else if ((selectedLeadIds.value != 3 &&
+    //         selectedLeadIds.value != 2 &&
+    //         selectedLeadIds.value != 11 &&
+    //         selectedLeadIds.value != 15 &&
+    //         selectedLeadIds.value != 18 &&
+    //         selectedLeadIds.value != 13) &&
+    //     dateTimeCon.text == '') {
+    //   setDisable.value = true;
+    // }
+    else {
       setDisable.value = false;
     }
   }
@@ -162,20 +177,21 @@ class LeadsController extends GetxController {
     if (dateTime != null) {
       String desiredFormat = "yyyy-MM-dd HH:mm";
       dateTimeCon.text = DateFormat(desiredFormat).format(dateTime);
-      FirebaseRepository().sendPushNotification(
-                  "f3OFDmxCRXG4MIziiyvfvb:APA91bFjKktivZ80f9O_Sd-RNHE-9zImohq6PGqADd1mCd3hjRX5eSr3hjaOMkOqJQQNLSVA6Sf1A8FCL0a6rT7B5CJzNoace2QtREs7dyDNqutZ-xOtrLxYftFpRaruF5qZQ88GbCnZ",
-                  "test test test");
+      // FirebaseRepository().sendPushNotification(
+      //     "f3OFDmxCRXG4MIziiyvfvb:APA91bFjKktivZ80f9O_Sd-RNHE-9zImohq6PGqADd1mCd3hjRX5eSr3hjaOMkOqJQQNLSVA6Sf1A8FCL0a6rT7B5CJzNoace2QtREs7dyDNqutZ-xOtrLxYftFpRaruF5qZQ88GbCnZ",
+      //     "test test test");
+      isDisable();
     }
   }
 
-  void onChangeStatus(value){
-
+  void onChangeStatus(value) {
     selectedLeadIds.value = value!.id!;
     selectedLeadNames.value = value.name!;
     print('selectedLeadIds  ${selectedLeadIds.value}');
-   amountCon.clear();
+    amountCon.clear();
     investDateCon.clear();
     investTypeCon.clear();
+    dateTimeCon.clear();
     isDisable();
   }
 
@@ -221,6 +237,7 @@ class LeadsController extends GetxController {
     amountCon.clear();
     investTypeCon.clear();
     transactionIdCon.clear();
+    setDisable.value = true;
   }
 
   onChanged(String? newValue) {
@@ -262,6 +279,7 @@ class LeadsController extends GetxController {
     File voiceRecord,
   ) async {
     try {
+      print('voiceRecord ${voiceRecord}');
       loadingState.value = true;
       LeadDatasCreate response = await Dashboard().postLeadData(
           leadId,
@@ -367,13 +385,35 @@ class LeadsController extends GetxController {
     }
   }
 
-  fetchLastCallRecordingFile(String phoneNumber) async {
-    if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
-      if (fileController.filePathsWithPhoneNumber.last.contains(phoneNumber)) {
-        callRecordingFileCon.text =
-            fileController.filePathsWithPhoneNumber.last;
-        lastCallRecording = File(fileController.filePathsWithPhoneNumber.last);
+  // fetchLastCallRecordingFile(String phoneNumber) async {
+  //   if (fileController.filePathsWithPhoneNumber.isNotEmpty) {
+  //     if (fileController.filePathsWithPhoneNumber.last.contains(phoneNumber)) {
+  //       callRecordingFileCon.text =
+  //           fileController.filePathsWithPhoneNumber.last;
+  //       lastCallRecording = File(fileController.filePathsWithPhoneNumber.last);
+  //     }
+  //   }
+  // }
+
+  Future<void> createContact(
+      {required String leadName, required String leadNumber}) async {
+    if (await Permission.contacts.request().isGranted) {
+      final Contact newContact = Contact(
+        givenName: leadName,
+        phones: [Item(label: 'mobile', value: '+91${leadNumber}')],
+      );
+
+      try {
+        await ContactsService.addContact(newContact);
+        ToastComponent.showDialog("Contact added successfully",
+            gravity: Toast.center, duration: Toast.lengthLong);
+      } catch (e) {
+        ToastComponent.showDialog("Failed to add contact: $e",
+            gravity: Toast.center, duration: Toast.lengthLong);
       }
+    } else {
+      ToastComponent.showDialog("Contact permissions are not granted",
+          gravity: Toast.center, duration: Toast.lengthLong);
     }
   }
 

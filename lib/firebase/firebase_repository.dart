@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class FirebaseRepository {
   final _firebaseInstance = FirebaseMessaging.instance;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   Future<void> requestPermission() async {
     NotificationSettings settings = await _firebaseInstance.requestPermission(
@@ -39,9 +39,9 @@ class FirebaseRepository {
 
   initInfo() {
     var androidInitialize =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings =
-        InitializationSettings(android: androidInitialize);
+    InitializationSettings(android: androidInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('message++++++++++=  ${message.data}');
@@ -51,7 +51,7 @@ class FirebaseRepository {
           contentTitle: message.notification!.title.toString(),
           htmlFormatContentTitle: true);
       AndroidNotificationDetails androidPlatformChannelSpecific =
-          AndroidNotificationDetails(
+      AndroidNotificationDetails(
         'GHL', 'GHL',
         importance: Importance.high,
         styleInformation: bigTextStyleInformation,
@@ -60,7 +60,7 @@ class FirebaseRepository {
         // sound: const RawResourceAndroidNotificationSound('notification')
       );
       NotificationDetails platformChannelSpecific =
-          NotificationDetails(android: androidPlatformChannelSpecific);
+      NotificationDetails(android: androidPlatformChannelSpecific);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
           message.notification?.body, platformChannelSpecific,
           payload: message.data['data']);
@@ -73,7 +73,7 @@ class FirebaseRepository {
     Map<String, dynamic> notificationData= message.data;
     print('notificationData  $notificationData');
     var androidInitializationSettings =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings('@mipmap/ic_launcher');
     var iosInitializationSettings = const DarwinInitializationSettings();
 
     var initializationSetting = InitializationSettings(
@@ -81,16 +81,15 @@ class FirebaseRepository {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSetting,
         onDidReceiveNotificationResponse: (payload) {
-       handleMessage(message.data);
-    });
+          handleMessage(message.data);
+        });
   }
 
   Future<void> setupInteractMessage() async {
     RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      print('===========initialMessage=================');
       print(initialMessage.data);
 
       handleMessage(initialMessage.data);
@@ -104,7 +103,7 @@ class FirebaseRepository {
 
   void handleMessage(Map<String, dynamic> message) {
     Get.to(
-      () => LeadDetailsScreen(
+          () => LeadDetailsScreen(
         phoneNumber: message['phoneNumber'],
         firstLetter: message['firstLetter'],
         lastLetter: message['secondLetter'],
@@ -165,16 +164,16 @@ class FirebaseRepository {
   // }
 
   void sendPushNotification(
-    String token,
-    String message,
-    // DateTime targetDateTime
-  ) async {
+      String token,
+      String message,
+      // DateTime targetDateTime
+      ) async {
     try {
       await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
           headers: {
             'content-Type': 'application/json',
             'Authorization':
-                'key=AAAAzzQFlYs:APA91bGpjhllIohYVU7hSKgIwbtAxRrzCe6Ii7gGkgjP-gTg_PhLRjzcaab0mzu8F8MnsmhjcUygzHL3a98RCPVcBRTpt7VQElxz-H5UTLnvPYptfMubHZ2h788I71EDZoNk_Abtu1gr'
+            'key=AAAAzzQFlYs:APA91bGpjhllIohYVU7hSKgIwbtAxRrzCe6Ii7gGkgjP-gTg_PhLRjzcaab0mzu8F8MnsmhjcUygzHL3a98RCPVcBRTpt7VQElxz-H5UTLnvPYptfMubHZ2h788I71EDZoNk_Abtu1gr'
           },
           body: jsonEncode({
             'priority': 'high',
